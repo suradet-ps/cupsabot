@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "drug-cup-online",
+      "name": "cupsabot",
       "dependencies": {
         "@supabase/supabase-js": "^2.57.0",
         "html2canvas": "^1.4.1",
