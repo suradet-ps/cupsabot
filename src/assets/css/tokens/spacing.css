@@ -1,7 +1,19 @@
 /* Design Token: Spacing
-   Source of truth: DESIGN.md §Layout §Spacing System (8px base)
+   Source of truth: DESIGN.md §Layout §Spacing System (4px base, 96px section rhythm)
    ------------------------------------------------------------------ */
 :root {
+  /* Canonical tokens */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-base: 16px;
+  --space-md: 20px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 96px;
+
+  /* Legacy aliases */
   --space-px: 1px;
   --space-0-5: 2px;
   --space-1-5: 6px;

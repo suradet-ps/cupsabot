@@ -1,12 +1,25 @@
 /* Design Token: Border Radius
-   Source of truth: DESIGN.md §Shapes §Radius Scale
+   Source of truth: DESIGN.md §Shapes §Border Radius Scale
+   Compact developer ergonomics — 8px CTAs, 12px cards, pills for badges only.
    ------------------------------------------------------------------ */
 :root {
-  --radius-xs: 4px; /* search fields, thumbnails, utility elements */
-  --radius-sm: 8px; /* chips, cards, small media, dialogs */
-  --radius-md: 16px; /* medium product cards, grouped blocks */
-  --radius-lg: 22px; /* signature media-card and soft placeholder radius */
-  --radius-xl: 30px; /* research/topic filter pills */
-  --radius-pill: 32px; /* primary CTA buttons */
-  --radius-full: 9999px; /* round status elements, fully pill-shaped controls */
+  /* Canonical tokens */
+  --rounded-none: 0px;
+  --rounded-xs: 4px;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
+  --rounded-xl: 16px;
+  --rounded-xxl: 24px;
+  --rounded-pill: 9999px;
+  --rounded-full: 9999px;
+
+  /* Legacy aliases (mapped to preserve component intent) */
+  --radius-xs: var(--rounded-xs); /* inline tags */
+  --radius-sm: var(--rounded-lg); /* cards, panels */
+  --radius-md: var(--rounded-md); /* buttons, inputs, tiles */
+  --radius-lg: var(--rounded-xl); /* feature cards, code blocks */
+  --radius-xl: var(--rounded-xxl); /* large atmospheric cards */
+  --radius-pill: var(--rounded-md); /* CTA buttons — 8px dialect */
+  --radius-full: var(--rounded-full); /* badges only */
 }

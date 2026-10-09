@@ -1,43 +1,58 @@
 /* Design Token: Typography
-   Source of truth: DESIGN.md ยงTypography
+   Source of truth: DESIGN.md §Typography — Expo-inspired system
+   Inter is the single sans family; JetBrains Mono carries code surfaces.
    ------------------------------------------------------------------ */
 :root {
   /* Font Families */
-  --font-display:
-    "CohereText", "Space Grotesk", "Inter", "Noto Sans Thai", ui-sans-serif, system-ui;
-  --font-body: "Unica77 Cohere Web", "Inter", "Noto Sans Thai", "Arial", ui-sans-serif, system-ui;
-  --font-mono: "CohereMono", "Courier New", "Arial", ui-sans-serif, system-ui;
+  --font-display: "Inter", "Noto Sans Thai", -apple-system, system-ui, sans-serif;
+  --font-body: "Inter", "Noto Sans Thai", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 
-  /* Font Sizes */
-  --text-hero: 100px;
-  --text-product-display: 76px;
-  --text-section-display: 64px;
-  --text-section-heading: 50px;
-  --text-card-heading: 34px;
-  --text-feature-heading: 26px;
-  --text-body-lg: 19px;
-  --text-body: 17px;
-  --text-button: 15px;
-  --text-caption: 15px;
-  --text-mono-label: 15px;
-  --text-micro: 13px;
+  /* Canonical type scale */
+  --text-display-mega: 64px;
+  --text-display-xl: 48px;
+  --text-display-lg: 36px;
+  --text-display-md: 28px;
+  --text-display-sm: 22px;
+  --text-title-md: 18px;
+  --text-title-sm: 16px;
+  --text-body-md: 16px;
+  --text-body-sm: 14px;
+  --text-caption: 13px;
+  --text-caption-uppercase: 11px;
+  --text-code: 13px;
+  --text-button: 14px;
+  --text-nav-link: 14px;
+
+  /* Legacy size aliases (mapped to the new scale) */
+  --text-hero: var(--text-display-mega);
+  --text-product-display: var(--text-display-xl);
+  --text-section-display: var(--text-display-lg);
+  --text-section-heading: var(--text-display-lg);
+  --text-card-heading: var(--text-display-md);
+  --text-feature-heading: var(--text-display-sm);
+  --text-body-lg: 18px;
+  --text-body: var(--text-body-md);
+  --text-mono-label: var(--text-caption-uppercase);
+  --text-micro: 12px;
 
   /* Line Heights */
-  --leading-tight: 1;
-  --leading-snug: 1.2;
-  --leading-normal: 1.3;
+  --leading-tight: 1.05;
+  --leading-snug: 1.1;
+  --leading-normal: 1.2;
   --leading-body: 1.4;
   --leading-relaxed: 1.5;
-  --leading-button: 1.71;
+  --leading-button: 1;
 
   /* Letter Spacing */
   --tracking-hero: -1.92px;
   --tracking-product: -1.44px;
-  --tracking-section-display: -1.2px;
-  --tracking-section-heading: -0.48px;
-  --tracking-card-heading: -0.32px;
+  --tracking-section-display: -1.08px;
+  --tracking-section-heading: -1.08px;
+  --tracking-card-heading: -0.84px;
+  --tracking-feature-heading: -0.5px;
   --tracking-none: 0;
-  --tracking-mono: 0.28px;
+  --tracking-mono: 0.88px;
 
   /* Font Weights */
   --weight-normal: 400;

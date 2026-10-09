@@ -1,56 +1,66 @@
 /* Design Token: Colors
-   Source of truth: DESIGN.md ยงColors
-   Theme: ���้า-ชมพู Pastel (Pink-Blue Pastel)
+   Source of truth: DESIGN.md §Colors — Expo-inspired system
+   Theme: Pure white canvas + black CTAs + sky-blue atmospheric hero wash
    ------------------------------------------------------------------ */
 :root {
   /* Brand & Accent */
-  --color-black: #1a1a2e;
-  --color-near-black: #1a1a2e;
-  --color-blue: #b0cfff;
-  --color-blue-hover: #8ba8e6;
-  --color-light-blue: #c9dcf9;
-  --color-pink: #ffb0d9;
-  --color-pink-hover: #e695b5;
-  --color-light-pink: #f9c9e2;
+  --color-primary: #000000;
+  --color-primary-active: #1a1a1a;
+  --color-text-link: #0d74ce;
+  --color-text-link-secondary: #476cff;
+  --color-accent-link-bright: #47c2ff;
 
-  /* Surface & Background */
-  --color-canvas: #f9f8f2;
-  --color-soft-stone: #f0ede5;
-  --color-pale-blue: #eaf1fc;
-  --color-pale-pink: #fdeaf2;
-  --color-card-border: #e8e4db;
+  /* Surface */
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-surface-card: #ffffff;
+  --color-surface-strong: #f0f0f3;
+  --color-surface-dark: #171717;
+  --color-surface-dark-elevated: #1a1a1a;
 
-  /* Text & Rules */
-  --color-ink: #212121;
-  --color-muted-slate: #7a7a85;
-  --color-slate: #6b6b77;
-  --color-hairline: #d5d0c7;
-  --color-border-light: #e0dbd2;
+  /* Atmospheric Backdrop (hero only) */
+  --color-gradient-sky-light: #cfe7ff;
+  --color-gradient-sky-mid: #a8c8e8;
+
+  /* Hairlines */
+  --color-hairline: #f0f0f3;
+  --color-hairline-soft: #f5f5f7;
+  --color-hairline-strong: #dcdee0;
+
+  /* Text */
+  --color-ink: #171717;
+  --color-body: #60646c;
+  --color-body-strong: #171717;
+  --color-muted: #999999;
+  --color-muted-soft: #cccccc;
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #b0b4ba;
 
   /* Semantic */
-  --color-focus-blue: #6b8fd1;
-  --color-form-focus: #d487aa;
-  --color-error: #c23b3b;
+  --color-accent-warning: #ab6400;
+  --color-accent-preview: #8145b5;
+  --color-semantic-success: #16a34a;
+  --color-semantic-error: #eb8e90;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #b0cfff, #ffb0d9);
-  --gradient-primary-hover: linear-gradient(135deg, #8ba8e6, #e695b5);
-  --gradient-hero: linear-gradient(135deg, #c9dcf9 0%, #f9c9e2 40%, #ffb0d9 100%);
-  --gradient-blue: linear-gradient(135deg, #b0cfff, #c9dcf9);
-  --gradient-pink: linear-gradient(135deg, #ffb0d9, #f9c9e2);
-  --gradient-sidebar: linear-gradient(
-    180deg,
-    #c9dcf9 0%,
-    #eaf1fc 30%,
-    #f9f8f2 50%,
-    #fdeaf2 70%,
-    #f9c9e2 100%
-  );
+  /* Derived tints (subtle status backgrounds on white canvas) */
+  --color-tint-warning: #fbf3e5;
+  --color-tint-success: #e9f7ef;
+  --color-tint-error: #fdeeed;
+  --color-tint-info: #eaf3fc;
 
   /* Status */
-  --color-status-draft: var(--color-muted-slate);
-  --color-status-submitted: #c9893b;
-  --color-status-approved: #5b7ec4;
-  --color-status-fulfilled: #4a8c5c;
-  --color-status-rejected: var(--color-error);
+  --color-status-draft: #999999;
+  --color-status-submitted: #ab6400;
+  --color-status-approved: #0d74ce;
+  --color-status-fulfilled: #16a34a;
+  --color-status-rejected: #c0392b;
+
+  /* Atmospheric gradient (hero only) */
+  --gradient-hero: radial-gradient(
+    120% 120% at 50% 0%,
+    var(--color-gradient-sky-light) 0%,
+    var(--color-gradient-sky-mid) 42%,
+    rgba(255, 255, 255, 0) 74%
+  );
 }
