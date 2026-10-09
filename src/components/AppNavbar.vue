@@ -1,12 +1,11 @@
-<!-- src/components/Navbar.vue -->
+<!-- src/components/AppNavbar.vue -->
 <template>
     <nav class="navbar no-print">
         <div class="navbar-container">
             <router-link to="/" class="navbar-brand">
-                <i class="fas fa-pills"></i>
-
+                <span class="logo-plate"><i class="fas fa-pills"></i></span>
                 <span class="brand-text">ระบบเบิกยาออนไลน์</span>
-                <span class="brand-subtext"> โรงพยาบาลสระโบสถ์</span>
+                <span class="brand-subtext">โรงพยาบาลสระโบสถ์</span>
             </router-link>
 
             <button
@@ -27,7 +26,7 @@
                 </router-link>
 
                 <div class="user-info">
-                    <i class="fas fa-user-circle"></i>
+                    <span class="avatar"><i class="fas fa-user"></i></span>
                     <div class="user-details">
                         <span class="username">{{
                             auth.profile?.username
@@ -39,7 +38,7 @@
                         class="btn-logout"
                         title="ออกจากระบบ"
                     >
-                        <i class="fas fa-sign-out-alt"></i>
+                        <i class="fas fa-arrow-right-from-bracket"></i>
                     </button>
                 </div>
             </div>
@@ -72,12 +71,12 @@ async function handleLogout(): Promise<void> {
 </script>
 
 <style scoped>
-/* White canvas navbar — DESIGN.md §Global nav (logo left, menu center, user right) */
+/* Top nav — 64px, white canvas, hairline rule */
 .navbar {
     background-color: var(--color-canvas);
-    border-bottom: 1px solid var(--color-hairline);
-    padding: 0 var(--space-6);
-    height: 56px;
+    border-bottom: 1px solid var(--color-hairline-strong);
+    padding: 0 var(--space-lg);
+    height: 64px;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -93,83 +92,97 @@ async function handleLogout(): Promise<void> {
     position: relative;
 }
 
-/* Brand — logo left zone */
+/* Brand — logo plate left */
 .navbar-brand {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-display);
-    font-size: var(--text-body);
-    font-weight: var(--weight-normal);
+    gap: var(--space-xs);
     color: var(--color-ink);
     text-decoration: none;
     z-index: 10;
 }
 
-.navbar-brand i {
-    color: var(--color-near-black);
-    font-size: 1.1rem;
+.logo-plate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--rounded-md);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 0.95rem;
 }
 
 .navbar-brand:hover {
     text-decoration: none;
-    color: var(--color-near-black);
+    color: var(--color-ink);
 }
 
 .brand-text {
+    font-size: var(--text-body-sm);
+    font-weight: var(--weight-semibold);
     color: var(--color-ink);
 }
 
 .brand-subtext {
-    color: var(--color-muted-slate);
+    color: var(--color-muted);
     font-size: var(--text-caption);
 }
 
-/* Nav links — right zone */
+/* Nav links */
 .nav-links {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-xs);
     transition:
         transform var(--duration-slow) var(--easing-standard),
-        opacity   var(--duration-slow) var(--easing-standard);
+        opacity var(--duration-slow) var(--easing-standard);
 }
 
-.nav-links a {
+.nav-links > a {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    color: var(--color-muted-slate);
+    gap: var(--space-xs);
+    color: var(--color-body);
     text-decoration: none;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-sm);
-    font-size: var(--text-caption);
-    font-weight: var(--weight-normal);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--rounded-md);
+    font-size: var(--text-nav-link);
+    font-weight: var(--weight-medium);
     transition:
         background-color var(--duration-base) var(--easing-standard),
-        color            var(--duration-base) var(--easing-standard);
+        color var(--duration-base) var(--easing-standard);
 }
 
-.nav-links a:hover,
-.nav-links a.router-link-exact-active {
-    background-color: var(--color-soft-stone);
+.nav-links > a:hover,
+.nav-links > a.router-link-exact-active {
+    background-color: var(--color-canvas-soft);
     color: var(--color-ink);
     text-decoration: none;
 }
 
-/* User info — right zone */
+/* User info */
 .user-info {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding-left: var(--space-4);
+    gap: var(--space-xs);
+    padding-left: var(--space-base);
+    margin-left: var(--space-xs);
     border-left: 1px solid var(--color-hairline);
     color: var(--color-ink);
 }
 
-.user-info .fa-user-circle {
-    font-size: 1.5rem;
-    color: var(--color-muted-slate);
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--rounded-full);
+    background-color: var(--color-surface-strong);
+    color: var(--color-body);
+    font-size: 0.85rem;
 }
 
 .user-details {
@@ -180,60 +193,56 @@ async function handleLogout(): Promise<void> {
 
 .user-details .username {
     font-size: var(--text-caption);
-    font-weight: var(--weight-medium);
+    font-weight: var(--weight-semibold);
     color: var(--color-ink);
 }
 
 .user-details .role {
-    font-size: var(--text-micro);
-    color: var(--color-muted-slate);
+    font-size: var(--text-caption);
+    color: var(--color-muted);
 }
 
 /* Logout button */
 .btn-logout {
     background: none;
-    border: 1px solid var(--color-hairline);
+    border: 1px solid var(--color-hairline-strong);
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
-    line-height: 1;
+    font-size: 0.8rem;
+    border-radius: var(--rounded-md);
     transition:
-        color            var(--duration-base) var(--easing-standard),
+        color var(--duration-base) var(--easing-standard),
         background-color var(--duration-base) var(--easing-standard),
-        border-color     var(--duration-base) var(--easing-standard);
-    color: var(--color-muted-slate);
+        border-color var(--duration-base) var(--easing-standard);
+    color: var(--color-body);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
+    min-width: 32px;
     height: 32px;
 }
 
 .btn-logout:hover {
-    color: var(--color-error);
-    background-color: var(--color-pale-pink);
-    border-color: rgba(194, 59, 59, 0.2);
+    color: var(--color-danger);
+    background-color: var(--color-tint-error);
+    border-color: rgba(192, 57, 43, 0.25);
 }
 
 /* Hamburger */
 .hamburger-menu {
     display: none;
     background: none;
-    border: 1px solid var(--color-hairline);
+    border: 1px solid var(--color-hairline-strong);
     cursor: pointer;
     font-size: 0.9rem;
     color: var(--color-ink);
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
+    border-radius: var(--rounded-md);
     z-index: 10;
-    width: 34px;
-    height: 34px;
+    min-width: 36px;
+    height: 36px;
     align-items: center;
     justify-content: center;
 }
 
-/* Mobile */
 @media (max-width: 820px) {
     .brand-subtext {
         display: none;
@@ -245,16 +254,16 @@ async function handleLogout(): Promise<void> {
 
     .nav-links {
         position: absolute;
-        top: calc(100% + var(--space-2));
+        top: calc(100% + var(--space-xs));
         left: 0;
         right: 0;
         background-color: var(--color-canvas);
-        border: 1px solid var(--color-hairline);
-        border-radius: var(--radius-sm);
-        padding: var(--space-3);
+        border: 1px solid var(--color-hairline-strong);
+        border-radius: var(--rounded-lg);
+        padding: var(--space-sm);
         flex-direction: column;
         align-items: stretch;
-        gap: var(--space-px);
+        gap: 2px;
         opacity: 0;
         transform: translateY(-8px);
         pointer-events: none;
@@ -267,24 +276,22 @@ async function handleLogout(): Promise<void> {
         pointer-events: auto;
     }
 
-    .nav-links a {
-        justify-content: center;
-        padding: var(--space-3);
+    .nav-links > a {
+        justify-content: flex-start;
+        padding: var(--space-sm);
     }
 
     .user-info {
-        flex-direction: column;
         border-left: none;
         padding-left: 0;
-        padding-top: var(--space-4);
-        margin-top: var(--space-2);
+        padding-top: var(--space-base);
+        margin-top: var(--space-xs);
+        margin-left: 0;
         border-top: 1px solid var(--color-hairline);
-        width: 100%;
-        gap: var(--space-3);
     }
 
     .user-details {
-        text-align: center;
+        flex-grow: 1;
     }
 }
 </style>

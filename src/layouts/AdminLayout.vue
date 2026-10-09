@@ -19,20 +19,22 @@
                     <i class="fas fa-bars"></i>
                 </button>
 
+                <div class="header-spacer"></div>
+
                 <div class="user-info">
-                    <i class="fas fa-user-circle"></i>
+                    <span class="avatar"><i class="fas fa-user-shield"></i></span>
                     <div class="user-details">
                         <span class="username">{{
                             auth.profile?.username
                         }}</span>
-                        <span class="role">Admin</span>
+                        <span class="role">ผู้ดูแลระบบ</span>
                     </div>
                     <button
                         @click="handleLogout"
                         class="btn-logout"
                         title="ออกจากระบบ"
                     >
-                        <i class="fas fa-sign-out-alt"></i>
+                        <i class="fas fa-arrow-right-from-bracket"></i>
                     </button>
                 </div>
             </header>
@@ -70,42 +72,54 @@ async function handleLogout(): Promise<void> {
 
 .main-content {
     flex-grow: 1;
-    margin-left: 260px;
+    margin-left: 264px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: var(--color-canvas);
+    background-color: var(--color-canvas-soft);
     transition: margin-left var(--duration-slow) var(--easing-standard);
 }
 
-/* Top header — white canvas, thin border, right-aligned user zone */
+/* Top header — white canvas, hairline rule, right-aligned user zone */
 .top-header {
     background-color: var(--color-canvas);
-    border-bottom: 1px solid var(--color-hairline);
-    padding: 0 var(--space-6);
-    height: 56px;
+    border-bottom: 1px solid var(--color-hairline-strong);
+    padding: 0 var(--space-lg);
+    height: 64px;
     display: flex;
-    justify-content: flex-end;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-base);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.header-spacer {
+    flex-grow: 1;
 }
 
 main {
     flex-grow: 1;
-    background-color: var(--color-canvas);
 }
 
 /* User info (right zone) */
 .user-info {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-xs);
     color: var(--color-ink);
 }
 
-.user-info .fa-user-circle {
-    font-size: 1.5rem;
-    color: var(--color-muted-slate);
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--rounded-full);
+    background-color: var(--color-surface-strong);
+    color: var(--color-body);
+    font-size: 0.85rem;
 }
 
 .user-details {
@@ -116,55 +130,52 @@ main {
 
 .user-details .username {
     font-size: var(--text-caption);
-    font-weight: var(--weight-medium);
+    font-weight: var(--weight-semibold);
     color: var(--color-ink);
 }
 
 .user-details .role {
-    font-size: var(--text-micro);
-    color: var(--color-muted-slate);
+    font-size: var(--text-caption);
+    color: var(--color-muted);
 }
 
 /* Logout button */
 .btn-logout {
     background: none;
-    border: 1px solid var(--color-hairline);
+    border: 1px solid var(--color-hairline-strong);
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    border-radius: var(--rounded-md);
     line-height: 1;
     transition:
-        color            var(--duration-base) var(--easing-standard),
+        color var(--duration-base) var(--easing-standard),
         background-color var(--duration-base) var(--easing-standard),
-        border-color     var(--duration-base) var(--easing-standard);
-    color: var(--color-muted-slate);
+        border-color var(--duration-base) var(--easing-standard);
+    color: var(--color-body);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
+    min-width: 32px;
     height: 32px;
 }
 
 .btn-logout:hover {
-    color: var(--color-error);
-    background-color: var(--color-pale-pink);
-    border-color: rgba(194, 59, 59, 0.2);
+    color: var(--color-danger);
+    background-color: var(--color-tint-error);
+    border-color: rgba(192, 57, 43, 0.25);
 }
 
 /* Hamburger for mobile */
 .hamburger-menu {
     display: none;
-    margin-right: auto;
     font-size: 0.9rem;
     background: none;
-    border: 1px solid var(--color-hairline);
+    border: 1px solid var(--color-hairline-strong);
     color: var(--color-ink);
     cursor: pointer;
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
-    width: 34px;
-    height: 34px;
+    border-radius: var(--rounded-md);
+    min-width: 36px;
+    height: 36px;
     align-items: center;
     justify-content: center;
 }
@@ -172,10 +183,7 @@ main {
 /* Dark overlay when sidebar is open on mobile */
 .sidebar-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 1050;
     display: none;
@@ -190,6 +198,12 @@ main {
     }
     .sidebar-overlay {
         display: block;
+    }
+}
+
+@media (max-width: 640px) {
+    .user-details {
+        display: none;
     }
 }
 </style>

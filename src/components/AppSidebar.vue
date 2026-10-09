@@ -1,8 +1,8 @@
-<!-- src/components/Sidebar.vue -->
+<!-- src/components/AppSidebar.vue -->
 <template>
     <aside class="sidebar no-print" :class="{ 'is-open': isOpen }">
         <div class="sidebar-header">
-            <i class="fas fa-pills logo"></i>
+            <span class="logo-plate"><i class="fas fa-pills"></i></span>
             <div class="header-text">
                 <span class="title">ระบบเบิกยาออนไลน์</span>
                 <span class="subtitle">โรงพยาบาลสระโบสถ์</span>
@@ -10,10 +10,13 @@
         </div>
 
         <nav class="sidebar-nav">
+            <span class="nav-label">ภาพรวม</span>
             <router-link to="/admin/dashboard">
                 <i class="fas fa-tachometer-alt"></i>
                 <span>แดชบอร์ด</span>
             </router-link>
+
+            <span class="nav-label">คลังยา</span>
             <router-link to="/admin/item-management">
                 <i class="fas fa-dolly-flatbed"></i>
                 <span>จัดการยา</span>
@@ -22,6 +25,8 @@
                 <i class="fas fa-calculator"></i>
                 <span>สรุปผลเบิก</span>
             </router-link>
+
+            <span class="nav-label">เอกสารและรายงาน</span>
             <router-link to="/admin/reports">
                 <i class="fas fa-print"></i>
                 <span>พิมพ์รายงานใบเบิก</span>
@@ -34,6 +39,8 @@
                 <i class="fas fa-file-invoice-dollar"></i>
                 <span>รายงานบัญชี</span>
             </router-link>
+
+            <span class="nav-label">ผู้ดูแลระบบ</span>
             <router-link to="/admin/user-management">
                 <i class="fas fa-user-check"></i>
                 <span>อนุมัติผู้ใช้งาน</span>
@@ -51,11 +58,11 @@ defineProps<{ isOpen: boolean }>();
 </script>
 
 <style scoped>
-/* Gradient sidebar — DESIGN.md ยงgradient-sidebar */
+/* Light navigation rail — DESIGN.md §top-nav / hairline depth */
 .sidebar {
-    width: 260px;
-    background: var(--gradient-sidebar);
-    border-right: none;
+    width: 264px;
+    background-color: var(--color-canvas);
+    border-right: 1px solid var(--color-hairline-strong);
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -69,27 +76,34 @@ defineProps<{ isOpen: boolean }>();
 .sidebar-header {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-6);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    gap: var(--space-sm);
+    padding: var(--space-base) var(--space-lg);
+    height: 64px;
+    border-bottom: 1px solid var(--color-hairline);
 }
 
-.sidebar-header .logo {
-    font-size: 1.5rem;
-    color: #5b7ec4;
-    opacity: 0.9;
+.logo-plate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: var(--rounded-md);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 0.95rem;
 }
 
 .header-text {
     display: flex;
     flex-direction: column;
-    line-height: 1.3;
+    line-height: 1.25;
     overflow: hidden;
 }
 
 .header-text .title {
-    font-family: var(--font-display);
-    font-size: var(--text-body);
+    font-size: var(--text-body-sm);
     font-weight: var(--weight-semibold);
     color: var(--color-ink);
     white-space: nowrap;
@@ -98,57 +112,73 @@ defineProps<{ isOpen: boolean }>();
 }
 
 .header-text .subtitle {
-    font-size: var(--text-micro);
+    font-size: var(--text-caption);
     font-weight: var(--weight-normal);
-    color: var(--color-muted-slate);
+    color: var(--color-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .sidebar-nav {
-    padding: var(--space-4) var(--space-3);
+    padding: var(--space-sm);
     flex-grow: 1;
     overflow-y: auto;
+}
+
+.nav-label {
+    display: block;
+    padding: var(--space-base) var(--space-sm) var(--space-xs);
+    font-size: var(--text-caption-uppercase);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-muted);
 }
 
 .sidebar-nav a {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-2-5) var(--space-4);
-    border-radius: var(--radius-sm);
-    color: var(--color-muted-slate);
-    font-size: var(--text-caption);
-    font-weight: var(--weight-normal);
+    gap: var(--space-sm);
+    padding: 10px var(--space-sm);
+    border-radius: var(--rounded-md);
+    color: var(--color-body);
+    font-size: var(--text-body-sm);
+    font-weight: var(--weight-medium);
     text-decoration: none;
-    margin-bottom: var(--space-px);
+    margin-bottom: 2px;
     transition:
         background-color var(--duration-base) var(--easing-standard),
-        color            var(--duration-base) var(--easing-standard);
+        color var(--duration-base) var(--easing-standard);
 }
 
 .sidebar-nav a i {
     width: 18px;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     flex-shrink: 0;
+    color: var(--color-muted);
+    transition: color var(--duration-base) var(--easing-standard);
 }
 
 .sidebar-nav a:hover {
-    background-color: rgba(91, 126, 196, 0.12);
+    background-color: var(--color-canvas-soft);
     color: var(--color-ink);
     text-decoration: none;
 }
 
+.sidebar-nav a:hover i {
+    color: var(--color-ink);
+}
+
 .sidebar-nav a.router-link-exact-active {
-    background-color: rgba(91, 126, 196, 0.18);
-    color: #5b7ec4;
+    background-color: var(--color-surface-strong);
+    color: var(--color-ink);
     font-weight: var(--weight-semibold);
 }
 
 .sidebar-nav a.router-link-exact-active i {
-    color: #5b7ec4;
+    color: var(--color-primary);
 }
 
 @media (max-width: 992px) {
