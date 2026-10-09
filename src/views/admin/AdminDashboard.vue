@@ -1,11 +1,31 @@
 <template>
     <div class="container">
-        <h2>Admin Dashboard - จัดการใบเบิก</h2>
+        <header class="page-header">
+            <div>
+                <span class="section-label">ภาพรวม</span>
+                <h2>จัดการใบเบิก</h2>
+            </div>
+        </header>
 
         <div v-if="loading" class="loading">กำลังโหลดข้อมูล...</div>
         <div v-if="error" class="error">{{ error }}</div>
 
         <div v-if="!loading && !error">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-label">รอการอนุมัติ</span>
+                    <span class="stat-value">{{
+                        submittedRequisitions.length
+                    }}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">อนุมัติแล้ว รอจ่ายยา</span>
+                    <span class="stat-value">{{
+                        approvedRequisitions.length
+                    }}</span>
+                </div>
+            </div>
+
             <h3>ใบเบิกใหม่ (รอการอนุมัติ)</h3>
             <div
                 v-if="submittedRequisitions.length > 0"
@@ -155,83 +175,89 @@ function formatDate(dateString: string | null): string {
 </script>
 
 <style scoped>
-/* Section heading adjustments */
-h3 {
-    margin-bottom: var(--space-4);
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--color-hairline);
-    font-size: var(--text-feature-heading);
+/* Page header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--space-lg);
+}
+
+.page-header h2 {
+    border: none;
+    padding: 0;
+    margin: var(--space-xxs) 0 0;
+}
+
+/* Stat cards */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-base);
+    margin-bottom: var(--space-xl);
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxs);
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--rounded-lg);
+    padding: var(--space-md);
+}
+
+.stat-label {
+    font-size: var(--text-caption-uppercase);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-muted);
+}
+
+.stat-value {
+    font-size: var(--text-display-md);
+    font-weight: var(--weight-semibold);
     color: var(--color-ink);
-    font-weight: var(--weight-normal);
+    line-height: var(--leading-tight);
+}
+
+/* Section headings */
+h3 {
+    margin-bottom: var(--space-base);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-hairline);
+    font-size: var(--text-display-sm);
+    color: var(--color-ink);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-feature-heading);
 }
 
 .section-divider {
-    margin-top: var(--space-14);
+    margin-top: var(--space-xxl);
 }
 
 .table-container {
     overflow-x: auto;
-    border: 1px solid var(--color-card-border);
-    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--rounded-lg);
+    background-color: var(--color-surface-card);
 }
 
-/* Status badge overrides (supplement global) */
-.status-badge.submitted {
-    background-color: var(--color-pale-pink);
-    color: #c96d6d;
-    border: 1px solid rgba(201, 109, 109, 0.3);
-}
-
-.status-badge.approved {
-    background-color: var(--color-pale-blue);
-    color: #5b7ec4;
-    border: 1px solid rgba(91, 126, 196, 0.3);
-}
-
-/* Action links as small pill buttons */
+/* Action links as small buttons */
 .btn-sm {
-    padding: var(--space-1-5) var(--space-4);
-    font-size: var(--text-micro);
-    border-radius: var(--radius-pill);
     text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    font-weight: var(--weight-medium);
     white-space: nowrap;
-    transition:
-        background-color var(--duration-base) var(--easing-standard),
-        color            var(--duration-base) var(--easing-standard);
-}
-
-.btn-primary {
-    background: var(--gradient-primary);
-    color: var(--color-near-black);
-    border: none;
-}
-.btn-primary:hover {
-    background: var(--gradient-primary-hover);
-    text-decoration: none;
-    color: var(--color-near-black);
-}
-
-.btn-success {
-    background-color: var(--color-status-fulfilled);
-    color: var(--color-canvas);
-    border: none;
-}
-.btn-success:hover {
-    background-color: var(--color-success-hover);
-    text-decoration: none;
-    color: var(--color-canvas);
 }
 
 /* No data placeholder */
 .no-data-message {
-    padding: var(--space-8) var(--space-6);
+    padding: var(--space-xl) var(--space-lg);
     text-align: center;
-    color: var(--color-muted-slate);
-    font-size: var(--text-caption);
-    border: 1px dashed var(--color-hairline);
-    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    font-size: var(--text-body-sm);
+    border: 1px dashed var(--color-hairline-strong);
+    border-radius: var(--rounded-lg);
+    background-color: var(--color-surface-card);
 }
 </style>

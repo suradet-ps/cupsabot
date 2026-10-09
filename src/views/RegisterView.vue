@@ -1,96 +1,116 @@
-<!-- src/views/Register.vue -->
+<!-- src/views/RegisterView.vue -->
 <template>
-    <div class="register-wrapper">
-        <div class="card register-container">
-            <div class="register-header">
-                <i class="fas fa-user-plus"></i>
-                <h1>สร้างบัญชีใหม่</h1>
-                <p>สำหรับบุคลากร รพ.สต. ในเครือข่ายโรงพยาบาลสระโบสถ์</p>
-            </div>
+    <div class="auth">
+        <aside class="auth-aside">
+            <router-link to="/" class="auth-brand">
+                <span class="logo-plate"><i class="fas fa-pills"></i></span>
+                <span class="brand-text">ระบบเบิกยาออนไลน์</span>
+            </router-link>
 
-            <form @submit.prevent="handleRegister">
-                <div class="form-group">
-                    <label for="username">ชื่อ-นามสกุล</label>
-                    <input
-                        type="text"
-                        id="username"
-                        v-model="form.username"
-                        required
-                        placeholder="เช่น สมชาย ใจดี"
-                        :disabled="loading"
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="email">อีเมล</label>
-                    <input
-                        type="email"
-                        id="email"
-                        v-model="form.email"
-                        required
-                        placeholder="name@example.com"
-                        :disabled="loading"
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="password">รหัสผ่าน</label>
-                    <input
-                        type="password"
-                        id="password"
-                        v-model="form.password"
-                        required
-                        placeholder="อย่างน้อย 6 ตัวอักษร"
-                        :disabled="loading"
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="pcu">หน่วยบริการ (รพ.สต.) ของคุณ</label>
-                    <select
-                        id="pcu"
-                        v-model="form.pcu_id"
-                        required
-                        :disabled="isPcuLoading || loading"
-                    >
-                        <option v-if="isPcuLoading" disabled value="">
-                            กำลังโหลดรายชื่อ รพ.สต....
-                        </option>
-                        <option v-else disabled value="">
-                            -- กรุณาเลือกรพ.สต. --
-                        </option>
-                        <option
-                            v-for="pcu in pcuList"
-                            :key="pcu.id"
-                            :value="pcu.id"
-                        >
-                            {{ pcu.name }}
-                        </option>
-                    </select>
-                </div>
-
-                <p v-if="errorMessage" class="error-message">
-                    {{ errorMessage }}
+            <div class="aside-body">
+                <span class="badge-pill">
+                    <i class="fas fa-user-plus"></i> สมัครใช้งาน
+                </span>
+                <h2 class="aside-title">สร้างบัญชีสำหรับ<br />บุคลากร รพ.สต.</h2>
+                <p class="aside-text">
+                    กรอกข้อมูลให้ครบถ้วน จากนั้นรอการอนุมัติจากผู้ดูแลระบบ
+                    ก่อนเข้าใช้งานครั้งแรก
                 </p>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                    :disabled="loading"
-                >
-                    <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-                    <i v-else class="fas fa-check-circle"></i>
-                    <span>{{
-                        loading ? "กำลังลงทะเบียน..." : "ลงทะเบียน"
-                    }}</span>
-                </button>
-            </form>
-
-            <div class="login-link">
-                มีบัญชีอยู่แล้ว?
-                <router-link to="/login">เข้าสู่ระบบที่นี่</router-link>
             </div>
-        </div>
+
+            <span class="aside-foot">© 2568 โรงพยาบาลสระโบสถ์</span>
+        </aside>
+
+        <section class="auth-main">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>สร้างบัญชีใหม่</h1>
+                    <p>สำหรับบุคลากร รพ.สต. ในเครือข่ายโรงพยาบาลสระโบสถ์</p>
+                </div>
+
+                <form @submit.prevent="handleRegister">
+                    <div class="form-group">
+                        <label for="username">ชื่อ-นามสกุล</label>
+                        <input
+                            type="text"
+                            id="username"
+                            v-model="form.username"
+                            required
+                            placeholder="เช่น สมชาย ใจดี"
+                            :disabled="loading"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">อีเมล</label>
+                        <input
+                            type="email"
+                            id="email"
+                            v-model="form.email"
+                            required
+                            placeholder="name@example.com"
+                            :disabled="loading"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">รหัสผ่าน</label>
+                        <input
+                            type="password"
+                            id="password"
+                            v-model="form.password"
+                            required
+                            placeholder="อย่างน้อย 6 ตัวอักษร"
+                            :disabled="loading"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pcu">หน่วยบริการ (รพ.สต.) ของคุณ</label>
+                        <select
+                            id="pcu"
+                            v-model="form.pcu_id"
+                            required
+                            :disabled="isPcuLoading || loading"
+                        >
+                            <option v-if="isPcuLoading" disabled value="">
+                                กำลังโหลดรายชื่อ รพ.สต....
+                            </option>
+                            <option v-else disabled value="">
+                                -- กรุณาเลือกรพ.สต. --
+                            </option>
+                            <option
+                                v-for="pcu in pcuList"
+                                :key="pcu.id"
+                                :value="pcu.id"
+                            >
+                                {{ pcu.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <p v-if="errorMessage" class="error-message">
+                        {{ errorMessage }}
+                    </p>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-submit"
+                        :disabled="loading"
+                    >
+                        <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                        <span>{{
+                            loading ? "กำลังลงทะเบียน..." : "ลงทะเบียน"
+                        }}</span>
+                    </button>
+                </form>
+
+                <div class="auth-switch">
+                    มีบัญชีอยู่แล้ว?
+                    <router-link to="/login">เข้าสู่ระบบที่นี่</router-link>
+                </div>
+            </div>
+        </section>
     </div>
 </template>
 
@@ -149,10 +169,6 @@ async function handleRegister(): Promise<void> {
   }
 
   const isValidPcu = pcuList.value.some(
-    // FIX: HTML <select> v-model returns string, but pcus.id is number.
-    // Preserved original behavior: strict equality between number and string
-    // is always false, so this branch (and the alert path below) is dead
-    // code at runtime. Cast keeps TS happy without changing semantics.
     (pcu) => pcu.id === (form.value.pcu_id as unknown as number),
   );
   if (!isValidPcu) {
@@ -184,7 +200,6 @@ async function handleRegister(): Promise<void> {
   } catch (error) {
     console.error('Registration error:', error);
 
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
     if (error instanceof Error) {
       if (error.message.includes('User already registered')) {
         errorMessage.value = 'อีเมลนี้มีการลงทะเบียนแล้ว';
@@ -203,29 +218,94 @@ async function handleRegister(): Promise<void> {
 </script>
 
 <style scoped>
-/* White canvas register page — DESIGN.md §contact-form-card */
-.register-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+.auth {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
     min-height: 100vh;
-    padding: var(--space-10) var(--space-4);
     background-color: var(--color-canvas);
 }
 
-.register-container {
+/* ---------- Brand panel ---------- */
+.auth-aside {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-xl);
+    background-image: var(--gradient-hero);
+    background-repeat: no-repeat;
+    border-right: 1px solid var(--color-hairline);
+}
+
+.auth-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-ink);
+    text-decoration: none;
+}
+
+.logo-plate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--rounded-md);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 0.95rem;
+}
+
+.brand-text {
+    font-size: var(--text-body-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.aside-body {
+    max-width: 460px;
+}
+
+.aside-title {
+    font-size: var(--text-display-lg);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-section-display);
+    color: var(--color-ink);
+    border: none;
+    padding: 0;
+    margin: var(--space-lg) 0 var(--space-base);
+}
+
+.aside-text {
+    font-size: var(--text-body-sm);
+    color: var(--color-body);
+    max-width: 400px;
+}
+
+.aside-foot {
+    font-size: var(--text-caption);
+    color: var(--color-muted);
+}
+
+/* ---------- Form panel ---------- */
+.auth-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+}
+
+.auth-card {
     width: 100%;
-    max-width: 480px;
-    padding: var(--space-10);
-    border: 1px solid var(--color-card-border);
-    border-radius: var(--radius-sm);
+    max-width: 380px;
     animation: fade-in var(--duration-slow) var(--easing-standard);
 }
 
 @keyframes fade-in {
     from {
         opacity: 0;
-        transform: translateY(-8px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -233,75 +313,53 @@ async function handleRegister(): Promise<void> {
     }
 }
 
-.register-header {
-    text-align: center;
-    margin-bottom: var(--space-8);
+.auth-header {
+    margin-bottom: var(--space-xl);
 }
 
-.register-header i {
-    font-size: 2rem;
-    color: var(--color-near-black);
-    margin-bottom: var(--space-4);
-    display: block;
-}
-
-/* Section heading scale — Unica77/Inter (body face) per DESIGN.md */
-.register-header h1 {
-    font-family: var(--font-body);
-    font-size: var(--text-card-heading);
-    font-weight: var(--weight-normal);
+.auth-header h1 {
+    font-size: var(--text-display-md);
+    font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-card-heading);
     color: var(--color-ink);
-    border: none;
-    padding: 0;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-xs);
 }
 
-.register-header p {
-    font-size: var(--text-caption);
-    color: var(--color-muted-slate);
-    margin-bottom: 0;
+.auth-header p {
+    font-size: var(--text-body-sm);
+    color: var(--color-muted);
+    margin: 0;
 }
 
-.form-group label {
-    color: var(--color-ink);
-}
-
-form .btn {
+.btn-submit {
     width: 100%;
-    margin-top: var(--space-6);
-    padding: var(--space-3) var(--space-6);
-    justify-content: center;
-}
-
-form .btn span {
-    display: inline;
+    margin-top: var(--space-base);
+    height: 44px;
 }
 
 .error-message {
-    color: var(--color-error);
-    background-color: var(--color-pale-pink);
-    border: 1px solid rgba(194, 59, 59, 0.2);
-    border-radius: var(--radius-xs);
-    padding: var(--space-3) var(--space-4);
-    margin-top: var(--space-4);
+    color: var(--color-danger);
+    background-color: var(--color-tint-error);
+    border: 1px solid rgba(192, 57, 43, 0.2);
+    border-radius: var(--rounded-md);
+    padding: var(--space-sm) var(--space-base);
+    margin-top: var(--space-xs);
     font-size: var(--text-caption);
 }
 
-.login-link {
-    margin-top: var(--space-6);
-    font-size: var(--text-caption);
-    color: var(--color-muted-slate);
+.auth-switch {
+    margin-top: var(--space-lg);
+    font-size: var(--text-body-sm);
+    color: var(--color-muted);
     text-align: center;
 }
 
-.login-link a {
-    color: #5b7ec4;
-}
-
-@media (max-width: 480px) {
-    .register-container {
-        padding: var(--space-8) var(--space-6);
+@media (max-width: 900px) {
+    .auth {
+        grid-template-columns: 1fr;
+    }
+    .auth-aside {
+        display: none;
     }
 }
 </style>

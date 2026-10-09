@@ -1,51 +1,89 @@
 <template>
-    <div class="login-wrapper">
-        <div class="card login-container">
-            <div class="login-header">
-                <i class="fas fa-hospital-user"></i>
-                <h1>เข้าสู่ระบบ</h1>
-                <p>ระบบเบิกยาออนไลน์ โรงพยาบาลสระโบสถ์</p>
+    <div class="auth">
+        <!-- Brand panel with sky-blue atmospheric wash -->
+        <aside class="auth-aside">
+            <router-link to="/" class="auth-brand">
+                <span class="logo-plate"><i class="fas fa-pills"></i></span>
+                <span class="brand-text">ระบบเบิกยาออนไลน์</span>
+            </router-link>
+
+            <div class="aside-body">
+                <span class="badge-pill">
+                    <i class="fas fa-shield-halved"></i> โรงพยาบาลสระโบสถ์
+                </span>
+                <h2 class="aside-title">
+                    ใบเบิกที่ตามงานได้<br />ตั้งแต่คลินิกถึงชั้นวางยา
+                </h2>
+                <ul class="aside-list">
+                    <li>
+                        <i class="fas fa-check"></i> ค้นหาและจัดทำใบเบิกได้ในที่เดียว
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i> ติดตามสถานะได้ทุกขั้นตอน
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i> รายงานและเอกสารพร้อมพิมพ์
+                    </li>
+                </ul>
             </div>
-            <form @submit.prevent="handleLogin">
-                <div class="form-group">
-                    <label for="email">อีเมล</label>
-                    <input
-                        type="email"
-                        id="email"
-                        v-model="email"
-                        required
-                        placeholder="name@example.com"
-                    />
+
+            <span class="aside-foot">© 2568 โรงพยาบาลสระโบสถ์</span>
+        </aside>
+
+        <!-- Form panel -->
+        <section class="auth-main">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>เข้าสู่ระบบ</h1>
+                    <p>กรอกอีเมลและรหัสผ่านเพื่อเข้าใช้งาน</p>
                 </div>
-                <div class="form-group">
-                    <label for="password">รหัสผ่าน</label>
-                    <input
-                        type="password"
-                        id="password"
-                        v-model="password"
-                        required
-                        placeholder="********"
-                    />
-                </div>
-                <p v-if="errorMessage" class="error-message">
-                    {{ errorMessage }}
-                </p>
-                <button
-                    type="submit"
-                    class="btn btn-primary btn-submit"
-                    :disabled="loading"
-                >
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>{{
-                        loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"
-                    }}</span>
-                </button>
-                <div class="register-link">
+
+                <form @submit.prevent="handleLogin">
+                    <div class="form-group">
+                        <label for="email">อีเมล</label>
+                        <input
+                            type="email"
+                            id="email"
+                            v-model="email"
+                            required
+                            placeholder="name@example.com"
+                            autocomplete="email"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">รหัสผ่าน</label>
+                        <input
+                            type="password"
+                            id="password"
+                            v-model="password"
+                            required
+                            placeholder="********"
+                            autocomplete="current-password"
+                        />
+                    </div>
+
+                    <p v-if="errorMessage" class="error-message">
+                        {{ errorMessage }}
+                    </p>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-submit"
+                        :disabled="loading"
+                    >
+                        <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                        <span>{{
+                            loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"
+                        }}</span>
+                    </button>
+                </form>
+
+                <div class="auth-switch">
                     ยังไม่มีบัญชี?
                     <router-link to="/register">ลงทะเบียนที่นี่</router-link>
                 </div>
-            </form>
-        </div>
+            </div>
+        </section>
     </div>
 </template>
 
@@ -68,7 +106,6 @@ async function handleLogin(): Promise<void> {
     await authStore.login(email.value, password.value);
     router.push('/');
   } catch (error) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
     errorMessage.value = error instanceof Error ? error.message : String(error);
   } finally {
     loading.value = false;
@@ -77,34 +114,116 @@ async function handleLogin(): Promise<void> {
 </script>
 
 <style scoped>
-/* White canvas auth page — DESIGN.md §contact-form-card on white canvas */
-.login-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100vh;
+.auth {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    min-height: 100vh;
     background-color: var(--color-canvas);
 }
 
-/* Contact-form-card: rounded white panel, thin border, flat (no shadow) */
-.login-container {
+/* ---------- Brand panel ---------- */
+.auth-aside {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-xl);
+    background-image: var(--gradient-hero);
+    background-repeat: no-repeat;
+    border-right: 1px solid var(--color-hairline);
+}
+
+.auth-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-ink);
+    text-decoration: none;
+}
+
+.logo-plate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--rounded-md);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 0.95rem;
+}
+
+.brand-text {
+    font-size: var(--text-body-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.aside-body {
+    max-width: 460px;
+}
+
+.aside-title {
+    font-size: var(--text-display-lg);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-section-display);
+    color: var(--color-ink);
+    border: none;
+    padding: 0;
+    margin: var(--space-lg) 0;
+}
+
+.aside-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.aside-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--text-body-sm);
+    color: var(--color-ink);
+}
+
+.aside-list i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--rounded-full);
+    background-color: var(--color-ink);
+    color: var(--color-on-primary);
+    font-size: 0.6rem;
+    flex-shrink: 0;
+}
+
+.aside-foot {
+    font-size: var(--text-caption);
+    color: var(--color-muted);
+}
+
+/* ---------- Form panel ---------- */
+.auth-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+}
+
+.auth-card {
     width: 100%;
-    max-width: 400px;
-    padding: var(--space-10) var(--space-10);
-    border: 1px solid var(--color-card-border);
-    border-radius: var(--radius-sm);
+    max-width: 380px;
     animation: fade-in var(--duration-slow) var(--easing-standard);
 }
 
 @keyframes fade-in {
     from {
         opacity: 0;
-        transform: translateY(-8px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -112,84 +231,53 @@ async function handleLogin(): Promise<void> {
     }
 }
 
-.login-header {
-    text-align: center;
-    margin-bottom: var(--space-8);
+.auth-header {
+    margin-bottom: var(--space-xl);
 }
 
-/* Icon as a small system marker */
-.login-header .fa-hospital-user {
-    font-size: 2rem;
-    color: var(--color-near-black);
-    margin-bottom: var(--space-4);
-    display: block;
-}
-
-/* Section heading scale — Unica77/Inter (body face) per DESIGN.md */
-.login-header h1 {
-    font-family: var(--font-body);
-    font-size: var(--text-card-heading);
-    font-weight: var(--weight-normal);
+.auth-header h1 {
+    font-size: var(--text-display-md);
+    font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-card-heading);
     color: var(--color-ink);
-    border: none;
-    padding: 0;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-xs);
 }
 
-.login-header p {
-    font-size: var(--text-caption);
-    color: var(--color-muted-slate);
-    margin-bottom: 0;
+.auth-header p {
+    font-size: var(--text-body-sm);
+    color: var(--color-muted);
+    margin: 0;
 }
 
-/* Form group label */
-.form-group label {
-    color: var(--color-ink);
-}
-
-/* Primary pill button */
 .btn-submit {
     width: 100%;
-    margin-top: var(--space-4);
-    padding: var(--space-3) var(--space-6);
-    font-size: var(--text-button);
-    justify-content: center;
+    margin-top: var(--space-base);
+    height: 44px;
 }
 
-.btn-submit span {
-    display: inline;
-}
-
-/* Error state */
 .error-message {
-    color: var(--color-error);
+    color: var(--color-danger);
     font-size: var(--text-caption);
-    margin-top: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    background-color: var(--color-pale-pink);
-    border: 1px solid rgba(194, 59, 59, 0.2);
-    border-radius: var(--radius-xs);
+    margin-top: var(--space-xs);
+    padding: var(--space-sm) var(--space-base);
+    background-color: var(--color-tint-error);
+    border: 1px solid rgba(192, 57, 43, 0.2);
+    border-radius: var(--rounded-md);
 }
 
-/* Register link */
-.register-link {
-    margin-top: var(--space-6);
-    font-size: var(--text-caption);
-    color: var(--color-muted-slate);
+.auth-switch {
+    margin-top: var(--space-lg);
+    font-size: var(--text-body-sm);
+    color: var(--color-muted);
     text-align: center;
 }
 
-.register-link a {
-    color: #5b7ec4;
-    font-weight: var(--weight-normal);
-}
-
-@media (max-width: 480px) {
-    .login-container {
-        padding: var(--space-8) var(--space-6);
-        margin: 0 var(--space-4);
-        max-width: calc(100% - var(--space-8));
+@media (max-width: 900px) {
+    .auth {
+        grid-template-columns: 1fr;
+    }
+    .auth-aside {
+        display: none;
     }
 }
 </style>
