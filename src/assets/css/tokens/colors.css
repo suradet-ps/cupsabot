@@ -1,56 +1,59 @@
 /* Design Token: Colors
-   Source of truth: DESIGN.md ยงColors
-   Theme: ���้า-ชมพู Pastel (Pink-Blue Pastel)
+   Source of truth: DESIGN.md
+   Theme: Clinical Calm — an accessible blue/rose healthcare palette.
+   Every foreground/background pair below targets WCAG 2.2 AA (>= 4.5:1
+   for body text, >= 3:1 for large text and UI boundaries).
    ------------------------------------------------------------------ */
 :root {
   /* Brand & Accent */
-  --color-black: #1a1a2e;
-  --color-near-black: #1a1a2e;
-  --color-blue: #b0cfff;
-  --color-blue-hover: #8ba8e6;
-  --color-light-blue: #c9dcf9;
-  --color-pink: #ffb0d9;
-  --color-pink-hover: #e695b5;
-  --color-light-pink: #f9c9e2;
+  --color-black: #1b2330;
+  --color-near-black: #1b2330;
+  --color-blue: #3b5bdb;
+  --color-blue-hover: #2f4bc0;
+  --color-light-blue: #e2e8fb;
+  --color-pink: #d6336c;
+  --color-pink-hover: #c2255c;
+  --color-light-pink: #fce4ec;
 
   /* Surface & Background */
-  --color-canvas: #f9f8f2;
-  --color-soft-stone: #f0ede5;
-  --color-pale-blue: #eaf1fc;
-  --color-pale-pink: #fdeaf2;
-  --color-card-border: #e8e4db;
+  --color-canvas: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-soft-stone: #eef0f3;
+  --color-pale-blue: #eef2fc;
+  --color-pale-pink: #fdf2f6;
+  --color-pale-green: #e6f4ea;
+  --color-pale-amber: #fef3e2;
+  --color-card-border: #e5e8ee;
 
   /* Text & Rules */
-  --color-ink: #212121;
-  --color-muted-slate: #7a7a85;
-  --color-slate: #6b6b77;
-  --color-hairline: #d5d0c7;
-  --color-border-light: #e0dbd2;
+  --color-ink: #1b2330;
+  --color-muted-slate: #5b6675;
+  --color-slate: #6b7686;
+  --color-hairline: #dde1e7;
+  --color-border-light: #eaedf1;
 
   /* Semantic */
-  --color-focus-blue: #6b8fd1;
-  --color-form-focus: #d487aa;
-  --color-error: #c23b3b;
+  --color-focus-blue: #3b5bdb;
+  --color-form-focus: #3b5bdb;
+  --color-error: #c92a2a;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #b0cfff, #ffb0d9);
-  --gradient-primary-hover: linear-gradient(135deg, #8ba8e6, #e695b5);
-  --gradient-hero: linear-gradient(135deg, #c9dcf9 0%, #f9c9e2 40%, #ffb0d9 100%);
-  --gradient-blue: linear-gradient(135deg, #b0cfff, #c9dcf9);
-  --gradient-pink: linear-gradient(135deg, #ffb0d9, #f9c9e2);
-  --gradient-sidebar: linear-gradient(
-    180deg,
-    #c9dcf9 0%,
-    #eaf1fc 30%,
-    #f9f8f2 50%,
-    #fdeaf2 70%,
-    #f9c9e2 100%
-  );
+  /* Gradients (brand surfaces only — never used for body text) */
+  --gradient-primary: linear-gradient(135deg, #3b5bdb, #5c7cfa);
+  --gradient-primary-hover: linear-gradient(135deg, #2f4bc0, #4c6ef5);
+  --gradient-hero: linear-gradient(135deg, #e2e8fb 0%, #fce4ec 55%, #ffffff 100%);
+  --gradient-blue: linear-gradient(135deg, #3b5bdb, #5c7cfa);
+  --gradient-pink: linear-gradient(135deg, #d6336c, #e64980);
+  --gradient-sidebar: linear-gradient(180deg, #1e2a4a 0%, #232f52 55%, #2b2650 100%);
 
-  /* Status */
-  --color-status-draft: var(--color-muted-slate);
-  --color-status-submitted: #c9893b;
-  --color-status-approved: #5b7ec4;
-  --color-status-fulfilled: #4a8c5c;
-  --color-status-rejected: var(--color-error);
+  /* Status — foreground / soft background / boundary */
+  --color-status-draft: #5b6675;
+  --color-status-draft-bg: #eef0f3;
+  --color-status-submitted: #b45309;
+  --color-status-submitted-bg: #fef3e2;
+  --color-status-approved: #3b5bdb;
+  --color-status-approved-bg: #eef2fc;
+  --color-status-fulfilled: #2f8f4e;
+  --color-status-fulfilled-bg: #e6f4ea;
+  --color-status-rejected: #c92a2a;
+  --color-status-rejected-bg: #fdecec;
 }

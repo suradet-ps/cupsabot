@@ -1,134 +1,139 @@
 <template>
-    <div class="container">
-        <h2>
-            <i class="fas fa-file-signature"></i>
-            {{ isEditing ? "แก้ไขใบเบิก" : "สร้างใบเบิกใหม่" }}
-        </h2>
-        <p class="text-muted">{{ periodInfo?.name }}</p>
+  <div class="container">
+    <PageHeader
+      :title="isEditing ? 'แก้ไขใบเบิก' : 'สร้างใบเบิกใหม่'"
+      :subtitle="periodInfo?.name"
+      icon="fas fa-file-signature"
+    >
+      <template #actions>
+        <router-link to="/pcu/dashboard" class="btn btn-secondary">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> กลับ
+        </router-link>
+      </template>
+    </PageHeader>
 
-        <div class="toolbar card">
-            <div class="form-group">
-                <label for="search"
-                    ><i class="fas fa-search"></i> ค้นหารายการ</label
-                >
-                <input
-                    type="text"
-                    id="search"
-                    v-model="searchTerm"
-                    placeholder="พิมพ์ชื่อยาเพื่อค้นหา..."
-                    class="search-input"
-                />
-            </div>
+    <div v-if="loading" class="loading">กำลังโหลดรายการ...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
+
+    <form v-if="!loading && !error" @submit.prevent="submitForm">
+      <div class="card toolbar">
+        <div class="form-group search-group">
+          <label for="search">ค้นหารายการ</label>
+          <div class="search-field">
+            <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="search"
+              v-model="searchTerm"
+              placeholder="พิมพ์ชื่อยาเพื่อค้นหา..."
+              class="search-input"
+            />
+          </div>
         </div>
+        <p class="toolbar-count">
+          แสดง <strong>{{ filteredItems.length }}</strong> จาก {{ items.length }} รายการ
+        </p>
+      </div>
 
-        <div v-if="loading" class="loading">กำลังโหลดรายการ...</div>
-        <div v-if="error" class="error">{{ error }}</div>
+      <div class="table-wrapper requisition-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ลำดับ</th>
+              <th>ประเภท</th>
+              <th>รายการเวชภัณฑ์</th>
+              <th>หน่วยนับ</th>
+              <th class="text-right">ราคา</th>
+              <th class="text-center">คงเหลือ</th>
+              <th class="text-center">จำนวนเบิก</th>
+              <th class="text-right">มูลค่า</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="item in filteredItems"
+              :key="item.id"
+              :class="{ 'locked-item': !item.is_available }"
+            >
+              <td class="text-center">{{ item.item_order }}</td>
+              <td>{{ item.category }}</td>
+              <td>
+                <span class="item-name">{{ item.name }}</span>
+                <span v-if="!item.is_available" class="item-lock">
+                  <i class="fas fa-lock" aria-hidden="true"></i> ไม่พร้อมจ่าย
+                  <template v-if="item.notes"> — {{ item.notes }}</template>
+                </span>
+              </td>
+              <td class="text-center">{{ item.unit_pack }}</td>
+              <td class="text-right">{{ formatCurrency(item.price_per_unit) }}</td>
+              <td class="text-center">
+                <input
+                  type="number"
+                  min="0"
+                  class="quantity-input"
+                  v-model.number="requisitionData[item.id].onHand"
+                  :aria-label="`จำนวนคงเหลือ ${item.name}`"
+                  @focus="$event.target.select()"
+                  :disabled="!item.is_available"
+                />
+              </td>
+              <td class="text-center">
+                <input
+                  type="number"
+                  min="0"
+                  class="quantity-input"
+                  v-model.number="requisitionData[item.id].quantity"
+                  :aria-label="`จำนวนเบิก ${item.name}`"
+                  @input="updateTotal"
+                  @focus="$event.target.select()"
+                  :disabled="!item.is_available"
+                />
+              </td>
+              <td class="text-right">{{ formatCurrency(calculateValue(item)) }}</td>
+            </tr>
+            <tr v-if="filteredItems.length === 0">
+              <td colspan="8" class="text-center text-muted table-empty">
+                ไม่พบรายการที่ตรงกับ "{{ searchTerm }}"
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="7" class="text-right">รวมมูลค่าทั้งหมด</td>
+              <td class="text-right total-value">{{ formatCurrency(totalValue) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
 
-        <form @submit.prevent="submitForm" v-if="!loading && !error">
-            <div class="table-wrapper card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>ประเภท</th>
-                            <th>รายการเวชภัณฑ์</th>
-                            <th>หน่วยนับ</th>
-                            <th class="text-right">ราคา</th>
-                            <th class="text-center">คงเหลือ</th>
-                            <th class="text-center">จำนวนเบิก</th>
-                            <th class="text-right">มูลค่า</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="item in filteredItems"
-                            :key="item.id"
-                            :class="{ 'locked-item': !item.is_available }"
-                        >
-                            <td class="text-center">{{ item.item_order }}</td>
-                            <td>{{ item.category }}</td>
-                            <td>
-                                {{ item.name }}
-
-                                <span
-                                    v-if="!item.is_available && item.notes"
-                                    class="item-note"
-                                >
-                                    ({{ item.notes }})
-                                </span>
-                            </td>
-                            <td class="text-center">{{ item.unit_pack }}</td>
-                            <td class="text-right">
-                                {{ formatCurrency(item.price_per_unit) }}
-                            </td>
-                            <td class="text-center">
-                                <input
-                                    type="number"
-                                    min="0"
-                                    class="quantity-input"
-                                    v-model.number="
-                                        requisitionData[item.id].onHand
-                                    "
-                                    @focus="$event.target.select()"
-                                    :disabled="!item.is_available"
-                                />
-                            </td>
-                            <td class="text-center">
-                                <input
-                                    type="number"
-                                    min="0"
-                                    class="quantity-input"
-                                    v-model.number="
-                                        requisitionData[item.id].quantity
-                                    "
-                                    @input="updateTotal"
-                                    @focus="$event.target.select()"
-                                    :disabled="!item.is_available"
-                                />
-                            </td>
-                            <td class="text-right">
-                                {{ formatCurrency(calculateValue(item)) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="7" class="text-right bold">
-                                รวมมูลค่าทั้งหมด
-                            </td>
-                            <td class="text-right bold">
-                                {{ formatCurrency(totalValue) }}
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="form-actions">
-                <button
-                    type="button"
-                    @click="saveDraft"
-                    class="btn btn-secondary"
-                    :disabled="isSubmitting"
-                >
-                    <i class="fas fa-save"></i>
-                    {{ isSubmitting ? "กำลังบันทึก..." : "บันทึกฉบับร่าง" }}
-                </button>
-                <button
-                    type="submit"
-                    class="btn btn-success"
-                    :disabled="isSubmitting"
-                >
-                    <i class="fas fa-paper-plane"></i>
-                    {{ isSubmitting ? "กำลังส่ง..." : "ส่งใบเบิก" }}
-                </button>
-            </div>
-        </form>
-    </div>
+      <div class="form-actions">
+        <button
+          type="button"
+          @click="saveDraft"
+          class="btn btn-secondary"
+          :disabled="isSubmitting"
+        >
+          <i class="fas fa-floppy-disk" aria-hidden="true"></i>
+          {{ isSubmitting ? 'กำลังบันทึก...' : 'บันทึกฉบับร่าง' }}
+        </button>
+        <button type="submit" class="btn btn-success" :disabled="isSubmitting">
+          <i class="fas fa-paper-plane" aria-hidden="true"></i>
+          {{ isSubmitting ? 'กำลังส่ง...' : 'ส่งใบเบิก' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import PageHeader from '@/components/PageHeader.vue';
+import { useConfirm } from '@/composables/useConfirm';
+import { useToast } from '@/composables/useToast';
 import { useAuthStore } from '@/store/auth';
 import { supabase } from '@/supabaseClient';
 import type { Item, RequisitionPeriod, RequisitionStatus } from '@/types/models';
@@ -145,6 +150,8 @@ const props = defineProps<{
 
 const router = useRouter();
 const auth = useAuthStore();
+const toast = useToast();
+const { confirm } = useConfirm();
 
 const loading = ref<boolean>(true);
 const isSubmitting = ref<boolean>(false);
@@ -201,7 +208,6 @@ onMounted(async () => {
       }
     }
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
     error.value = `ไม่สามารถโหลดข้อมูลได้: ${err instanceof Error ? err.message : String(err)}`;
     console.error(err);
   } finally {
@@ -243,17 +249,13 @@ function formatCurrency(value: number | null): string {
 
 async function saveRequisition(status: RequisitionStatus): Promise<void> {
   if (!auth.userProfile || !auth.userPcuId) {
-    alert('ข้อมูลผู้ใช้ไม่สมบูรณ์');
+    toast.error('ข้อมูลผู้ใช้ไม่สมบูรณ์');
     return;
   }
   isSubmitting.value = true;
 
   try {
-    let currentRequisitionId: number | null = isEditing.value
-      ? // FIX: route params are always strings, but DB column is number;
-        // strict TS requires explicit conversion (preserved coercion behavior)
-        Number(props.requisitionId)
-      : null;
+    let currentRequisitionId: number | null = isEditing.value ? Number(props.requisitionId) : null;
 
     if (!isEditing.value) {
       const { data: newHeader, error: headerError } = await supabase
@@ -279,13 +281,10 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
 
     const itemsToInsert = Object.entries(requisitionData.value)
       .filter(([itemId, entry]) => {
-        // FIX: original used `i.id == itemId` (loose equality);
-        // strict TS requires Number() conversion to compare number vs string
         const itemDetails = items.value.find((i) => i.id === Number(itemId));
         return entry.quantity > 0 && entry.quantity !== null && itemDetails?.is_available;
       })
       .map(([itemId, entry]) => {
-        // FIX: same as above
         const itemDetails = items.value.find((i) => i.id === Number(itemId));
         if (!itemDetails) {
           throw new Error(`Item ${itemId} not found`);
@@ -315,11 +314,10 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
       .eq('id', currentRequisitionId);
     if (updateStatusError) throw updateStatusError;
 
-    alert(`ใบเบิกถูก "${status === 'submitted' ? 'ส่ง' : 'บันทึก'}" เรียบร้อยแล้ว`);
+    toast.success(status === 'submitted' ? 'ส่งใบเบิกเรียบร้อยแล้ว' : 'บันทึกฉบับร่างเรียบร้อยแล้ว');
     router.push('/pcu/dashboard');
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
-    alert(`เกิดข้อผิดพลาดในการบันทึก: ${err instanceof Error ? err.message : String(err)}`);
+    toast.error(`เกิดข้อผิดพลาดในการบันทึก: ${err instanceof Error ? err.message : String(err)}`);
     console.error(err);
   } finally {
     isSubmitting.value = false;
@@ -330,115 +328,97 @@ function saveDraft(): void {
   saveRequisition('draft');
 }
 
-function submitForm(): void {
-  if (confirm('คุณต้องการยืนยันการส่งใบเบิกนี้ใช่หรือไม่? เมื่อส่งแล้วจะไม่สามารถแก้ไขได้อีก')) {
+async function submitForm(): Promise<void> {
+  const confirmed = await confirm({
+    title: 'ยืนยันการส่งใบเบิก',
+    message: 'เมื่อส่งแล้วจะไม่สามารถแก้ไขได้อีก คุณต้องการยืนยันการส่งใบเบิกนี้ใช่หรือไม่?',
+    confirmLabel: 'ยืนยันการส่ง',
+  });
+  if (confirmed) {
     saveRequisition('submitted');
   }
 }
 </script>
 
 <style scoped>
-h2 {
-    border: none;
-    padding-bottom: 0;
-    margin-bottom: 0.25rem;
-}
-h2 i {
-    color: var(--color-near-black);
-    margin-right: 0.75rem;
-}
-.text-muted {
-    margin-top: 0;
-    margin-bottom: 2rem;
-    color: var(--text-muted);
-}
-.toolbar {
-    margin-bottom: 1.5rem;
-}
-.toolbar .form-group {
-    margin-bottom: 0;
-}
-.search-input {
-    max-width: 400px;
-}
-.table-wrapper {
-    max-height: 60vh;
-    overflow-y: auto;
-    border: none;
-    padding: 0;
-}
-table thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+.search-group {
+  margin-bottom: 0;
+  max-width: 420px;
 }
 
-table thead th {
-    background-color: var(--surface-color);
+.search-field {
+  position: relative;
+}
+
+.search-field > i {
+  position: absolute;
+  top: 50%;
+  left: var(--space-3);
+  transform: translateY(-50%);
+  color: var(--color-muted-slate);
+  pointer-events: none;
+}
+
+.search-field input {
+  padding-left: calc(var(--space-3) * 2 + 0.75rem);
+}
+
+.toolbar-count {
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--color-muted-slate);
+}
+
+.requisition-table {
+  max-height: 62vh;
+  overflow-y: auto;
+}
+
+.requisition-table table {
+  min-width: 860px;
 }
 
 .quantity-input {
-    width: 90px;
-    text-align: center;
+  width: 92px;
+  text-align: center;
 }
-.form-actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
+
+.item-name {
+  font-weight: var(--weight-medium);
 }
-td.text-center,
-th.text-center {
-    text-align: center;
+
+.item-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin-top: var(--space-1-5);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--color-status-rejected);
 }
 
 .locked-item {
-    background-color: var(--color-soft-stone);
-    color: var(--color-muted-slate);
+  background-color: var(--color-soft-stone);
+  color: var(--color-muted-slate);
 }
+
 .locked-item .quantity-input {
-    background-color: var(--color-card-border);
-    cursor: not-allowed;
+  background-color: var(--color-border-light);
+  cursor: not-allowed;
 }
-.item-note {
-    font-weight: bold;
-    color: var(--danger-color);
-    margin-left: 0.5rem;
-    font-size: 0.9em;
+
+.table-empty {
+  padding: var(--space-8);
+}
+
+.total-value {
+  font-size: var(--text-body-lg);
+  color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
-    h2 {
-        font-size: 1.4rem;
-    }
-
-    .table-wrapper {
-        max-height: 65vh;
-    }
-
-    th,
-    td {
-        padding: 0.8rem 0.6rem;
-        font-size: 0.9rem;
-        white-space: nowrap;
-    }
-
-    th:nth-child(3),
-    td:nth-child(3) {
-        min-width: 200px;
-        white-space: normal;
-    }
-
-    .quantity-input {
-        width: 75px;
-        padding: 0.5rem;
-    }
-
-    .item-note {
-        display: block;
-        margin-left: 0;
-        margin-top: 0.25rem;
-        white-space: normal;
-    }
+  .quantity-input {
+    width: 76px;
+  }
 }
 </style>

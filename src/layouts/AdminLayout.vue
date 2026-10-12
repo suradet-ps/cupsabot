@@ -1,46 +1,51 @@
-<!-- src/layouts/AdminLayout.vue -->
 <template>
-    <div class="admin-layout">
-        <AppSidebar :isOpen="isSidebarOpen" />
+  <div class="admin-layout">
+    <AppSidebar :isOpen="isSidebarOpen" />
 
-        <div
-            v-if="isSidebarOpen"
-            class="sidebar-overlay"
-            @click="toggleSidebar"
-        ></div>
+    <div
+      v-if="isSidebarOpen"
+      class="sidebar-overlay"
+      @click="toggleSidebar"
+      aria-hidden="true"
+    ></div>
 
-        <div class="main-content">
-            <header class="top-header no-print">
-                <button
-                    class="hamburger-menu"
-                    @click="toggleSidebar"
-                    aria-label="Toggle Sidebar"
-                >
-                    <i class="fas fa-bars"></i>
-                </button>
+    <div class="main-content">
+      <header class="top-header no-print">
+        <button
+          class="icon-button menu-button"
+          @click="toggleSidebar"
+          aria-label="เปิด/ปิดเมนู"
+          :aria-expanded="isSidebarOpen"
+        >
+          <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
 
-                <div class="user-info">
-                    <i class="fas fa-user-circle"></i>
-                    <div class="user-details">
-                        <span class="username">{{
-                            auth.profile?.username
-                        }}</span>
-                        <span class="role">Admin</span>
-                    </div>
-                    <button
-                        @click="handleLogout"
-                        class="btn-logout"
-                        title="ออกจากระบบ"
-                    >
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            </header>
-            <main>
-                <router-view />
-            </main>
+        <div class="header-spacer"></div>
+
+        <div class="user-info">
+          <span class="user-avatar" aria-hidden="true">
+            <i class="fas fa-user"></i>
+          </span>
+          <div class="user-details">
+            <span class="username">{{ auth.profile?.username }}</span>
+            <span class="role">ผู้ดูแลระบบ</span>
+          </div>
+          <button
+            @click="handleLogout"
+            class="icon-button logout-button"
+            title="ออกจากระบบ"
+            aria-label="ออกจากระบบ"
+          >
+            <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i>
+          </button>
         </div>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <router-view />
+      </main>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -53,7 +58,7 @@ const auth = useAuthStore();
 const router = useRouter();
 
 const isSidebarOpen = ref(false);
-function toggleSidebar() {
+function toggleSidebar(): void {
   isSidebarOpen.value = !isSidebarOpen.value;
 }
 
@@ -65,131 +70,141 @@ async function handleLogout(): Promise<void> {
 
 <style scoped>
 .admin-layout {
-    display: flex;
+  display: flex;
 }
 
 .main-content {
-    flex-grow: 1;
-    margin-left: 260px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: var(--color-canvas);
-    transition: margin-left var(--duration-slow) var(--easing-standard);
+  flex-grow: 1;
+  margin-left: 264px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-canvas);
+  transition: margin-left var(--duration-slow) var(--easing-standard);
 }
 
-/* Top header — white canvas, thin border, right-aligned user zone */
 .top-header {
-    background-color: var(--color-canvas);
-    border-bottom: 1px solid var(--color-hairline);
-    padding: 0 var(--space-6);
-    height: 56px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: var(--space-4);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-hairline);
+  padding: 0 var(--space-6);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.header-spacer {
+  flex-grow: 1;
 }
 
 main {
-    flex-grow: 1;
-    background-color: var(--color-canvas);
+  flex-grow: 1;
+  background-color: var(--color-canvas);
+}
+
+main:focus {
+  outline: none;
 }
 
 /* User info (right zone) */
 .user-info {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-ink);
 }
 
-.user-info .fa-user-circle {
-    font-size: 1.5rem;
-    color: var(--color-muted-slate);
+.user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--color-pale-blue);
+  color: var(--color-primary);
 }
 
 .user-details {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
 }
 
 .user-details .username {
-    font-size: var(--text-caption);
-    font-weight: var(--weight-medium);
-    color: var(--color-ink);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink);
 }
 
 .user-details .role {
-    font-size: var(--text-micro);
-    color: var(--color-muted-slate);
+  font-size: var(--text-micro);
+  color: var(--color-muted-slate);
 }
 
-/* Logout button */
-.btn-logout {
-    background: none;
-    border: 1px solid var(--color-hairline);
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
-    line-height: 1;
-    transition:
-        color            var(--duration-base) var(--easing-standard),
-        background-color var(--duration-base) var(--easing-standard),
-        border-color     var(--duration-base) var(--easing-standard);
-    color: var(--color-muted-slate);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 0.95rem;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-muted-slate);
+  cursor: pointer;
+  transition:
+    color var(--duration-base) var(--easing-standard),
+    background-color var(--duration-base) var(--easing-standard),
+    border-color var(--duration-base) var(--easing-standard);
 }
 
-.btn-logout:hover {
-    color: var(--color-error);
-    background-color: var(--color-pale-pink);
-    border-color: rgba(194, 59, 59, 0.2);
+.icon-button:hover {
+  background-color: var(--color-soft-stone);
+  color: var(--color-ink);
 }
 
-/* Hamburger for mobile */
-.hamburger-menu {
-    display: none;
-    margin-right: auto;
-    font-size: 0.9rem;
-    background: none;
-    border: 1px solid var(--color-hairline);
-    color: var(--color-ink);
-    cursor: pointer;
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
-    width: 34px;
-    height: 34px;
-    align-items: center;
-    justify-content: center;
+.logout-button:hover {
+  color: var(--color-status-rejected);
+  background-color: var(--color-status-rejected-bg);
+  border-color: rgba(201, 42, 42, 0.25);
 }
 
-/* Dark overlay when sidebar is open on mobile */
+.menu-button {
+  display: none;
+}
+
 .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 1050;
-    display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(27, 35, 48, 0.45);
+  z-index: 1050;
+  display: none;
 }
 
 @media (max-width: 992px) {
-    .main-content {
-        margin-left: 0;
-    }
-    .hamburger-menu {
-        display: flex;
-    }
-    .sidebar-overlay {
-        display: block;
-    }
+  .main-content {
+    margin-left: 0;
+  }
+  .menu-button {
+    display: inline-flex;
+  }
+  .sidebar-overlay {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-details {
+    display: none;
+  }
+  .top-header {
+    padding: 0 var(--space-4);
+  }
 }
 </style>

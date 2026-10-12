@@ -1,106 +1,128 @@
 <template>
-    <div class="container">
-        <h2>
-            <i class="fas fa-clinic-medical"></i> หน้าหลัก
-            {{ auth.userPcuName }}
-        </h2>
+  <div class="container">
+    <PageHeader
+      title="หน้าหลัก รพ.สต."
+      :subtitle="auth.userPcuName"
+      icon="fas fa-clinic-medical"
+    />
 
-        <div v-if="loading" class="loading">กำลังโหลดข้อมูล...</div>
-        <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="loading" class="loading">กำลังโหลดข้อมูล...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
 
-        <div v-if="!loading && !error">
-            <h3><i class="fas fa-folder-open"></i> รอบการเบิกปัจจุบัน</h3>
-            <div v-if="openPeriods.length > 0" class="period-grid">
-                <div
-                    v-for="period in openPeriods"
-                    :key="period.id"
-                    class="card period-card"
-                >
-                    <h4>{{ period.name }}</h4>
-                    <p class="period-dates">
-                        <i class="far fa-calendar-alt"></i>
-                        เปิดเบิก: {{ formatDate(period.start_date) }} -
-                        {{ formatDate(period.end_date) }}
-                    </p>
+    <template v-if="!loading && !error">
+      <div class="section-head">
+        <h2>รอบการเบิกที่เปิดอยู่</h2>
+      </div>
 
-                    <button
-                        v-if="!hasRequisition(period.id)"
-                        @click="goToRequisition(period.id, null)"
-                        class="btn btn-primary"
-                    >
-                        <i class="fas fa-plus"></i> สร้างใบเบิกใหม่
-                    </button>
-                    <button
-                        v-else-if="getRequisitionStatus(period.id) === 'draft'"
-                        @click="
-                            goToRequisition(
-                                period.id,
-                                getRequisitionId(period.id),
-                            )
-                        "
-                        class="btn btn-warning"
-                    >
-                        <i class="fas fa-edit"></i> แก้ไขฉบับร่าง
-                    </button>
-                    <div v-else class="submitted-info">
-                        <i class="fas fa-check-circle"></i>
-                        <span
-                            >ส่งใบเบิกแล้ว (สถานะ:
-                            {{ getRequisitionStatus(period.id) }})</span
-                        >
-                    </div>
-                </div>
-            </div>
-            <p v-else>ยังไม่มีรอบการเบิกที่เปิดใช้งาน</p>
+      <div v-if="openPeriods.length > 0" class="period-grid">
+        <article v-for="period in openPeriods" :key="period.id" class="card period-card">
+          <div class="period-head">
+            <h3>{{ period.name }}</h3>
+            <StatusBadge
+              v-if="hasRequisition(period.id)"
+              :status="getRequisitionStatus(period.id)"
+            />
+          </div>
 
-            <h3><i class="fas fa-history"></i> ประวัติการเบิก</h3>
-            <div
-                v-if="historyRequisitions.length > 0"
-                class="table-wrapper card"
+          <p class="period-dates">
+            <i class="far fa-calendar" aria-hidden="true"></i>
+            เปิดเบิก {{ formatDate(period.start_date) }} – {{ formatDate(period.end_date) }}
+          </p>
+
+          <div class="period-actions">
+            <button
+              v-if="!hasRequisition(period.id)"
+              @click="goToRequisition(period.id, null)"
+              class="btn btn-primary"
             >
-                <table>
-                    <thead>
-                        <tr>
-                            <th>รอบเบิก</th>
-                            <th>วันที่ส่ง</th>
-                            <th>สถานะ</th>
-                            <th class="text-center">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="req in historyRequisitions" :key="req.id">
-                            <td>
-                                {{ req.requisition_periods_drugcupsabot.name }}
-                            </td>
-                            <td>{{ formatSubmitDate(req.submitted_at) }}</td>
-                            <td>
-                                <span :class="['status-badge', req.status]">{{
-                                    req.status
-                                }}</span>
-                            </td>
-                            <td class="text-center">
-                                <router-link
-                                    :to="{
-                                        name: 'RequisitionDetail',
-                                        params: { requisitionId: req.id },
-                                    }"
-                                    class="btn btn-info"
-                                >
-                                    <i class="fas fa-search"></i> ดูรายละเอียด
-                                </router-link>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p v-else class="card">ยังไม่มีประวัติการเบิก</p>
-        </div>
-    </div>
+              <i class="fas fa-plus" aria-hidden="true"></i> สร้างใบเบิกใหม่
+            </button>
+
+            <button
+              v-else-if="getRequisitionStatus(period.id) === 'draft'"
+              @click="goToRequisition(period.id, getRequisitionId(period.id))"
+              class="btn btn-warning"
+            >
+              <i class="fas fa-pen-to-square" aria-hidden="true"></i> แก้ไขฉบับร่าง
+            </button>
+
+            <router-link
+              v-else-if="getRequisitionId(period.id)"
+              :to="{
+                name: 'RequisitionDetail',
+                params: { requisitionId: getRequisitionId(period.id) },
+              }"
+              class="btn btn-secondary"
+            >
+              <i class="fas fa-magnifying-glass" aria-hidden="true"></i> ดูรายละเอียด
+            </router-link>
+          </div>
+        </article>
+      </div>
+
+      <EmptyState
+        v-else
+        icon="fas fa-calendar-xmark"
+        title="ยังไม่มีรอบการเบิกที่เปิดใช้งาน"
+        text="เมื่อผู้ดูแลระบบเปิดรอบการเบิก รายการจะแสดงที่นี่"
+      />
+
+      <div class="section-head">
+        <h2>ประวัติการเบิก</h2>
+      </div>
+
+      <div v-if="historyRequisitions.length > 0" class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>รอบเบิก</th>
+              <th>วันที่ส่ง</th>
+              <th>สถานะ</th>
+              <th class="text-center">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="req in historyRequisitions" :key="req.id">
+              <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
+              <td>{{ formatSubmitDate(req.submitted_at) }}</td>
+              <td>
+                <StatusBadge :status="req.status" />
+              </td>
+              <td class="text-center">
+                <router-link
+                  :to="{
+                    name: 'RequisitionDetail',
+                    params: { requisitionId: req.id },
+                  }"
+                  class="btn btn-info btn-sm"
+                >
+                  <i class="fas fa-magnifying-glass" aria-hidden="true"></i> ดูรายละเอียด
+                </router-link>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <EmptyState
+        v-else
+        icon="fas fa-inbox"
+        title="ยังไม่มีประวัติการเบิก"
+        text="ใบเบิกที่ส่งแล้วจะแสดงอยู่ที่นี่"
+      />
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import EmptyState from '@/components/EmptyState.vue';
+import PageHeader from '@/components/PageHeader.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
 import { useAuthStore } from '@/store/auth';
 import { supabase } from '@/supabaseClient';
 import type { RequisitionPeriod, RequisitionStatus } from '@/types/models';
@@ -142,7 +164,6 @@ onMounted(async () => {
       .eq('status', 'open')
       .order('start_date', { ascending: false });
     if (periodsError) throw periodsError;
-    // FIX: Supabase types join as array even for many-to-one; cast
     openPeriods.value = (periodsData ?? []) as unknown as RequisitionPeriod[];
 
     const { data: reqsData, error: reqsError } = await supabase
@@ -152,7 +173,6 @@ onMounted(async () => {
       )
       .eq('pcu_id', auth.userPcuId);
     if (reqsError) throw reqsError;
-    // FIX: same FK join typing caveat as above
     existingRequisitions.value = (reqsData ?? []) as unknown as ExistingRequisition[];
   } catch (err) {
     error.value = 'ไม่สามารถโหลดข้อมูลได้';
@@ -193,49 +213,45 @@ function goToRequisition(periodId: number, requisitionId: number | null): void {
 </script>
 
 <style scoped>
-h2 i,
-h3 i {
-    margin-right: 0.75rem;
-    color: var(--color-near-black);
-}
 .period-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-5);
 }
+
 .period-card {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
-.period-card h4 {
-    margin-bottom: var(--space-2);
-    font-size: var(--text-body-lg);
+
+.period-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
+
+.period-head h3 {
+  margin: 0;
+  font-size: var(--text-feature-heading);
+}
+
 .period-dates {
-    color: var(--color-muted-slate);
-    font-size: var(--text-caption);
-    margin-bottom: var(--space-6);
-    flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-muted-slate);
+  font-size: var(--text-caption);
+  margin: 0;
+  flex-grow: 1;
 }
-.period-dates i {
-    margin-right: 0.5rem;
+
+.period-actions {
+  margin-top: var(--space-2);
 }
-.submitted-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: var(--color-pale-green);
-    color: var(--color-status-fulfilled);
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-sm);
-    font-weight: 500;
-}
-.table-wrapper.card {
-    padding: 0;
-    border: none;
-}
-.table-wrapper table {
-    border-radius: var(--border-radius);
-    overflow: hidden;
+
+.period-actions .btn {
+  width: 100%;
 }
 </style>

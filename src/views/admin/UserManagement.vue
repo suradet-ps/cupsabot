@@ -1,69 +1,72 @@
-<!-- src/views/admin/UserManagement.vue -->
 <template>
-    <div class="container">
-        <h2><i class="fas fa-user-check"></i> จัดการการอนุมัติผู้ใช้งาน</h2>
-        <p class="text-muted">
-            อนุมัติหรือปฏิเสธคำขอลงทะเบียนเข้าใช้งานระบบจากบุคลากร รพ.สต.
-        </p>
+  <div class="container">
+    <PageHeader
+      title="อนุมัติผู้ใช้งาน"
+      subtitle="อนุมัติหรือปฏิเสธคำขอลงทะเบียนจากบุคลากร รพ.สต."
+      icon="fas fa-user-check"
+    />
 
-        <div v-if="loading" class="loading">กำลังโหลดข้อมูล...</div>
-        <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="loading" class="loading">กำลังโหลดข้อมูล...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
 
-        <div v-if="!loading" class="card">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ชื่อ-นามสกุล</th>
-                            <th>อีเมล</th>
-                            <th>หน่วยบริการ (รพ.สต.)</th>
-                            <th>วันที่ลงทะเบียน</th>
-                            <th class="text-center">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="user in pendingUsers" :key="user.id">
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.pcus_drugcupsabot?.name || "N/A" }}</td>
-                            <td>{{ formatDate(user.created_at) }}</td>
-                            <td class="text-center action-buttons">
-                                <button
-                                    @click="
-                                        updateUserStatus(user.id, 'approved')
-                                    "
-                                    class="btn btn-success btn-sm"
-                                >
-                                    <i class="fas fa-check"></i> อนุมัติ
-                                </button>
-                                <button
-                                    @click="
-                                        updateUserStatus(user.id, 'rejected')
-                                    "
-                                    class="btn btn-danger btn-sm"
-                                >
-                                    <i class="fas fa-times"></i> ปฏิเสธ
-                                </button>
-                            </td>
-                        </tr>
-                        <tr v-if="pendingUsers.length === 0">
-                            <td
-                                colspan="5"
-                                class="text-center text-muted"
-                                style="padding: 2rem"
-                            >
-                                ไม่มีคำขอลงทะเบียนใหม่
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <template v-if="!loading">
+      <div v-if="pendingUsers.length > 0" class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ชื่อ-นามสกุล</th>
+              <th>อีเมล</th>
+              <th>หน่วยบริการ (รพ.สต.)</th>
+              <th>วันที่ลงทะเบียน</th>
+              <th class="text-center">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in pendingUsers" :key="user.id">
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.pcus_drugcupsabot?.name || 'N/A' }}</td>
+              <td>{{ formatDate(user.created_at) }}</td>
+              <td class="text-center action-buttons">
+                <button
+                  type="button"
+                  @click="updateUserStatus(user.id, 'approved')"
+                  class="btn btn-success btn-sm"
+                >
+                  <i class="fas fa-check" aria-hidden="true"></i> อนุมัติ
+                </button>
+                <button
+                  type="button"
+                  @click="updateUserStatus(user.id, 'rejected')"
+                  class="btn btn-danger btn-sm"
+                >
+                  <i class="fas fa-xmark" aria-hidden="true"></i> ปฏิเสธ
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <EmptyState
+        v-else
+        icon="fas fa-user-clock"
+        title="ไม่มีคำขอลงทะเบียนใหม่"
+        text="เมื่อมีบุคลากรลงทะเบียน คำขอจะแสดงที่นี่เพื่อรอการอนุมัติ"
+      />
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import EmptyState from '@/components/EmptyState.vue';
+import PageHeader from '@/components/PageHeader.vue';
+import { useConfirm } from '@/composables/useConfirm';
+import { useToast } from '@/composables/useToast';
 import { supabase } from '@/supabaseClient';
 import type { ProfileStatus } from '@/types/models';
 
@@ -75,6 +78,8 @@ type PendingUser = {
   pcus_drugcupsabot: { name: string } | null;
 };
 
+const toast = useToast();
+const { confirm } = useConfirm();
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const pendingUsers = ref<PendingUser[]>([]);
@@ -97,7 +102,6 @@ async function fetchPendingUsers(): Promise<void> {
       .eq('status', 'pending');
 
     if (fetchError) throw fetchError;
-    // FIX: Supabase types FK joins as arrays even for many-to-one
     pendingUsers.value = (data ?? []) as unknown as PendingUser[];
   } catch (err) {
     console.error('Error fetching pending users:', err);
@@ -115,10 +119,14 @@ async function updateUserStatus(
   userId: string,
   newStatus: Exclude<ProfileStatus, 'pending'>,
 ): Promise<void> {
-  const confirmationText =
-    newStatus === 'approved' ? 'คุณต้องการอนุมัติผู้ใช้งานนี้ใช่หรือไม่?' : 'คุณต้องการปฏิเสธผู้ใช้งานนี้ใช่หรือไม่?';
-
-  if (!confirm(confirmationText)) return;
+  const isApprove = newStatus === 'approved';
+  const confirmed = await confirm({
+    title: isApprove ? 'ยืนยันการอนุมัติผู้ใช้' : 'ยืนยันการปฏิเสธผู้ใช้',
+    message: isApprove ? 'คุณต้องการอนุมัติผู้ใช้งานนี้ใช่หรือไม่?' : 'คุณต้องการปฏิเสธผู้ใช้งานนี้ใช่หรือไม่?',
+    confirmLabel: isApprove ? 'อนุมัติ' : 'ปฏิเสธ',
+    variant: isApprove ? 'default' : 'danger',
+  });
+  if (!confirmed) return;
 
   try {
     const { error: updateError } = await supabase
@@ -128,13 +136,12 @@ async function updateUserStatus(
 
     if (updateError) throw updateError;
 
-    alert(`อัปเดตสถานะผู้ใช้เรียบร้อยแล้ว`);
+    toast.success(isApprove ? 'อนุมัติผู้ใช้งานเรียบร้อยแล้ว' : 'ปฏิเสธผู้ใช้งานเรียบร้อยแล้ว');
 
     await fetchPendingUsers();
   } catch (err) {
     console.error('Error updating user status:', err);
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
-    alert(`เกิดข้อผิดพลาดในการอัปเดตสถานะ: ${err instanceof Error ? err.message : String(err)}`);
+    toast.error(`เกิดข้อผิดพลาดในการอัปเดตสถานะ: ${err instanceof Error ? err.message : String(err)}`);
   }
 }
 
@@ -151,17 +158,9 @@ function formatDate(dateString: string | null): string {
 </script>
 
 <style scoped>
-h2 i {
-    margin-right: 0.75rem;
-    color: var(--color-near-black);
-}
 .action-buttons {
-    display: flex;
-    gap: var(--space-2);
-    justify-content: center;
-}
-.btn-sm {
-    padding: var(--space-1-5) var(--space-4);
-    font-size: var(--text-micro);
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
 }
 </style>

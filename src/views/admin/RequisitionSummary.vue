@@ -1,105 +1,84 @@
 <template>
-    <div class="container">
-        <h2><i class="fas fa-calculator"></i> สรุปประมวลผลใบเบิก</h2>
-
-        <div class="card report-options no-print">
-            <div class="form-group">
-                <label>1. เลือกรอบเบิกเพื่อประมวลผล</label>
-                <select v-model="selectedPeriod" @change="processRequisitions">
-                    <option :value="null" disabled>
-                        -- กรุณาเลือกรอบเบิก --
-                    </option>
-                    <option
-                        v-for="period in periods"
-                        :key="period.id"
-                        :value="period.id"
-                    >
-                        {{ period.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>2. กรองข้อมูลตาม รพ.สต.</label>
-                <select v-model="selectedPcu" :disabled="!processedData.length">
-                    <option value="all">ดูทั้งหมด</option>
-                    <option
-                        v-for="pcu in pcuList"
-                        :key="pcu.id"
-                        :value="pcu.id"
-                    >
-                        {{ pcu.name }}
-                    </option>
-                </select>
-            </div>
-        </div>
-
-        <div v-if="loading" class="loading">กำลังประมวลผล...</div>
-        <div v-if="error" class="error">{{ error }}</div>
-
-        <div v-if="processedData.length > 0" class="card">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>รายการ</th>
-                            <th
-                                class="text-center"
-                                v-if="selectedPcu === 'all'"
-                            >
-                                ยอดรวม (ทุก รพ.สต.)
-                            </th>
-                            <th class="text-center" v-else>
-                                ยอดเบิก ({{ getPcuName(selectedPcu) }})
-                            </th>
-                            <th
-                                class="text-center"
-                                v-if="selectedPcu === 'all'"
-                                v-for="pcu in pcuList"
-                                :key="pcu.id"
-                            >
-                                {{ pcu.name }}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in processedData" :key="item.item_id">
-                            <td>{{ item.item_name }}</td>
-                            <td class="text-center bold">
-                                {{ getDisplayQuantity(item) }}
-                            </td>
-                            <td
-                                class="text-center"
-                                v-if="selectedPcu === 'all'"
-                                v-for="pcu in pcuList"
-                                :key="pcu.id"
-                            >
-                                {{ item.pcu_breakdown[pcu.id] || 0 }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="print-actions no-print">
-                <button @click="printSummary" class="btn btn-primary">
-                    <i class="fas fa-print"></i> พิมพ์ใบสรุปยอดรวม
-                </button>
-            </div>
-        </div>
-
-        <div
-            v-else-if="!loading && selectedPeriod"
-            class="card no-data-message text-center"
+  <div class="container">
+    <PageHeader
+      title="สรุปผลการเบิก"
+      subtitle="ประมวลผลยอดรวมการเบิกจากทุกหน่วยบริการ"
+      icon="fas fa-calculator"
+    >
+      <template #actions>
+        <button
+          v-if="processedData.length > 0"
+          @click="printSummary"
+          class="btn btn-primary no-print"
         >
-            <i class="fas fa-info-circle"></i>
-            <p>ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้</p>
-        </div>
+          <i class="fas fa-print" aria-hidden="true"></i> พิมพ์ใบสรุปยอดรวม
+        </button>
+      </template>
+    </PageHeader>
+
+    <div class="card report-options no-print">
+      <div class="form-group">
+        <label for="summary-period">1. เลือกรอบเบิกเพื่อประมวลผล</label>
+        <select id="summary-period" v-model="selectedPeriod" @change="processRequisitions">
+          <option :value="null" disabled>-- กรุณาเลือกรอบเบิก --</option>
+          <option v-for="period in periods" :key="period.id" :value="period.id">
+            {{ period.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="summary-pcu">2. กรองข้อมูลตาม รพ.สต.</label>
+        <select id="summary-pcu" v-model="selectedPcu" :disabled="!processedData.length">
+          <option value="all">ดูทั้งหมด</option>
+          <option v-for="pcu in pcuList" :key="pcu.id" :value="pcu.id">
+            {{ pcu.name }}
+          </option>
+        </select>
+      </div>
     </div>
+
+    <div v-if="loading" class="loading">กำลังประมวลผล...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
+
+    <div v-if="processedData.length > 0" class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>รายการ</th>
+            <th v-for="col in columns" :key="col.key" class="text-center">
+              {{ col.label }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in processedData" :key="item.item_id">
+            <td>{{ item.item_name }}</td>
+            <td v-for="col in columns" :key="col.key" class="text-center bold">
+              {{ col.value(item) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <EmptyState
+      v-else-if="!loading && selectedPeriod"
+      icon="fas fa-circle-info"
+      title="ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้"
+      text="เลือก รพ.สต. หรือรอบเบิกอื่นเพื่อดูข้อมูล"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import EmptyState from '@/components/EmptyState.vue';
+import PageHeader from '@/components/PageHeader.vue';
+import { useToast } from '@/composables/useToast';
 import { supabase } from '@/supabaseClient';
 import type { Pcu, RequisitionPeriod } from '@/types/models';
 
@@ -112,7 +91,14 @@ type ProcessedItem = {
   item_order: number | null;
 };
 
+type Column = {
+  key: string;
+  label: string;
+  value: (item: ProcessedItem) => number;
+};
+
 const router = useRouter();
+const toast = useToast();
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 const periods = ref<RequisitionPeriod[]>([]);
@@ -120,6 +106,26 @@ const pcuList = ref<Pcu[]>([]);
 const selectedPeriod = ref<number | null>(null);
 const selectedPcu = ref<number | 'all'>('all');
 const processedData = ref<ProcessedItem[]>([]);
+
+const columns = computed<Column[]>(() => {
+  if (selectedPcu.value === 'all') {
+    return [
+      { key: 'total', label: 'ยอดรวม (ทุก รพ.สต.)', value: (item) => item.total_quantity },
+      ...pcuList.value.map((pcu) => ({
+        key: `pcu-${pcu.id}`,
+        label: pcu.name,
+        value: (item: ProcessedItem) => item.pcu_breakdown[pcu.id] || 0,
+      })),
+    ];
+  }
+  return [
+    {
+      key: 'pcu',
+      label: `ยอดเบิก (${getPcuName(selectedPcu.value as number)})`,
+      value: (item) => getDisplayQuantity(item),
+    },
+  ];
+});
 
 onMounted(async () => {
   try {
@@ -168,9 +174,6 @@ async function processRequisitions(): Promise<void> {
   processedData.value = [];
 
   try {
-    // FIX: query จาก parent table (requisitions_drugcupsabot) แทน child table
-    // เพื่อหลีกเลี่ยง PostgREST foreign-table filter ที่อาจทำงานไม่สมบูรณ์
-    // ทำให้บาง PCU ถูก filter ออกจากผลลัพธ์ (เคยเกิดใน production)
     const { data, error: fetchError } = await supabase
       .from('requisitions_drugcupsabot')
       .select(
@@ -193,7 +196,6 @@ async function processRequisitions(): Promise<void> {
       const pcuId = req.pcu_id;
 
       for (const reqItem of req.requisition_items_drugcupsabot ?? []) {
-        // FIX: Supabase types FK joins as arrays even for many-to-one
         const itemJoin = Array.isArray(reqItem.items_drugcupsabot)
           ? reqItem.items_drugcupsabot[0]
           : reqItem.items_drugcupsabot;
@@ -254,7 +256,7 @@ function getDisplayQuantity(item: ProcessedItem): number {
 
 function printSummary(): void {
   if (!selectedPeriod.value) {
-    alert('กรุณาเลือกรอบเบิกก่อนพิมพ์');
+    toast.warning('กรุณาเลือกรอบเบิกก่อนพิมพ์');
     return;
   }
   const routeData = router.resolve({
@@ -266,39 +268,16 @@ function printSummary(): void {
 </script>
 
 <style scoped>
-h2 i {
-    margin-right: 0.75rem;
-    color: var(--color-near-black);
-}
 .report-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6);
-    margin-bottom: var(--space-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: flex-end;
+  margin-bottom: var(--space-6);
 }
-.form-group {
-    flex: 1 1 300px;
-}
-.text-center {
-    text-align: center;
-}
-.bold {
-    font-weight: 600;
-}
-.print-actions {
-    margin-top: var(--space-6);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--color-hairline);
-    text-align: right;
-}
-.no-data-message i {
-    font-size: 2.5rem;
-    color: var(--info-color);
-    margin-bottom: var(--space-4);
-}
-.no-data-message p {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+
+.report-options .form-group {
+  flex: 1 1 280px;
+  margin-bottom: 0;
 }
 </style>

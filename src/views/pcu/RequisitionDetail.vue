@@ -1,129 +1,123 @@
 <template>
-    <div class="container">
-        <div class="header-actions">
-            <router-link to="/pcu/dashboard" class="back-link"
-                >&larr; กลับไปหน้าหลัก</router-link
-            >
+  <div class="container">
+    <PageHeader
+      title="รายละเอียดใบเบิก"
+      :subtitle="requisition ? requisition.requisition_periods_drugcupsabot.name : undefined"
+      icon="fas fa-file-lines"
+    >
+      <template #actions>
+        <router-link to="/pcu/dashboard" class="btn btn-secondary">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> กลับ
+        </router-link>
+        <button
+          v-if="canPrintOrExport"
+          type="button"
+          class="btn btn-secondary"
+          :disabled="exporting"
+          @click="exportToExcel"
+        >
+          <i class="fas fa-file-excel" aria-hidden="true"></i>
+          {{ exporting ? 'กำลังส่งออก...' : 'ส่งออก Excel' }}
+        </button>
+        <router-link
+          v-if="canPrintOrExport"
+          :to="{ name: 'PcuPrintRequisition', query: { id: requisitionId } }"
+          class="btn btn-primary"
+          target="_blank"
+        >
+          <i class="fas fa-print" aria-hidden="true"></i> พิมพ์ใบเบิก
+        </router-link>
+      </template>
+    </PageHeader>
+
+    <div v-if="loading" class="loading">กำลังโหลดข้อมูลใบเบิก...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
+
+    <template v-if="!loading && requisition">
+      <div class="card summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">รอบเบิก</span>
+          <span class="summary-value">{{ requisition.requisition_periods_drugcupsabot.name }}</span>
         </div>
-
-        <div v-if="canPrintOrExport" class="action-toolbar">
-            <button
-                type="button"
-                class="btn btn-secondary"
-                :disabled="exporting"
-                @click="exportToExcel"
-            >
-                <i class="fas fa-file-excel"></i>
-                {{ exporting ? 'กำลังส่งออก...' : 'ส่งออก Excel' }}
-            </button>
-            <router-link
-                :to="{
-                    name: 'PcuPrintRequisition',
-                    query: { id: requisitionId },
-                }"
-                class="btn btn-primary"
-                target="_blank"
-            >
-                <i class="fas fa-print"></i> พิมพ์ใบเบิก
-            </router-link>
+        <div class="summary-item">
+          <span class="summary-label">สถานะ</span>
+          <StatusBadge :status="requisition.status" />
         </div>
-
-        <div v-if="loading" class="loading">กำลังโหลดข้อมูลใบเบิก...</div>
-        <div v-if="error" class="error">{{ error }}</div>
-
-        <div v-if="!loading && requisition" class="requisition-details">
-            <h2>รายละเอียดใบเบิก</h2>
-
-            <div class="summary-grid">
-                <div>
-                    <strong>รอบเบิก:</strong>
-                    <p>
-                        {{ requisition.requisition_periods_drugcupsabot.name }}
-                    </p>
-                </div>
-                <div>
-                    <strong>สถานะ:</strong>
-                    <p>
-                        <span :class="['status-badge', requisition.status]">{{
-                            requisition.status
-                        }}</span>
-                    </p>
-                </div>
-                <div>
-                    <strong>วันที่ส่ง:</strong>
-                    <p>{{ formatDate(requisition.submitted_at) }}</p>
-                </div>
-                <div>
-                    <strong>วันที่สร้าง:</strong>
-                    <p>{{ formatDate(requisition.created_at) }}</p>
-                </div>
-            </div>
-
-            <h3>รายการที่เบิก</h3>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>รายการเวชภัณฑ์</th>
-                            <th class="text-center">จำนวนที่ขอเบิก</th>
-                            <th class="text-center">จำนวนที่ได้รับอนุมัติ</th>
-                            <th class="text-right">ราคาต่อหน่วย</th>
-                            <th class="text-right">มูลค่าที่อนุมัติ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(
-                                reqItem, index
-                            ) in requisition.requisition_items_drugcupsabot"
-                            :key="reqItem.id"
-                        >
-                            <td>{{ index + 1 }}</td>
-                            <td>{{ reqItem.items_drugcupsabot.name }}</td>
-                            <td class="text-center">{{ reqItem.quantity }}</td>
-                            <td class="text-center bold status-approved">
-                                {{ reqItem.approved_quantity ?? "-" }}
-                            </td>
-                            <td class="text-right">
-                                {{ formatCurrency(reqItem.price_at_request) }}
-                            </td>
-                            <td class="text-right">
-                                {{
-                                    formatCurrency(
-                                        (reqItem.approved_quantity ??
-                                            reqItem.quantity) *
-                                            reqItem.price_at_request,
-                                    )
-                                }}
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="5" class="text-right bold">
-                                มูลค่ารวมทั้งหมดที่อนุมัติ
-                            </td>
-                            <td class="text-right bold">
-                                {{ formatCurrency(grandTotal) }}
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+        <div class="summary-item">
+          <span class="summary-label">วันที่ส่ง</span>
+          <span class="summary-value">{{ formatDate(requisition.submitted_at) }}</span>
         </div>
-    </div>
+        <div class="summary-item">
+          <span class="summary-label">วันที่สร้าง</span>
+          <span class="summary-value">{{ formatDate(requisition.created_at) }}</span>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>รายการที่เบิก</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ลำดับ</th>
+              <th>รายการเวชภัณฑ์</th>
+              <th class="text-center">จำนวนที่ขอเบิก</th>
+              <th class="text-center">จำนวนที่ได้รับอนุมัติ</th>
+              <th class="text-right">ราคาต่อหน่วย</th>
+              <th class="text-right">มูลค่าที่อนุมัติ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(reqItem, index) in requisition.requisition_items_drugcupsabot"
+              :key="reqItem.id"
+            >
+              <td>{{ index + 1 }}</td>
+              <td>{{ reqItem.items_drugcupsabot.name }}</td>
+              <td class="text-center">{{ reqItem.quantity }}</td>
+              <td class="text-center bold approved-qty">
+                {{ reqItem.approved_quantity ?? '-' }}
+              </td>
+              <td class="text-right">{{ formatCurrency(reqItem.price_at_request) }}</td>
+              <td class="text-right">
+                {{
+                  formatCurrency(
+                    (reqItem.approved_quantity ?? reqItem.quantity) * reqItem.price_at_request,
+                  )
+                }}
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-right">มูลค่ารวมทั้งหมดที่อนุมัติ</td>
+              <td class="text-right total-value">{{ formatCurrency(grandTotal) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import PageHeader from '@/components/PageHeader.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
+import { useToast } from '@/composables/useToast';
 import { supabase } from '@/supabaseClient';
 import type { RequisitionStatus, RequisitionWithJoins } from '@/types/models';
 
 const props = defineProps<{ requisitionId: string }>();
 
 const route = useRoute();
+const toast = useToast();
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const exporting = ref<boolean>(false);
@@ -161,10 +155,8 @@ onMounted(async () => {
       }
       throw fetchError;
     }
-    // FIX: Supabase types FK joins as arrays even for many-to-one
     requisition.value = data as unknown as RequisitionWithJoins;
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
     error.value = `ไม่สามารถโหลดข้อมูลใบเบิกได้: ${err instanceof Error ? err.message : String(err)}`;
     console.error(err);
   } finally {
@@ -206,9 +198,6 @@ async function exportToExcel(): Promise<void> {
   exporting.value = true;
 
   try {
-    // Dynamic import: xlsx (SheetJS) is ~400 kB and only needed when the
-    // user clicks "ส่งออก Excel". Loading it on demand keeps the
-    // initial bundle under the Vite chunk-size warning limit.
     const { utils, writeFile } = await import('xlsx');
 
     const pcuName = requisition.value.pcus_drugcupsabot?.name ?? 'ไม่ระบุ';
@@ -231,10 +220,10 @@ async function exportToExcel(): Promise<void> {
     const workbook = utils.book_new();
     utils.book_append_sheet(workbook, worksheet, 'ใบเบิก');
     writeFile(workbook, `ใบเบิก_${pcuName}_${periodName}.xlsx`);
+    toast.success('ส่งออกไฟล์ Excel เรียบร้อยแล้ว');
   } catch (err) {
     console.error('Error exporting to Excel:', err);
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
-    alert(`เกิดข้อผิดพลาดในการส่งออก Excel: ${err instanceof Error ? err.message : String(err)}`);
+    toast.error(`เกิดข้อผิดพลาดในการส่งออก Excel: ${err instanceof Error ? err.message : String(err)}`);
   } finally {
     exporting.value = false;
   }
@@ -242,111 +231,40 @@ async function exportToExcel(): Promise<void> {
 </script>
 
 <style scoped>
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.5rem;
-}
-
-.header-actions {
-    margin-bottom: 1.5rem;
-}
-
-.back-link {
-    color: var(--color-near-black);
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-.back-link:hover {
-    text-decoration: underline;
-}
-
-.action-toolbar {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.action-toolbar .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-}
-
-.requisition-details h2 {
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--color-near-black);
-    padding-bottom: 0.5rem;
-}
-
 .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    background-color: var(--bg-color);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 2rem;
-    border: 1px solid var(--color-hairline);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
-.summary-grid strong {
-    display: block;
-    color: var(--text-muted);
-    margin-bottom: 0.25rem;
-    font-size: 0.9rem;
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
 }
 
-.summary-grid p {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+.summary-label {
+  font-size: var(--text-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--color-muted-slate);
+  font-weight: var(--weight-semibold);
 }
 
-.table-wrapper {
-    overflow-x: auto;
+.summary-value {
+  font-size: var(--text-body-lg);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink);
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+.approved-qty {
+  color: var(--color-status-fulfilled);
 }
 
-th,
-td {
-    padding: 0.8rem;
-    border: 1px solid var(--color-hairline);
-    text-align: left;
-    vertical-align: middle;
-}
-
-thead {
-    background-color: transparent;
-    font-weight: 600;
-}
-
-.text-right {
-    text-align: right;
-}
-.text-center {
-    text-align: center;
-}
-.bold {
-    font-weight: bold;
-}
-
-.status-approved {
-    color: var(--color-status-fulfilled);
-    font-weight: bold;
-}
-
-tfoot {
-    background-color: var(--bg-color);
-    font-weight: bold;
+.total-value {
+  font-size: var(--text-body-lg);
+  color: var(--color-primary);
 }
 </style>
