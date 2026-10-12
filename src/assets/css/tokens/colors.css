@@ -33,7 +33,6 @@
   --color-brand-ochre: #f0c24a;
   --color-brand-lavender: #c9b8ef;
   --color-brand-peach: #ffd9b8;
-  --color-brand-coral: #ff8a7a;
 
   /* Surface */
   --color-canvas: #fffaf0;
@@ -66,7 +65,6 @@
   --gradient-hero: linear-gradient(135deg, #fffaf0 0%, #fbe0e8 55%, #faf5e8 100%);
   --gradient-blue: linear-gradient(135deg, #a9c7e8, #c9b8ef);
   --gradient-pink: linear-gradient(135deg, #f2a3b8, #ffd9b8);
-  --gradient-sidebar: linear-gradient(180deg, #faf5e8, #f5f0e0);
 
   /* Status — foreground / soft background / boundary */
   --color-status-draft: #6a6558;

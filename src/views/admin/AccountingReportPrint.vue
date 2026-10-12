@@ -82,6 +82,10 @@
             </div>
         </div>
     </div>
+    <div v-else-if="!loading" class="print-empty">
+        <h2>ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้</h2>
+        <p>กรุณาตรวจสอบรอบเบิกอีกครั้งก่อนพิมพ์รายงาน</p>
+    </div>
     <div v-else class="loading">กำลังเตรียมข้อมูลสำหรับพิมพ์...</div>
 </template>
 
@@ -177,6 +181,20 @@ body {
     font-size: 12pt;
     color: #000;
     line-height: 1.4;
+}
+.print-empty {
+    max-width: 560px;
+    margin: 15vh auto 0;
+    padding: 0 24px;
+    text-align: center;
+    color: #000;
+}
+.print-empty h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+.print-empty p {
+    color: #555;
 }
 .page {
     background: white;

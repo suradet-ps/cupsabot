@@ -1,5 +1,5 @@
 <template>
-    <div class="print-container" v-if="processedData.length > 0">
+    <div class="print-container" v-if="!loading && processedData.length > 0">
         <div class="page">
             <div class="header">
                 <h2 class="bold">ใบสรุปยอดรวมการเบิกเวชภัณฑ์</h2>
@@ -53,6 +53,10 @@
                 </table>
             </div>
         </div>
+    </div>
+    <div v-else-if="!loading" class="print-empty">
+        <h2>ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้</h2>
+        <p>กรุณาตรวจสอบรอบเบิกอีกครั้ง หรือกลับไปสร้างใบเบิกก่อนพิมพ์</p>
     </div>
     <div v-else class="loading">กำลังเตรียมข้อมูลสำหรับพิมพ์...</div>
 </template>
@@ -244,6 +248,20 @@ body {
     font-size: 14px;
     line-height: 1.5;
     color: #000;
+}
+.print-empty {
+    max-width: 560px;
+    margin: 15vh auto 0;
+    padding: 0 24px;
+    text-align: center;
+    color: #000;
+}
+.print-empty h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+.print-empty p {
+    color: #555;
 }
 .page {
     background: white;

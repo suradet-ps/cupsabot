@@ -1044,55 +1044,6 @@ tbody tr:last-child td {
 }
 
 /* -------------------------------------------------------------------
-   Metric tiles (legacy) — flat, hairline
-   ------------------------------------------------------------------- */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
-}
-
-.stat-card {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-}
-
-.stat-card--accent {
-  background-color: var(--color-brand-peach);
-  border-color: transparent;
-  color: var(--color-ink);
-}
-
-.stat-label {
-  display: block;
-  font-size: var(--text-caption);
-  color: inherit;
-  opacity: 0.8;
-  font-weight: var(--weight-medium);
-  margin-bottom: var(--space-2);
-}
-
-.stat-value {
-  font-size: var(--text-display-sm);
-  font-weight: var(--weight-display);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-display-sm);
-  color: inherit;
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.stat-caption {
-  display: block;
-  margin-top: var(--space-1-5);
-  font-size: var(--text-micro);
-  opacity: 0.75;
-}
-
-/* -------------------------------------------------------------------
    Toolbar (search / filters)
    ------------------------------------------------------------------- */
 .toolbar {
@@ -1115,6 +1066,44 @@ tbody tr:last-child td {
   gap: var(--space-3);
   flex-wrap: wrap;
   margin-top: var(--space-5);
+}
+
+/* -------------------------------------------------------------------
+   Print documents — opt out of the app component layer.
+   The A4 documents define their own table chrome; these resets stop the
+   global table styles from leaking in. `:where()` keeps the specificity
+   low so each document's own scoped styles still win.
+   ------------------------------------------------------------------- */
+.print-container :where(.table-wrapper) {
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.print-container :where(thead th) {
+  background: transparent;
+  white-space: normal;
+}
+
+.print-container thead th {
+  position: static;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: inherit;
+  color: inherit;
+}
+
+.print-container tbody tr:hover {
+  background: transparent;
+}
+
+.print-container :where(tfoot td) {
+  background: transparent;
+}
+
+.print-container tbody tr:last-child td {
+  border-bottom: 1px solid #000;
 }
 
 /* -------------------------------------------------------------------
