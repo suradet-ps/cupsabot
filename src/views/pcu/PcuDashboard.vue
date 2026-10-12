@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <PageHeader
-      title="หน้าหลัก รพ.สต."
+      title="หน้าหลัก"
       :subtitle="auth.userPcuName"
       icon="fas fa-clinic-medical"
     />
@@ -13,106 +13,118 @@
     </p>
 
     <template v-if="!loading && !error">
-      <div class="section-head">
-        <h2>รอบการเบิกที่เปิดอยู่</h2>
-      </div>
+      <section class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+            รอบการเบิกที่เปิดอยู่
+            <span class="panel-count">{{ openPeriods.length }}</span>
+          </h2>
+        </div>
 
-      <div v-if="openPeriods.length > 0" class="period-grid">
-        <article v-for="period in openPeriods" :key="period.id" class="card period-card">
-          <div class="period-head">
-            <h3>{{ period.name }}</h3>
-            <StatusBadge
-              v-if="hasRequisition(period.id)"
-              :status="getRequisitionStatus(period.id)"
-            />
-          </div>
+        <div class="panel-body">
+          <div v-if="openPeriods.length > 0" class="period-grid">
+            <article v-for="period in openPeriods" :key="period.id" class="period-card">
+              <div class="period-head">
+                <h3>{{ period.name }}</h3>
+                <StatusBadge
+                  v-if="hasRequisition(period.id)"
+                  :status="getRequisitionStatus(period.id)"
+                />
+              </div>
 
-          <p class="period-dates">
-            <i class="far fa-calendar" aria-hidden="true"></i>
-            เปิดเบิก {{ formatDate(period.start_date) }} – {{ formatDate(period.end_date) }}
-          </p>
+              <p class="period-dates">
+                <i class="far fa-calendar" aria-hidden="true"></i>
+                เปิดเบิก {{ formatDate(period.start_date) }} – {{ formatDate(period.end_date) }}
+              </p>
 
-          <div class="period-actions">
-            <button
-              v-if="!hasRequisition(period.id)"
-              @click="goToRequisition(period.id, null)"
-              class="btn btn-primary"
-            >
-              <i class="fas fa-plus" aria-hidden="true"></i> สร้างใบเบิกใหม่
-            </button>
+              <div class="period-actions">
+                <button
+                  v-if="!hasRequisition(period.id)"
+                  @click="goToRequisition(period.id, null)"
+                  class="btn btn-primary"
+                >
+                  <i class="fas fa-plus" aria-hidden="true"></i> สร้างใบเบิกใหม่
+                </button>
 
-            <button
-              v-else-if="getRequisitionStatus(period.id) === 'draft'"
-              @click="goToRequisition(period.id, getRequisitionId(period.id))"
-              class="btn btn-warning"
-            >
-              <i class="fas fa-pen-to-square" aria-hidden="true"></i> แก้ไขฉบับร่าง
-            </button>
+                <button
+                  v-else-if="getRequisitionStatus(period.id) === 'draft'"
+                  @click="goToRequisition(period.id, getRequisitionId(period.id))"
+                  class="btn btn-warning"
+                >
+                  <i class="fas fa-pen-to-square" aria-hidden="true"></i> แก้ไขฉบับร่าง
+                </button>
 
-            <router-link
-              v-else-if="getRequisitionId(period.id)"
-              :to="{
-                name: 'RequisitionDetail',
-                params: { requisitionId: getRequisitionId(period.id) },
-              }"
-              class="btn btn-secondary"
-            >
-              <i class="fas fa-magnifying-glass" aria-hidden="true"></i> ดูรายละเอียด
-            </router-link>
-          </div>
-        </article>
-      </div>
-
-      <EmptyState
-        v-else
-        icon="fas fa-calendar-xmark"
-        title="ยังไม่มีรอบการเบิกที่เปิดใช้งาน"
-        text="เมื่อผู้ดูแลระบบเปิดรอบการเบิก รายการจะแสดงที่นี่"
-      />
-
-      <div class="section-head">
-        <h2>ประวัติการเบิก</h2>
-      </div>
-
-      <div v-if="historyRequisitions.length > 0" class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>รอบเบิก</th>
-              <th>วันที่ส่ง</th>
-              <th>สถานะ</th>
-              <th class="text-center">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="req in historyRequisitions" :key="req.id">
-              <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
-              <td>{{ formatSubmitDate(req.submitted_at) }}</td>
-              <td>
-                <StatusBadge :status="req.status" />
-              </td>
-              <td class="text-center">
                 <router-link
+                  v-else-if="getRequisitionId(period.id)"
                   :to="{
                     name: 'RequisitionDetail',
-                    params: { requisitionId: req.id },
+                    params: { requisitionId: getRequisitionId(period.id) },
                   }"
-                  class="btn btn-info btn-sm"
+                  class="btn btn-secondary"
                 >
                   <i class="fas fa-magnifying-glass" aria-hidden="true"></i> ดูรายละเอียด
                 </router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </div>
+            </article>
+          </div>
 
-      <EmptyState
-        v-else
-        icon="fas fa-inbox"
-        title="ยังไม่มีประวัติการเบิก"
-        text="ใบเบิกที่ส่งแล้วจะแสดงอยู่ที่นี่"
-      />
+          <EmptyState
+            v-else
+            icon="fas fa-calendar-xmark"
+            title="ยังไม่มีรอบการเบิกที่เปิดใช้งาน"
+            text="เมื่อผู้ดูแลระบบเปิดรอบการเบิก รายการจะแสดงที่นี่"
+          />
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <i class="fas fa-history" aria-hidden="true"></i>
+            ประวัติการเบิก
+            <span class="panel-count">{{ historyRequisitions.length }}</span>
+          </h2>
+        </div>
+
+        <div v-if="historyRequisitions.length > 0" class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>รอบเบิก</th>
+                <th>วันที่ส่ง</th>
+                <th>สถานะ</th>
+                <th class="text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="req in historyRequisitions" :key="req.id">
+                <td class="bold">{{ req.requisition_periods_drugcupsabot.name }}</td>
+                <td>{{ formatSubmitDate(req.submitted_at) }}</td>
+                <td><StatusBadge :status="req.status" /></td>
+                <td class="text-center">
+                  <router-link
+                    :to="{
+                      name: 'RequisitionDetail',
+                      params: { requisitionId: req.id },
+                    }"
+                    class="btn btn-info btn-sm"
+                  >
+                    <i class="fas fa-magnifying-glass" aria-hidden="true"></i> ดูรายละเอียด
+                  </router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <EmptyState
+          v-else
+          icon="fas fa-inbox"
+          title="ยังไม่มีประวัติการเบิก"
+          text="ใบเบิกที่ส่งแล้วจะแสดงอยู่ที่นี่"
+        />
+      </section>
     </template>
   </div>
 </template>
@@ -223,6 +235,10 @@ function goToRequisition(periodId: number, requisitionId: number | null): void {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-canvas);
 }
 
 .period-head {

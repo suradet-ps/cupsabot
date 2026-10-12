@@ -15,10 +15,10 @@
    Semantic aliases — map design tokens to component roles
    ------------------------------------------------------------------- */
 :root {
-  /* Primary action */
-  --color-primary: var(--color-blue);
-  --color-primary-hover: var(--color-blue-hover);
-  --color-primary-soft: var(--color-pale-blue);
+  /* Primary action — Monchhichi fur brown */
+  --color-primary: var(--color-brown);
+  --color-primary-hover: var(--color-brown-hover);
+  --color-primary-soft: var(--color-light-brown);
 
   /* Danger */
   --color-danger: var(--color-error);
@@ -293,14 +293,14 @@ a:hover {
 }
 
 /* -------------------------------------------------------------------
-   Card — flat, thin-bordered surface
+   Card — floating surface
    ------------------------------------------------------------------- */
 .card {
   background-color: var(--color-surface);
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-6);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-card);
 }
 
 .card--flush {
@@ -461,7 +461,7 @@ a:hover {
 }
 .alert--info {
   background-color: var(--color-pale-blue);
-  border-color: rgba(59, 91, 219, 0.2);
+  border-color: rgba(110, 155, 201, 0.25);
   color: var(--color-status-approved);
 }
 .alert--warning {
@@ -708,7 +708,7 @@ textarea[aria-invalid="true"] {
 
 .btn-info {
   background-color: var(--color-pale-blue);
-  border-color: rgba(59, 91, 219, 0.25);
+  border-color: rgba(110, 155, 201, 0.3);
   color: var(--color-status-approved);
 }
 .btn-info:hover:not(:disabled) {
@@ -830,7 +830,7 @@ tbody tr:last-child td {
 .status-badge.approved {
   background-color: var(--color-status-approved-bg);
   color: var(--color-status-approved);
-  border-color: rgba(59, 91, 219, 0.25);
+  border-color: rgba(110, 155, 201, 0.3);
 }
 .status-badge.fulfilled {
   background-color: var(--color-status-fulfilled-bg);
@@ -853,19 +853,51 @@ tbody tr:last-child td {
 }
 
 .stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
   background-color: var(--color-surface);
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-5);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-card);
+}
+
+.stat-body {
+  min-width: 0;
+}
+
+.stat-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.stat-icon--blue {
+  background-color: var(--color-pale-blue);
+  color: var(--color-status-approved);
+}
+.stat-icon--green {
+  background-color: var(--color-status-fulfilled-bg);
+  color: var(--color-status-fulfilled);
+}
+.stat-icon--amber {
+  background-color: var(--color-status-submitted-bg);
+  color: var(--color-status-submitted);
+}
+.stat-icon--rose {
+  background-color: var(--color-pale-pink);
+  color: var(--color-pink);
 }
 
 .stat-card .stat-label {
-  font-size: var(--text-micro);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-mono);
+  font-size: var(--text-caption);
   color: var(--color-muted-slate);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-medium);
 }
 
 .stat-card .stat-value {
@@ -874,13 +906,96 @@ tbody tr:last-child td {
   color: var(--color-ink);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-section-heading);
-  margin-top: var(--space-2);
+  margin: 0;
 }
 
 .stat-card .stat-value span {
   font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--color-muted-slate);
+}
+
+/* -------------------------------------------------------------------
+   Panels — content containers with a header
+   ------------------------------------------------------------------- */
+.panel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.panel + .panel {
+  margin-top: var(--space-6);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--text-feature-heading);
+  font-weight: var(--weight-semibold);
+  color: var(--color-ink);
+}
+
+.panel-title i {
+  color: var(--color-primary);
+}
+
+.panel-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-soft-stone);
+  color: var(--color-muted-slate);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+}
+
+.panel-body {
+  padding: var(--space-5);
+}
+
+.panel .table-wrapper {
+  border: none;
+  border-radius: 0;
+}
+
+.panel .empty-state {
+  border: none;
+  border-radius: 0;
+  margin: var(--space-2);
+}
+
+/* The floating app shells provide their own page framing */
+.admin-shell .container,
+.pcu-shell .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .admin-shell .container,
+  .pcu-shell .container {
+    padding: 0;
+  }
 }
 
 /* -------------------------------------------------------------------

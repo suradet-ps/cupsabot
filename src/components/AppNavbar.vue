@@ -1,13 +1,11 @@
 <template>
-  <nav class="navbar no-print" aria-label="แถบนำทางหลัก">
-    <div class="navbar-container">
+  <nav class="navbar-wrap no-print" aria-label="แถบนำทางหลัก">
+    <div class="navbar">
       <router-link to="/" class="navbar-brand">
-        <span class="logo-badge" aria-hidden="true">
-          <i class="fas fa-pills"></i>
-        </span>
+        <span class="brand-mark" aria-hidden="true"><i class="fas fa-pills"></i></span>
         <span class="brand-text">
-          <span class="brand-title">ระบบเบิกยาออนไลน์</span>
-          <span class="brand-subtext">โรงพยาบาลสระโบสถ์</span>
+          <strong>ระบบเบิกยาออนไลน์</strong>
+          <small>โรงพยาบาลสระโบสถ์</small>
         </span>
       </router-link>
 
@@ -21,7 +19,7 @@
       </button>
 
       <div class="nav-links" v-if="auth.isLoggedIn" :class="{ 'is-open': isMenuOpen }">
-        <router-link to="/pcu/dashboard" @click="closeMenu">
+        <router-link to="/pcu/dashboard" class="nav-item" @click="closeMenu">
           <i class="fas fa-gauge-high" aria-hidden="true"></i>
           หน้าหลัก
         </router-link>
@@ -73,23 +71,27 @@ async function handleLogout(): Promise<void> {
 </script>
 
 <style scoped>
-.navbar {
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-hairline);
-  padding: 0 var(--space-6);
-  height: 60px;
+.navbar-wrap {
   position: sticky;
-  top: 0;
+  top: var(--space-4);
   z-index: 1000;
+  padding: 0 var(--space-6);
+  margin-bottom: var(--space-2);
 }
 
-.navbar-container {
-  max-width: 1180px;
+.navbar {
+  max-width: 1200px;
   margin: 0 auto;
-  height: 100%;
+  height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 var(--space-4);
+  background-color: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-card-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
   position: relative;
 }
 
@@ -106,15 +108,15 @@ async function handleLogout(): Promise<void> {
   text-decoration: none;
 }
 
-.logo-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  background: var(--gradient-primary);
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  background: var(--gradient-brand);
   color: #ffffff;
+  box-shadow: 0 8px 20px rgba(138, 90, 52, 0.4);
 }
 
 .brand-text {
@@ -123,13 +125,13 @@ async function handleLogout(): Promise<void> {
   line-height: 1.25;
 }
 
-.brand-title {
+.brand-text strong {
   font-size: var(--text-caption);
   font-weight: var(--weight-semibold);
   color: var(--color-ink);
 }
 
-.brand-subtext {
+.brand-text small {
   font-size: var(--text-micro);
   color: var(--color-muted-slate);
 }
@@ -137,20 +139,20 @@ async function handleLogout(): Promise<void> {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   transition:
     transform var(--duration-slow) var(--easing-standard),
     opacity var(--duration-slow) var(--easing-standard);
 }
 
-.nav-links > a {
+.nav-item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   color: var(--color-muted-slate);
   text-decoration: none;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
   font-size: var(--text-caption);
   font-weight: var(--weight-medium);
   transition:
@@ -158,8 +160,8 @@ async function handleLogout(): Promise<void> {
     color var(--duration-base) var(--easing-standard);
 }
 
-.nav-links > a:hover,
-.nav-links > a.router-link-exact-active {
+.nav-item:hover,
+.nav-item.router-link-exact-active {
   background-color: var(--color-pale-blue);
   color: var(--color-primary);
   text-decoration: none;
@@ -175,14 +177,14 @@ async function handleLogout(): Promise<void> {
 }
 
 .user-avatar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background-color: var(--color-pale-blue);
-  color: var(--color-primary);
+  background: var(--gradient-brand);
+  color: #ffffff;
+  font-size: 0.8rem;
 }
 
 .user-details {
@@ -206,12 +208,12 @@ async function handleLogout(): Promise<void> {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   padding: 0;
   font-size: 0.95rem;
   border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   background-color: var(--color-surface);
   color: var(--color-muted-slate);
   cursor: pointer;
@@ -234,7 +236,7 @@ async function handleLogout(): Promise<void> {
 }
 
 @media (max-width: 820px) {
-  .navbar {
+  .navbar-wrap {
     padding: 0 var(--space-4);
   }
 
@@ -266,7 +268,7 @@ async function handleLogout(): Promise<void> {
     pointer-events: auto;
   }
 
-  .nav-links > a {
+  .nav-item {
     justify-content: center;
     padding: var(--space-3);
   }

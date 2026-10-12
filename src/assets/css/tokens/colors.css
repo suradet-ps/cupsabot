@@ -1,59 +1,64 @@
 /* Design Token: Colors
    Source of truth: DESIGN.md
-   Theme: Clinical Calm — an accessible blue/rose healthcare palette.
-   Every foreground/background pair below targets WCAG 2.2 AA (>= 4.5:1
-   for body text, >= 3:1 for large text and UI boundaries).
+   Theme: Monchhichi — warm brown fur, rosy cheeks, cream canvas, and
+   gingham powder blue. Every foreground/background pair targets
+   WCAG 2.2 AA (>= 4.5:1 for body text, >= 3:1 for UI boundaries).
    ------------------------------------------------------------------ */
 :root {
   /* Brand & Accent */
-  --color-black: #1b2330;
-  --color-near-black: #1b2330;
-  --color-blue: #3b5bdb;
-  --color-blue-hover: #2f4bc0;
-  --color-light-blue: #e2e8fb;
-  --color-pink: #d6336c;
-  --color-pink-hover: #c2255c;
-  --color-light-pink: #fce4ec;
+  --color-black: #3f2e23;
+  --color-near-black: #3f2e23;
+  --color-brown: #8a5a34;
+  --color-brown-hover: #734829;
+  --color-light-brown: #f3e3d2;
+  --color-blue: #6e9bc9;
+  --color-blue-hover: #537ea9;
+  --color-light-blue: #dce9f7;
+  --color-pink: #e58aa6;
+  --color-pink-hover: #d06e8d;
+  --color-light-pink: #fbe0e9;
 
   /* Surface & Background */
-  --color-canvas: #f6f7f9;
+  --color-canvas: #faf4ea;
   --color-surface: #ffffff;
-  --color-soft-stone: #eef0f3;
-  --color-pale-blue: #eef2fc;
-  --color-pale-pink: #fdf2f6;
-  --color-pale-green: #e6f4ea;
-  --color-pale-amber: #fef3e2;
-  --color-card-border: #e5e8ee;
+  --color-surface-warm: #fffaf2;
+  --color-soft-stone: #f1e7d8;
+  --color-pale-blue: #edf4fc;
+  --color-pale-pink: #fdf0f5;
+  --color-pale-green: #e7f2e6;
+  --color-pale-amber: #fbefd9;
+  --color-card-border: #eadfcd;
 
   /* Text & Rules */
-  --color-ink: #1b2330;
-  --color-muted-slate: #5b6675;
-  --color-slate: #6b7686;
-  --color-hairline: #dde1e7;
-  --color-border-light: #eaedf1;
+  --color-ink: #3f2e23;
+  --color-muted-slate: #85715f;
+  --color-slate: #6f5c4b;
+  --color-hairline: #e2d5c0;
+  --color-border-light: #ede3d4;
 
   /* Semantic */
-  --color-focus-blue: #3b5bdb;
-  --color-form-focus: #3b5bdb;
-  --color-error: #c92a2a;
+  --color-focus-blue: #8a5a34;
+  --color-form-focus: #8a5a34;
+  --color-error: #c0392b;
 
-  /* Gradients (brand surfaces only — never used for body text) */
-  --gradient-primary: linear-gradient(135deg, #3b5bdb, #5c7cfa);
-  --gradient-primary-hover: linear-gradient(135deg, #2f4bc0, #4c6ef5);
-  --gradient-hero: linear-gradient(135deg, #e2e8fb 0%, #fce4ec 55%, #ffffff 100%);
-  --gradient-blue: linear-gradient(135deg, #3b5bdb, #5c7cfa);
-  --gradient-pink: linear-gradient(135deg, #d6336c, #e64980);
-  --gradient-sidebar: linear-gradient(180deg, #1e2a4a 0%, #232f52 55%, #2b2650 100%);
+  /* Gradients (brand surfaces only — never for body text) */
+  --gradient-brand: linear-gradient(135deg, #8a5a34, #e58aa6);
+  --gradient-primary: linear-gradient(135deg, #8a5a34, #e58aa6);
+  --gradient-primary-hover: linear-gradient(135deg, #734829, #d06e8d);
+  --gradient-hero: linear-gradient(135deg, #f3e3d2 0%, #fbe0e9 55%, #fffaf2 100%);
+  --gradient-blue: linear-gradient(135deg, #6e9bc9, #a9c7e8);
+  --gradient-pink: linear-gradient(135deg, #e58aa6, #f7c3d4);
+  --gradient-sidebar: linear-gradient(180deg, #3a2a1e 0%, #4a3426 55%, #5c3b3a 100%);
 
   /* Status — foreground / soft background / boundary */
-  --color-status-draft: #5b6675;
-  --color-status-draft-bg: #eef0f3;
-  --color-status-submitted: #b45309;
-  --color-status-submitted-bg: #fef3e2;
-  --color-status-approved: #3b5bdb;
-  --color-status-approved-bg: #eef2fc;
-  --color-status-fulfilled: #2f8f4e;
-  --color-status-fulfilled-bg: #e6f4ea;
-  --color-status-rejected: #c92a2a;
-  --color-status-rejected-bg: #fdecec;
+  --color-status-draft: #85715f;
+  --color-status-draft-bg: #f1e7d8;
+  --color-status-submitted: #b36a1e;
+  --color-status-submitted-bg: #fbefd9;
+  --color-status-approved: #4e7fb8;
+  --color-status-approved-bg: #e7f0fa;
+  --color-status-fulfilled: #4f8a54;
+  --color-status-fulfilled-bg: #e7f2e6;
+  --color-status-rejected: #c0392b;
+  --color-status-rejected-bg: #fbe3e1;
 }

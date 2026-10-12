@@ -6,25 +6,25 @@
 
 ## Overview
 
-The system is called **Clinical Calm**: a professional, high-contrast
-healthcare palette built on a cool neutral canvas with an indigo primary
-and a rose accent. It is designed for long administrative sessions and
-dense data tables, so clarity, contrast, and predictable interaction
-states win over decoration.
+The system is called **Monchhichi**: a warm, friendly healthcare palette
+inspired by the classic 1974 plush — soft brown fur, rosy cheeks, a cream
+canvas, and gingham powder blue. It stays professional and high-contrast
+for long administrative sessions and dense data tables, while feeling
+approachable rather than clinical.
 
 The visual language is flat and quiet. Depth comes from layered shadows,
 thin borders, and surface alternation rather than heavy gradients. The
-brand blue-rose gradient is reserved for identity moments (brand marks,
+brown-rose brand gradient is reserved for identity moments (brand marks,
 auth hero panels, the admin sidebar) — never for body text or as the sole
 carrier of meaning.
 
 **Key characteristics**
 
-- Cool neutral canvas (`#f6f7f9`) with white surfaces for content.
-- Solid indigo primary actions for reliable contrast and focus states.
-- Rose accent used sparingly for brand warmth and the sidebar active marker.
-- Flat cards with soft, layered shadows and 12px radii.
-- Sticky table headers, tabular numerals, and pale-blue row hover.
+- Warm cream canvas (`#faf4ea`) with white surfaces for content.
+- Solid fur-brown primary actions for reliable contrast and focus states.
+- Rosy-cheek pink accent used sparingly for warmth and active markers.
+- Flat cards with soft, layered shadows and 16px radii.
+- Sticky table headers, tabular numerals, and warm row hover.
 - Status is always communicated with a label + colour + dot, never colour alone.
 - Accessible by default: visible focus rings, 40px control targets, labelled
   inputs, and `prefers-reduced-motion` support.
@@ -33,29 +33,30 @@ carrier of meaning.
 
 ### Brand & accent
 
-- **Primary / Blue** (`#3b5bdb`): primary actions, links, active states.
-- **Primary Hover** (`#2f4bc0`): hover/pressed for primary actions.
-- **Light Blue** (`#e2e8fb`) / **Pale Blue** (`#eef2fc`): soft blue surfaces.
-- **Pink** (`#d6336c`): brand accent, sidebar active marker.
-- **Pink Hover** (`#c2255c`), **Light Pink** (`#fce4ec`).
+- **Primary / Brown** (`#8a5a34`): primary actions, links, active states.
+- **Primary Hover** (`#734829`): hover/pressed for primary actions.
+- **Light Brown** (`#f3e3d2`): soft fur-tone surfaces.
+- **Pink** (`#e58aa6`): rosy-cheek accent, active markers.
+- **Pink Hover** (`#d06e8d`), **Light Pink** (`#fbe0e9`).
+- **Powder Blue** (`#6e9bc9`): gingham-blue secondary accent.
 
 ### Surface & background
 
-- **Canvas** (`#f6f7f9`): page background.
+- **Canvas** (`#faf4ea`): warm cream page background.
 - **Surface** (`#ffffff`): cards, tables, inputs, header.
-- **Soft Stone** (`#eef0f3`): table headers, disabled states.
-- **Card Border** (`#e5e8ee`), **Hairline** (`#dde1e7`), **Border Light** (`#eaedf1`).
+- **Soft Stone** (`#f1e7d8`): table headers, disabled states.
+- **Card Border** (`#eadfcd`), **Hairline** (`#e2d5c0`), **Border Light** (`#ede3d4`).
 
 ### Text & rules
 
-- **Ink** (`#1b2330`): primary text (≈15:1 on canvas).
-- **Muted Slate** (`#5b6675`): secondary text (≈5.4:1 on white).
-- **Slate** (`#6b7686`): tertiary text and icons.
+- **Ink** (`#3f2e23`): primary text (dark warm brown).
+- **Muted Slate** (`#85715f`): secondary text (≈4.6:1 on cream).
+- **Slate** (`#6f5c4b`): tertiary text and icons.
 
 ### Semantic
 
-- **Focus** (`#3b5bdb`): focus ring colour.
-- **Error** (`#c92a2a`): validation and destructive actions.
+- **Focus** (`#8a5a34`): focus ring colour.
+- **Error** (`#c0392b`): validation and destructive actions.
 
 ### Status
 
@@ -63,17 +64,17 @@ Each status defines a foreground, a soft background, and a boundary tint.
 
 | Status | Foreground | Background | Thai label |
 |---|---|---:|---|
-| Draft | `#5b6675` | `#eef0f3` | ฉบับร่าง |
-| Submitted | `#b45309` | `#fef3e2` | รออนุมัติ |
-| Approved | `#3b5bdb` | `#eef2fc` | อนุมัติแล้ว |
-| Fulfilled | `#2f8f4e` | `#e6f4ea` | จ่ายยาแล้ว |
-| Rejected | `#c92a2a` | `#fdecec` | ถูกปฏิเสธ |
+| Draft | `#85715f` | `#f1e7d8` | ฉบับร่าง |
+| Submitted | `#b36a1e` | `#fbefd9` | รออนุมัติ |
+| Approved | `#4e7fb8` | `#e7f0fa` | อนุมัติแล้ว |
+| Fulfilled | `#4f8a54` | `#e7f2e6` | จ่ายยาแล้ว |
+| Rejected | `#c0392b` | `#fbe3e1` | ถูกปฏิเสธ |
 
 ### Gradients (identity only)
 
-- **Primary** (`#3b5bdb → #5c7cfa`): brand marks.
-- **Hero** (`#e2e8fb → #fce4ec → #ffffff`): auth hero panels.
-- **Sidebar** (`#1e2a4a → #232f52 → #2b2650`): admin sidebar.
+- **Brand** (`#8a5a34 → #e58aa6`): fur-brown to rosy-cheek, for brand marks.
+- **Hero** (`#f3e3d2 → #fbe0e9 → #fffaf2`): warm auth hero panels.
+- **Sidebar** (`#3a2a1e → #4a3426 → #5c3b3a`): warm brown admin sidebar.
 
 ## Typography
 

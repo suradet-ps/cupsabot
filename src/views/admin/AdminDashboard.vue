@@ -2,7 +2,7 @@
   <div class="container">
     <PageHeader
       title="แดชบอร์ดผู้ดูแลระบบ"
-      subtitle="จัดการใบเบิกจากทุกหน่วยบริการ"
+      subtitle="ภาพรวมใบเบิกจากทุกหน่วยบริการ"
       icon="fas fa-gauge-high"
     />
 
@@ -15,102 +15,125 @@
     <template v-if="!loading && !error">
       <div class="stat-grid">
         <div class="stat-card">
-          <span class="stat-label">รอการอนุมัติ</span>
-          <p class="stat-value">{{ submittedRequisitions.length }}</p>
+          <span class="stat-icon stat-icon--amber" aria-hidden="true">
+            <i class="fas fa-hourglass-half"></i>
+          </span>
+          <div class="stat-body">
+            <p class="stat-label">รอการอนุมัติ</p>
+            <p class="stat-value">{{ submittedRequisitions.length }}</p>
+          </div>
         </div>
+
         <div class="stat-card">
-          <span class="stat-label">อนุมัติแล้ว · รอจ่ายยา</span>
-          <p class="stat-value">{{ approvedRequisitions.length }}</p>
+          <span class="stat-icon stat-icon--blue" aria-hidden="true">
+            <i class="fas fa-clipboard-check"></i>
+          </span>
+          <div class="stat-body">
+            <p class="stat-label">อนุมัติแล้ว · รอจ่ายยา</p>
+            <p class="stat-value">{{ approvedRequisitions.length }}</p>
+          </div>
         </div>
       </div>
 
-      <div class="section-head">
-        <h2>ใบเบิกใหม่ (รอการอนุมัติ)</h2>
-      </div>
+      <section class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <i class="fas fa-inbox" aria-hidden="true"></i>
+            ใบเบิกใหม่ (รอการอนุมัติ)
+            <span class="panel-count">{{ submittedRequisitions.length }}</span>
+          </h2>
+        </div>
 
-      <div v-if="submittedRequisitions.length > 0" class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>รพ.สต.</th>
-              <th>รอบเบิก</th>
-              <th>วันที่ส่ง</th>
-              <th>สถานะ</th>
-              <th class="text-center">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="req in submittedRequisitions" :key="req.id">
-              <td>{{ req.pcus_drugcupsabot.name }}</td>
-              <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
-              <td>{{ formatDate(req.submitted_at) }}</td>
-              <td><StatusBadge :status="req.status" /></td>
-              <td class="text-center">
-                <router-link
-                  :to="{
-                    name: 'AdminRequisitionDetail',
-                    params: { requisitionId: req.id },
-                  }"
-                  class="btn btn-primary btn-sm"
-                >
-                  <i class="fas fa-pen-to-square" aria-hidden="true"></i> ตรวจสอบ
-                </router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <div v-if="submittedRequisitions.length > 0" class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>รพ.สต.</th>
+                <th>รอบเบิก</th>
+                <th>วันที่ส่ง</th>
+                <th>สถานะ</th>
+                <th class="text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="req in submittedRequisitions" :key="req.id">
+                <td class="bold">{{ req.pcus_drugcupsabot.name }}</td>
+                <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
+                <td>{{ formatDate(req.submitted_at) }}</td>
+                <td><StatusBadge :status="req.status" /></td>
+                <td class="text-center">
+                  <router-link
+                    :to="{
+                      name: 'AdminRequisitionDetail',
+                      params: { requisitionId: req.id },
+                    }"
+                    class="btn btn-primary btn-sm"
+                  >
+                    <i class="fas fa-pen-to-square" aria-hidden="true"></i> ตรวจสอบ
+                  </router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <EmptyState
-        v-else
-        icon="fas fa-circle-check"
-        title="ไม่มีใบเบิกที่รอการอนุมัติ"
-        text="เมื่อ รพ.สต. ส่งใบเบิกเข้ามา รายการจะแสดงที่นี่"
-      />
+        <EmptyState
+          v-else
+          icon="fas fa-circle-check"
+          title="ไม่มีใบเบิกที่รอการอนุมัติ"
+          text="เมื่อ รพ.สต. ส่งใบเบิกเข้ามา รายการจะแสดงที่นี่"
+        />
+      </section>
 
-      <div class="section-head">
-        <h2>อนุมัติแล้ว (รอการจ่ายยา)</h2>
-      </div>
+      <section class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <i class="fas fa-dolly" aria-hidden="true"></i>
+            อนุมัติแล้ว (รอการจ่ายยา)
+            <span class="panel-count">{{ approvedRequisitions.length }}</span>
+          </h2>
+        </div>
 
-      <div v-if="approvedRequisitions.length > 0" class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>รพ.สต.</th>
-              <th>รอบเบิก</th>
-              <th>วันที่ส่ง</th>
-              <th>สถานะ</th>
-              <th class="text-center">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="req in approvedRequisitions" :key="req.id">
-              <td>{{ req.pcus_drugcupsabot.name }}</td>
-              <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
-              <td>{{ formatDate(req.submitted_at) }}</td>
-              <td><StatusBadge :status="req.status" /></td>
-              <td class="text-center">
-                <router-link
-                  :to="{
-                    name: 'AdminRequisitionDetail',
-                    params: { requisitionId: req.id },
-                  }"
-                  class="btn btn-success btn-sm"
-                >
-                  <i class="fas fa-dolly" aria-hidden="true"></i> ยืนยันการจ่าย
-                </router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <div v-if="approvedRequisitions.length > 0" class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>รพ.สต.</th>
+                <th>รอบเบิก</th>
+                <th>วันที่ส่ง</th>
+                <th>สถานะ</th>
+                <th class="text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="req in approvedRequisitions" :key="req.id">
+                <td class="bold">{{ req.pcus_drugcupsabot.name }}</td>
+                <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
+                <td>{{ formatDate(req.submitted_at) }}</td>
+                <td><StatusBadge :status="req.status" /></td>
+                <td class="text-center">
+                  <router-link
+                    :to="{
+                      name: 'AdminRequisitionDetail',
+                      params: { requisitionId: req.id },
+                    }"
+                    class="btn btn-success btn-sm"
+                  >
+                    <i class="fas fa-dolly" aria-hidden="true"></i> ยืนยันการจ่าย
+                  </router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <EmptyState
-        v-else
-        icon="fas fa-box-open"
-        title="ไม่มีรายการที่รอการจ่ายยา"
-        text="ใบเบิกที่อนุมัติแล้วและยังไม่จ่ายยาจะแสดงที่นี่"
-      />
+        <EmptyState
+          v-else
+          icon="fas fa-box-open"
+          title="ไม่มีรายการที่รอการจ่ายยา"
+          text="ใบเบิกที่อนุมัติแล้วและยังไม่จ่ายยาจะแสดงที่นี่"
+        />
+      </section>
     </template>
   </div>
 </template>

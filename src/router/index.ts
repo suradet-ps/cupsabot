@@ -85,44 +85,44 @@ const routes: RouteRecordRaw[] = [
     path: '/admin/dashboard',
     name: 'AdminDashboard',
     component: AdminDashboard,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'แดชบอร์ด' },
   },
   {
     path: '/admin/user-management',
     name: 'UserManagement',
     component: UserManagement,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'อนุมัติผู้ใช้งาน' },
   },
   {
     path: '/admin/requisition/:requisitionId',
     name: 'AdminRequisitionDetail',
     component: AdminRequisitionDetail,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'รายละเอียดใบเบิก' },
     props: true,
   },
   {
     path: '/admin/item-management',
     name: 'ItemManagement',
     component: ItemManagement,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'จัดการรายการยา' },
   },
   {
     path: '/admin/requisition-summary',
     name: 'RequisitionSummary',
     component: RequisitionSummary,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'สรุปผลการเบิก' },
   },
   {
     path: '/admin/reports',
     name: 'ReportGenerator',
     component: ReportGenerator,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'พิมพ์รายงานใบเบิก' },
   },
   {
     path: '/admin/settings',
     name: 'SystemSettings',
     component: SystemSettings,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'ตั้งค่าระบบ' },
   },
 
   // Print Routes
@@ -142,7 +142,7 @@ const routes: RouteRecordRaw[] = [
     path: '/admin/accounting-report',
     name: 'AccountingReport',
     component: AccountingReport,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'รายงานบัญชี' },
   },
   {
     path: '/print/accounting-report',
@@ -154,7 +154,7 @@ const routes: RouteRecordRaw[] = [
     path: '/admin/memo-generator',
     name: 'MemoGenerator',
     component: MemoGenerator,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresAdmin: true, title: 'พิมพ์บันทึกข้อความ' },
   },
   {
     path: '/print/approval-memo',
@@ -169,7 +169,6 @@ const routes: RouteRecordRaw[] = [
     redirect: '/',
   },
 ];
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
