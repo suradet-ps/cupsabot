@@ -444,13 +444,29 @@ a:hover {
   opacity: 0.85;
 }
 
-.feature-card--pink {
-  background-color: var(--color-brand-pink);
+.feature-card--red {
+  background-color: var(--color-brand-red);
   color: #ffffff;
 }
-.feature-card--teal {
-  background-color: var(--color-brand-teal);
+.feature-card--brown {
+  background-color: var(--color-brand-brown);
   color: #ffffff;
+}
+.feature-card--berry {
+  background-color: var(--color-brand-berry);
+  color: #ffffff;
+}
+.feature-card--pink {
+  background-color: var(--color-brand-pink);
+  color: var(--color-ink);
+}
+.feature-card--beige {
+  background-color: var(--color-brand-beige);
+  color: var(--color-ink);
+}
+.feature-card--blue {
+  background-color: var(--color-brand-blue);
+  color: var(--color-ink);
 }
 .feature-card--lavender {
   background-color: var(--color-brand-lavender);
@@ -532,7 +548,7 @@ a:hover {
   font-size: var(--text-caption);
   color: var(--color-status-rejected);
   background-color: var(--color-status-rejected-bg);
-  border: 1px solid rgba(208, 52, 44, 0.25);
+  border: 1px solid rgba(179, 38, 30, 0.25);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
 }
@@ -621,7 +637,7 @@ a:hover {
 
 .alert--error {
   background-color: var(--color-status-rejected-bg);
-  border-color: rgba(208, 52, 44, 0.25);
+  border-color: rgba(179, 38, 30, 0.25);
   color: var(--color-status-rejected);
 }
 .alert--success {
@@ -1024,7 +1040,7 @@ tbody tr:last-child td {
 .status-badge.rejected {
   background-color: var(--color-status-rejected-bg);
   color: var(--color-status-rejected);
-  border-color: rgba(208, 52, 44, 0.25);
+  border-color: rgba(179, 38, 30, 0.25);
 }
 
 /* -------------------------------------------------------------------

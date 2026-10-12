@@ -14,17 +14,17 @@
 
     <template v-if="!loading && !error">
       <div class="feature-grid">
-        <div class="feature-card feature-card--pink">
+        <div class="feature-card feature-card--brown">
           <span class="feature-label">รอการอนุมัติ</span>
           <p class="feature-value">{{ submittedRequisitions.length }}</p>
           <span class="feature-caption">ใบเบิกที่ยังไม่ได้รับการตรวจสอบ</span>
         </div>
-        <div class="feature-card feature-card--teal">
+        <div class="feature-card feature-card--pink">
           <span class="feature-label">อนุมัติแล้ว · รอจ่ายยา</span>
           <p class="feature-value">{{ approvedRequisitions.length }}</p>
           <span class="feature-caption">รอคลังยาเบิกจ่ายเวชภัณฑ์</span>
         </div>
-        <div class="feature-card feature-card--lavender">
+        <div class="feature-card feature-card--blue">
           <span class="feature-label">ภาพรวมวันนี้</span>
           <p class="feature-value">{{ requisitions.length }}</p>
           <span class="feature-caption">รายการที่อยู่ในคิวทั้งหมด</span>

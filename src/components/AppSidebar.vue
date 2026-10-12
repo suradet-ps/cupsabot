@@ -103,7 +103,7 @@ const navGroups: { label: string; items: NavItem[] }[] = [
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background-color: var(--color-brand-pink);
+  background-color: var(--color-brand-red);
   color: #ffffff;
   font-size: 1.05rem;
   flex-shrink: 0;
@@ -210,7 +210,7 @@ const navGroups: { label: string; items: NavItem[] }[] = [
 }
 
 .support-card i {
-  color: var(--color-brand-pink);
+  color: var(--color-brand-red);
   flex-shrink: 0;
 }
 

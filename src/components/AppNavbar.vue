@@ -109,7 +109,7 @@ async function handleLogout(): Promise<void> {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background-color: var(--color-brand-pink);
+  background-color: var(--color-brand-red);
   color: #ffffff;
 }
 
@@ -178,7 +178,7 @@ async function handleLogout(): Promise<void> {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: var(--color-brand-pink);
+  background-color: var(--color-brand-red);
   color: #ffffff;
   font-size: 0.75rem;
 }

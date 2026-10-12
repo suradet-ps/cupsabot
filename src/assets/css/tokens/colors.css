@@ -1,35 +1,39 @@
 /* Design Token: Colors
    Source of truth: DESIGN.md
-   Structure: Clay — cream canvas, near-black ink, saturated single-color
-   feature cards. Hues: Monchhichi — fur brown, rosy pink, powder blue,
-   peach, ochre, lavender. Foreground/background pairs target WCAG 2.2 AA.
+   Structure: Clay — cream canvas, warm ink, saturated single-color cards.
+   Hues: Monchhichi — official logo red #e60c18 (ribbon), brown + beige fur,
+   rosy cheeks, gingham pastel blue, and the COLORS pastel range.
+   Foreground/background pairs target WCAG 2.2 AA.
    ------------------------------------------------------------------ */
 :root {
-  /* Ink */
-  --color-black: #1a120b;
-  --color-near-black: #1a120b;
-  --color-ink: #1a120b;
+  /* Ink — deep chocolate, warm rather than neutral black */
+  --color-black: #2a1a10;
+  --color-near-black: #2a1a10;
+  --color-ink: #2a1a10;
 
   /* Brand & accent (Monchhichi) */
   --color-brown: #8a5a34;
-  --color-brown-hover: #734829;
+  --color-brown-hover: #6f4526;
   --color-light-brown: #f3e3d2;
-  --color-blue: #6e9bc9;
-  --color-blue-hover: #537ea9;
+  --color-blue: #a9c7e8;
+  --color-blue-hover: #8fb0d8;
   --color-light-blue: #eaf2fb;
-  --color-pink: #ff6fa5;
-  --color-pink-hover: #e5528c;
-  --color-light-pink: #ffeef4;
+  --color-pink: #f2a3b8;
+  --color-pink-hover: #e5849f;
+  --color-light-pink: #fbe0e8;
 
-  /* Saturated feature-card palette (6 + accents) */
-  --color-brand-pink: #ff6fa5;
-  --color-brand-teal: #2f4a44;
-  --color-brand-lavender: #c3b2f0;
-  --color-brand-peach: #ffb98f;
-  --color-brand-ochre: #efc25a;
+  /* Saturated feature-card palette (Monchhichi) */
+  --color-brand-red: #e60c18;
+  --color-brand-brown: #7a4e2d;
+  --color-brand-beige: #e8d3ae;
+  --color-brand-pink: #f2a3b8;
+  --color-brand-berry: #d94f8a;
+  --color-brand-blue: #a9c7e8;
   --color-brand-mint: #a9d8c6;
-  --color-brand-coral: #ff7a66;
-  --color-brand-blue: #8fb6de;
+  --color-brand-ochre: #f0c24a;
+  --color-brand-lavender: #c9b8ef;
+  --color-brand-peach: #ffd9b8;
+  --color-brand-coral: #ff8a7a;
 
   /* Surface */
   --color-canvas: #fffaf0;
@@ -39,10 +43,10 @@
   --color-surface-strong: #ebe6d6;
   --color-soft-stone: #f3ecdb;
   --color-pale-blue: #eaf2fb;
-  --color-pale-pink: #ffeef4;
+  --color-pale-pink: #fbe0e8;
   --color-pale-green: #e8f4ec;
   --color-pale-amber: #fdf0d9;
-  --color-card-border: #e7e0cf;
+  --color-card-border: #e8e2d2;
   --color-hairline: #e8e2d2;
   --color-border-light: #efe9db;
 
@@ -51,17 +55,17 @@
   --color-slate: #8a8578;
 
   /* Semantic */
-  --color-focus-blue: #1a120b;
-  --color-form-focus: #1a120b;
-  --color-error: #d0342c;
+  --color-focus-blue: #2a1a10;
+  --color-form-focus: #2a1a10;
+  --color-error: #b3261e;
 
   /* Gradients (brand marks only — Clay is otherwise flat) */
-  --gradient-brand: linear-gradient(135deg, #ff6fa5, #ffb98f);
-  --gradient-primary: linear-gradient(135deg, #ff6fa5, #ffb98f);
-  --gradient-primary-hover: linear-gradient(135deg, #e5528c, #ff9f6f);
-  --gradient-hero: linear-gradient(135deg, #fffaf0 0%, #ffeef4 55%, #faf5e8 100%);
-  --gradient-blue: linear-gradient(135deg, #8fb6de, #c3b2f0);
-  --gradient-pink: linear-gradient(135deg, #ff6fa5, #ffb98f);
+  --gradient-brand: linear-gradient(135deg, #e60c18, #f2a3b8);
+  --gradient-primary: linear-gradient(135deg, #e60c18, #f2a3b8);
+  --gradient-primary-hover: linear-gradient(135deg, #c40a14, #e5849f);
+  --gradient-hero: linear-gradient(135deg, #fffaf0 0%, #fbe0e8 55%, #faf5e8 100%);
+  --gradient-blue: linear-gradient(135deg, #a9c7e8, #c9b8ef);
+  --gradient-pink: linear-gradient(135deg, #f2a3b8, #ffd9b8);
   --gradient-sidebar: linear-gradient(180deg, #faf5e8, #f5f0e0);
 
   /* Status — foreground / soft background / boundary */
@@ -73,6 +77,6 @@
   --color-status-approved-bg: #eaf2fb;
   --color-status-fulfilled: #1f8a4c;
   --color-status-fulfilled-bg: #e8f4ec;
-  --color-status-rejected: #d0342c;
+  --color-status-rejected: #b3261e;
   --color-status-rejected-bg: #fdeceb;
 }

@@ -6,10 +6,11 @@
 
 ## Overview
 
-The system follows **Clay's** design structure — a warm cream canvas, near-black
-ink, big rounded display type, and **saturated single-color feature cards** as the
-primary visual element — rendered in the **Monchhichi** palette: fur brown, rosy
-pink, powder blue, peach, ochre, and lavender.
+The system follows **Clay's** design structure — a warm cream canvas, warm ink,
+big rounded display type, and **saturated single-color feature cards** as the
+primary visual element — rendered in the **Monchhichi** palette: the official
+logo red, brown and beige fur, rosy cheeks, gingham pastel blue, and the
+`Monchhichi COLORS` pastel range.
 
 Depth is flat. There are no heavy shadows: structure comes from 1px hairlines and
 the contrast between the cream canvas and bright feature cards. Color is used
@@ -19,8 +20,10 @@ stays quiet and high-contrast.
 **Key characteristics**
 
 - Cream-tinted canvas (`#fffaf0`) everywhere, including the sidebar and footer.
-- Near-black primary CTAs (`#1a120b`), rounded 12px — friendly, not pill.
-- 6-color saturated feature-card palette for KPIs and highlights.
+- Warm chocolate ink (`#2a1a10`) for CTAs and headings, rounded 12px.
+- Official Monchhichi red (`#e60c18`) for brand marks and the hero art.
+- Saturated feature-card palette (red, brown, berry, cheek pink, beige, blue,
+  mint, ochre, lavender) for KPIs and highlights.
 - Rounded display type at weight 500 with negative letter-spacing.
 - Generous radii: 12px buttons/inputs, 16px cards, 24px feature cards.
 - Flat surfaces: 1px hairlines, no card shadows.
@@ -30,21 +33,27 @@ stays quiet and high-contrast.
 
 ### Brand & accent
 
-- **Primary / Ink** (`#1a120b`): primary CTAs, headings, body text.
-- **Brown** (`#8a5a34`): Monchhichi fur accent, hover states.
-- **Pink** (`#ff6fa5`): rosy-cheek accent, brand marks, active signals.
-- **Blue** (`#6e9bc9`): powder-blue gingham secondary accent.
+- **Ink** (`#2a1a10`): primary CTAs, headings, body text — deep warm chocolate.
+- **Logo Red** (`#e60c18`): official Monchhichi red (the ribbon); brand marks,
+  hero art, active signals.
+- **Brown** (`#8a5a34`): fur brown accent, hover states.
+- **Pink** (`#f2a3b8`): rosy-cheek pink.
+- **Blue** (`#a9c7e8`): gingham pastel blue.
 
-### Saturated feature-card palette
+### Saturated feature-card palette (Monchhichi)
 
-| Token | Hex | Text on fill |
-|---|---|---|
-| `brand-pink` | `#ff6fa5` | white |
-| `brand-teal` | `#2f4a44` | white |
-| `brand-lavender` | `#c3b2f0` | ink |
-| `brand-peach` | `#ffb98f` | ink |
-| `brand-ochre` | `#efc25a` | ink |
-| `brand-mint` | `#a9d8c6` | ink |
+| Token | Hex | Text on fill | Source |
+|---|---|---|---|
+| `brand-red` | `#e60c18` | white | official logo / ribbon |
+| `brand-brown` | `#7a4e2d` | white | standard fur |
+| `brand-berry` | `#d94f8a` | white | COLORS berry pink |
+| `brand-pink` | `#f2a3b8` | ink | rosy cheeks |
+| `brand-beige` | `#e8d3ae` | ink | beige fur variant |
+| `brand-blue` | `#a9c7e8` | ink | gingham / pastel blue |
+| `brand-mint` | `#a9d8c6` | ink | COLORS mint green |
+| `brand-ochre` | `#f0c24a` | ink | COLORS yellow |
+| `brand-lavender` | `#c9b8ef` | ink | COLORS purple |
+| `brand-peach` | `#ffd9b8` | ink | sweet sugar warmth |
 
 ### Surface
 
@@ -57,14 +66,14 @@ stays quiet and high-contrast.
 
 ### Text
 
-- **Ink** (`#1a120b`): headlines and primary text.
+- **Ink** (`#2a1a10`): headlines and primary text.
 - **Muted** (`#6a6558`): sub-headings, captions, metadata.
 - **Slate** (`#8a8578`): fine-print and tertiary labels.
 
 ### Semantic
 
-- **Focus** (`#1a120b`): focus ring.
-- **Error** (`#d0342c`), **Warning** (`#b45309`), **Success** (`#1f8a4c`).
+- **Focus** (`#2a1a10`): focus ring.
+- **Error** (`#b3261e`), **Warning** (`#b45309`), **Success** (`#1f8a4c`).
 
 ### Status
 
@@ -74,7 +83,7 @@ stays quiet and high-contrast.
 | Submitted | `#b45309` | `#fdf0d9` | รออนุมัติ |
 | Approved | `#3f6fb0` | `#eaf2fb` | อนุมัติแล้ว |
 | Fulfilled | `#1f8a4c` | `#e8f4ec` | จ่ายยาแล้ว |
-| Rejected | `#d0342c` | `#fdeceb` | ถูกปฏิเสธ |
+| Rejected | `#b3261e` | `#fdeceb` | ถูกปฏิเสธ |
 
 ## Typography
 
@@ -150,9 +159,9 @@ Defined globally in `src/assets/main.css`; behavioral components are Vue SFCs in
   `btn-on-color` (white, for use over saturated cards), `btn-ghost`,
   `btn-danger/warning/success/info`, `btn-pill-outline`, `btn-sm`. All 44px tall
   (36px for `btn-sm`).
-- **Feature cards** (`.feature-card` + `--pink|--teal|--lavender|--peach|--ochre|
-  --mint|--cream`): saturated KPI surfaces with `feature-label`, `feature-value`,
-  `feature-caption`.
+- **Feature cards** (`.feature-card` + `--red|--brown|--berry|--pink|--beige|--blue|
+  --mint|--ochre|--lavender|--peach|--cream`): saturated KPI surfaces with
+  `feature-label`, `feature-value`, `feature-caption`.
 - **Panels** (`.panel`, `.panel-header`, `.panel-title`, `.panel-count`,
   `.panel-body`): hairline-bordered content containers.
 - **Tables** (`.table-wrapper`): sticky header on Surface Soft, hairline row

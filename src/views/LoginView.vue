@@ -18,14 +18,14 @@
       </div>
 
       <div class="hero-art" aria-hidden="true">
-        <div class="art-card art-card--peach">
+        <div class="art-card art-card--beige">
           <span class="art-blob art-blob--sm"></span>
           <span class="art-blob art-blob--lg"></span>
         </div>
-        <div class="art-card art-card--lavender">
+        <div class="art-card art-card--brown">
           <span class="art-ring"></span>
         </div>
-        <div class="art-card art-card--pink">
+        <div class="art-card art-card--red">
           <i class="fas fa-pills"></i>
         </div>
       </div>
@@ -152,7 +152,7 @@ async function handleLogin(): Promise<void> {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--color-brand-pink);
+  background-color: var(--color-brand-red);
 }
 
 .hero-copy h1 {
@@ -209,20 +209,20 @@ async function handleLogin(): Promise<void> {
   place-items: center;
 }
 
-.art-card--peach {
-  background-color: var(--color-brand-peach);
+.art-card--beige {
+  background-color: var(--color-brand-beige);
 }
-.art-card--lavender {
-  background-color: var(--color-brand-lavender);
+.art-card--brown {
+  background-color: var(--color-brand-brown);
 }
-.art-card--pink {
-  background-color: var(--color-brand-pink);
+.art-card--red {
+  background-color: var(--color-brand-red);
   color: #ffffff;
   font-size: 2rem;
   aspect-ratio: 1;
 }
 
-.art-card--lavender {
+.art-card--brown {
   aspect-ratio: 1 / 1.35;
 }
 
