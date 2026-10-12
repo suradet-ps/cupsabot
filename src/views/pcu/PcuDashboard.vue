@@ -140,8 +140,8 @@ import { supabase } from '@/supabaseClient';
 import type { RequisitionPeriod, RequisitionStatus } from '@/types/models';
 
 type ExistingRequisition = {
-  id: number;
-  period_id: number;
+  id: string;
+  period_id: string;
   status: RequisitionStatus;
   created_at: string;
   submitted_at: string | null;
@@ -194,14 +194,14 @@ onMounted(async () => {
   }
 });
 
-function hasRequisition(periodId: number): boolean {
+function hasRequisition(periodId: string): boolean {
   return existingRequisitions.value.some((req) => req.period_id === periodId);
 }
-function getRequisitionStatus(periodId: number): RequisitionStatus | null {
+function getRequisitionStatus(periodId: string): RequisitionStatus | null {
   const req = existingRequisitions.value.find((req) => req.period_id === periodId);
   return req ? req.status : null;
 }
-function getRequisitionId(periodId: number): number | null {
+function getRequisitionId(periodId: string): string | null {
   const req = existingRequisitions.value.find((req) => req.period_id === periodId);
   return req ? req.id : null;
 }
@@ -216,7 +216,7 @@ function formatSubmitDate(dateString: string | null): string {
   if (!dateString) return 'ฉบับร่าง';
   return new Date(dateString).toLocaleString('th-TH');
 }
-function goToRequisition(periodId: number, requisitionId: number | null): void {
+function goToRequisition(periodId: string, requisitionId: string | null): void {
   router.push({
     name: 'RequisitionForm',
     params: { periodId, requisitionId: requisitionId || 'new' },

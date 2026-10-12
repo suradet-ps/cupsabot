@@ -157,13 +157,7 @@ async function handleRegister(): Promise<void> {
     return;
   }
 
-  const isValidPcu = pcuList.value.some(
-    // FIX: HTML <select> v-model returns string, but pcus.id is number.
-    // Preserved original behavior: strict equality between number and string
-    // is always false, so this branch (and the alert path below) is dead
-    // code at runtime. Cast keeps TS happy without changing semantics.
-    (pcu) => pcu.id === (form.value.pcu_id as unknown as number),
-  );
+  const isValidPcu = pcuList.value.some((pcu) => pcu.id === form.value.pcu_id);
   if (!isValidPcu) {
     errorMessage.value = 'ข้อมูล รพ.สต. ไม่ถูกต้อง โปรดเลือกใหม่อีกครั้ง';
     return;

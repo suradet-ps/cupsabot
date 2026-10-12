@@ -5,6 +5,18 @@ export type ProfileStatus = 'pending' | 'approved' | 'rejected';
 export type RequisitionStatus = 'draft' | 'submitted' | 'approved' | 'fulfilled' | 'rejected';
 export type RequisitionPeriodStatus = 'open' | 'closed';
 
+/**
+ * NOTE: these types were verified against the live database (project
+ * zerwobmlglmmphxxjjsv) because the previously generated file declared
+ * most primary/foreign keys as `number` when they are actually `uuid`.
+ *
+ * uuid columns  -> string
+ * bigint/int columns -> number
+ *
+ * Keep this in sync with the real schema; the app passes ids straight
+ * through to PostgREST, so a wrong type here becomes a runtime cast error
+ * ("invalid input syntax for type uuid: \"NaN\"").
+ */
 export type Database = {
   public: {
     Tables: {
@@ -14,7 +26,7 @@ export type Database = {
           username: string;
           email: string;
           role: ProfileRole;
-          pcu_id: number;
+          pcu_id: string;
           status: ProfileStatus;
           created_at: string;
         };
@@ -23,7 +35,7 @@ export type Database = {
           username: string;
           email: string;
           role?: ProfileRole;
-          pcu_id: number;
+          pcu_id: string;
           status?: ProfileStatus;
           created_at?: string;
         };
@@ -32,7 +44,7 @@ export type Database = {
           username?: string;
           email?: string;
           role?: ProfileRole;
-          pcu_id?: number;
+          pcu_id?: string;
           status?: ProfileStatus;
           created_at?: string;
         };
@@ -40,15 +52,15 @@ export type Database = {
       };
       pcus_drugcupsabot: {
         Row: {
-          id: number;
+          id: string;
           name: string;
         };
         Insert: {
-          id?: number;
+          id?: string;
           name: string;
         };
         Update: {
-          id?: number;
+          id?: string;
           name?: string;
         };
         Relationships: [];
@@ -97,21 +109,21 @@ export type Database = {
       };
       requisition_periods_drugcupsabot: {
         Row: {
-          id: number;
+          id: string;
           name: string;
           start_date: string;
           end_date: string;
           status: RequisitionPeriodStatus;
         };
         Insert: {
-          id?: number;
+          id?: string;
           name: string;
           start_date: string;
           end_date: string;
           status?: RequisitionPeriodStatus;
         };
         Update: {
-          id?: number;
+          id?: string;
           name?: string;
           start_date?: string;
           end_date?: string;
@@ -121,27 +133,27 @@ export type Database = {
       };
       requisitions_drugcupsabot: {
         Row: {
-          id: number;
-          pcu_id: number;
-          period_id: number;
+          id: string;
+          pcu_id: string;
+          period_id: string;
           requester_id: string;
           status: RequisitionStatus;
           submitted_at: string | null;
           created_at: string;
         };
         Insert: {
-          id?: number;
-          pcu_id: number;
-          period_id: number;
+          id?: string;
+          pcu_id: string;
+          period_id: string;
           requester_id: string;
           status?: RequisitionStatus;
           submitted_at?: string | null;
           created_at?: string;
         };
         Update: {
-          id?: number;
-          pcu_id?: number;
-          period_id?: number;
+          id?: string;
+          pcu_id?: string;
+          period_id?: string;
           requester_id?: string;
           status?: RequisitionStatus;
           submitted_at?: string | null;
@@ -152,7 +164,7 @@ export type Database = {
       requisition_items_drugcupsabot: {
         Row: {
           id: number;
-          requisition_id: number;
+          requisition_id: string;
           item_id: number;
           quantity: number;
           on_hand_quantity: number | null;
@@ -161,7 +173,7 @@ export type Database = {
         };
         Insert: {
           id?: number;
-          requisition_id: number;
+          requisition_id: string;
           item_id: number;
           quantity: number;
           on_hand_quantity?: number | null;
@@ -170,7 +182,7 @@ export type Database = {
         };
         Update: {
           id?: number;
-          requisition_id?: number;
+          requisition_id?: string;
           item_id?: number;
           quantity?: number;
           on_hand_quantity?: number | null;
@@ -182,7 +194,7 @@ export type Database = {
       pcu_personnel_drugcupsabot: {
         Row: {
           id: number;
-          pcu_id: number;
+          pcu_id: string;
           requester_name: string | null;
           requester_position: string | null;
           receiver_name: string | null;
@@ -190,7 +202,7 @@ export type Database = {
         };
         Insert: {
           id?: number;
-          pcu_id: number;
+          pcu_id: string;
           requester_name?: string | null;
           requester_position?: string | null;
           receiver_name?: string | null;
@@ -198,7 +210,7 @@ export type Database = {
         };
         Update: {
           id?: number;
-          pcu_id?: number;
+          pcu_id?: string;
           requester_name?: string | null;
           requester_position?: string | null;
           receiver_name?: string | null;
@@ -220,10 +232,10 @@ export type Database = {
       };
       get_accounting_summary_by_period: {
         Args: {
-          period_id_param: number;
+          period_id_param: string;
         };
         Returns: Array<{
-          pcu_id: number;
+          pcu_id: string;
           pcu_name: string;
           total_value: number;
         }>;

@@ -111,13 +111,13 @@ onMounted(async () => {
     const { data: periodData } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', Number(periodId))
+      .eq('id', String(periodId))
       .single();
 
     periodInfo.value = periodData;
 
     const { data, error } = await supabase.rpc('get_accounting_summary_by_period', {
-      period_id_param: Number(periodId),
+      period_id_param: String(periodId),
     });
     if (error) throw error;
 

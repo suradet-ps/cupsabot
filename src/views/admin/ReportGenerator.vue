@@ -128,7 +128,7 @@ const loading = ref<boolean>(false);
 const isGenerating = ref<boolean>(false);
 const periods = ref<RequisitionPeriod[]>([]);
 const requisitionsInPeriod = ref<ReportRequisition[]>([]);
-const selectedPeriod = ref<number | null>(null);
+const selectedPeriod = ref<string | null>(null);
 const selectedRequisition = ref<ReportRequisition | null>(null);
 
 const grandTotal = computed<number>(() => {

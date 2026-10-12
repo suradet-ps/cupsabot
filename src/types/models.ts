@@ -37,7 +37,7 @@ export type RequisitionItemApproval = {
 };
 
 export type AccountingSummaryRow = {
-  pcu_id: number;
+  pcu_id: string;
   pcu_name: string;
   total_value: number;
 };

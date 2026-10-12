@@ -73,7 +73,7 @@ type ProcessedItem = {
   item_name: string;
   unit_pack: string;
   total_quantity: number;
-  pcu_breakdown: Record<number, number>;
+  pcu_breakdown: Record<string, number>;
   category_order: number | null;
   item_order: number | null;
 };
@@ -96,7 +96,7 @@ onMounted(async () => {
     const { data: periodData } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', Number(periodId))
+      .eq('id', String(periodId))
       .single();
     periodInfo.value = periodData;
 
@@ -121,13 +121,13 @@ onMounted(async () => {
       `,
       )
       .in('status', ['approved', 'fulfilled'])
-      .eq('period_id', Number(periodId));
+      .eq('period_id', String(periodId));
 
     if (error) throw error;
 
     type PrintRequisition = {
-      id: number;
-      pcu_id: number;
+      id: string;
+      pcu_id: string;
       requisition_items_drugcupsabot: Array<{
         id: number;
         approved_quantity: number | null;

@@ -163,7 +163,7 @@ type PrintRequisition = {
   id: number;
   status: string;
   submitted_at: string | null;
-  pcus_drugcupsabot: { id: number; name: string };
+  pcus_drugcupsabot: { id: string; name: string };
   requisition_periods_drugcupsabot: { name: string };
   requisition_items_drugcupsabot: PrintRequisitionItem[];
 };
@@ -201,7 +201,7 @@ onMounted(async () => {
         )
       `,
       )
-      .eq('id', Number(requisitionId))
+      .eq('id', String(requisitionId))
       .single();
 
     if (requisitionError) throw requisitionError;
@@ -444,3 +444,4 @@ td.center {
     }
 }
 </style>
+

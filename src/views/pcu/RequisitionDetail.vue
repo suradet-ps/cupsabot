@@ -144,7 +144,7 @@ onMounted(async () => {
         )
       `,
       )
-      .eq('id', Number(props.requisitionId))
+      .eq('id', props.requisitionId)
       .single();
 
     if (fetchError) {

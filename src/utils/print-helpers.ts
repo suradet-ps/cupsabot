@@ -9,12 +9,12 @@ const ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 /**
  * Parse a route-query id into either a positive integer or a UUID string.
  *
- * Supabase's TypeScript types still declare most primary keys as `number`,
- * but production has surfaced at least one column that is actually a `uuid`.
- * Accepting both shapes lets the same print page work against either schema
- * without forcing every caller to regenerate types first. Non-empty strings
- * that match neither pattern are rejected so a malformed value never reaches
- * PostgREST as a literal "NaN" or empty string.
+ * Print routes are opened with `?id=` / `?periodId=` query params that may be
+ * a UUID (the current schema uses uuid primary keys for requisitions and
+ * periods) or, historically, a plain integer. Accepting both shapes keeps the
+ * print pages working against either shape. Non-empty strings that match
+ * neither pattern are rejected so a malformed value never reaches PostgREST
+ * as a literal "NaN" or empty string.
  *
  * Returns `null` when the input is unusable, in which case the caller
  * should abort the print job and surface a clear error to the user.

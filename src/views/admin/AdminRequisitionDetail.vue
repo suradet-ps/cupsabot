@@ -168,7 +168,7 @@ async function fetchRequisition(): Promise<void> {
         )
       `,
       )
-      .eq('id', Number(props.requisitionId))
+      .eq('id', props.requisitionId)
       .single();
 
     if (fetchError) throw fetchError;
@@ -223,7 +223,7 @@ async function saveAndApprove(): Promise<void> {
     const { error: reqError } = await supabase
       .from('requisitions_drugcupsabot')
       .update({ status: 'approved' })
-      .eq('id', Number(props.requisitionId));
+      .eq('id', props.requisitionId);
     if (reqError) throw reqError;
 
     toast.success('บันทึกและอนุมัติใบเบิกเรียบร้อยแล้ว');
@@ -249,7 +249,7 @@ async function fulfillRequisition(): Promise<void> {
     const { error: reqError } = await supabase
       .from('requisitions_drugcupsabot')
       .update({ status: 'fulfilled' })
-      .eq('id', Number(props.requisitionId));
+      .eq('id', props.requisitionId);
     if (reqError) throw reqError;
 
     toast.success('ยืนยันการจ่ายเวชภัณฑ์เรียบร้อยแล้ว');

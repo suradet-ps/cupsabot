@@ -86,7 +86,7 @@ type ProcessedItem = {
   item_id: number;
   item_name: string;
   total_quantity: number;
-  pcu_breakdown: Record<number, number>;
+  pcu_breakdown: Record<string, number>;
   category_order: number | null;
   item_order: number | null;
 };
@@ -103,8 +103,8 @@ const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 const periods = ref<RequisitionPeriod[]>([]);
 const pcuList = ref<Pcu[]>([]);
-const selectedPeriod = ref<number | null>(null);
-const selectedPcu = ref<number | 'all'>('all');
+const selectedPeriod = ref<string | null>(null);
+const selectedPcu = ref<string | 'all'>('all');
 const processedData = ref<ProcessedItem[]>([]);
 
 const columns = computed<Column[]>(() => {
@@ -121,7 +121,7 @@ const columns = computed<Column[]>(() => {
   return [
     {
       key: 'pcu',
-      label: `ยอดเบิก (${getPcuName(selectedPcu.value as number)})`,
+      label: `ยอดเบิก (${getPcuName(selectedPcu.value as string)})`,
       value: (item) => getDisplayQuantity(item),
     },
   ];
@@ -146,8 +146,8 @@ onMounted(async () => {
 });
 
 type RequisitionWithItems = {
-  id: number;
-  pcu_id: number;
+  id: string;
+  pcu_id: string;
   requisition_items_drugcupsabot: Array<{
     id: number;
     approved_quantity: number | null;
@@ -243,7 +243,7 @@ async function processRequisitions(): Promise<void> {
   }
 }
 
-function getPcuName(pcuId: number): string {
+function getPcuName(pcuId: string): string {
   return pcuList.value.find((p) => p.id === pcuId)?.name || 'N/A';
 }
 

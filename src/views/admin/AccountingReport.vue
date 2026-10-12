@@ -80,7 +80,7 @@ const router = useRouter();
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 const periods = ref<RequisitionPeriod[]>([]);
-const selectedPeriod = ref<number | null>(null);
+const selectedPeriod = ref<string | null>(null);
 const reportData = ref<AccountingSummaryRow[]>([]);
 
 const grandTotal = computed<number>(() => {

@@ -176,7 +176,7 @@ onMounted(async () => {
     const { data: periodData, error: periodError } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', Number(props.periodId))
+      .eq('id', props.periodId)
       .single();
     if (periodError) throw periodError;
     periodInfo.value = periodData;
@@ -198,7 +198,7 @@ onMounted(async () => {
       const { data: existingData, error: draftError } = await supabase
         .from('requisition_items_drugcupsabot')
         .select('item_id, quantity, on_hand_quantity')
-        .eq('requisition_id', Number(props.requisitionId));
+        .eq('requisition_id', String(props.requisitionId));
 
       if (draftError) throw draftError;
 
@@ -260,14 +260,14 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
   isSubmitting.value = true;
 
   try {
-    let currentRequisitionId: number | null = isEditing.value ? Number(props.requisitionId) : null;
+    let currentRequisitionId: string | null = isEditing.value ? String(props.requisitionId) : null;
 
     if (!isEditing.value) {
       const { data: newHeader, error: headerError } = await supabase
         .from('requisitions_drugcupsabot')
         .insert({
           pcu_id: auth.userPcuId,
-          period_id: Number(props.periodId),
+          period_id: props.periodId,
           requester_id: auth.userProfile.id,
           status: 'draft',
         })

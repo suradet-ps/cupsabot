@@ -89,7 +89,7 @@ import { supabase } from '@/supabaseClient';
 import type { Pcu, PcuPersonnel } from '@/types/models';
 
 type PcuSetting = {
-  pcu_id: number;
+  pcu_id: string;
   pcu_name: string;
   id: number | null;
   requester_name: string;
@@ -102,7 +102,7 @@ const toast = useToast();
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const pcuSettings = ref<PcuSetting[]>([]);
-const savingId = ref<number | null>(null);
+const savingId = ref<string | null>(null);
 
 onMounted(async () => {
   await fetchSettings();
