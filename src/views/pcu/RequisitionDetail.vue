@@ -107,7 +107,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import PageHeader from '@/components/PageHeader.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { useToast } from '@/composables/useToast';
@@ -116,7 +115,6 @@ import type { RequisitionStatus, RequisitionWithJoins } from '@/types/models';
 
 const props = defineProps<{ requisitionId: string }>();
 
-const route = useRoute();
 const toast = useToast();
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
@@ -146,7 +144,7 @@ onMounted(async () => {
         )
       `,
       )
-      .eq('id', props.requisitionId)
+      .eq('id', Number(props.requisitionId))
       .single();
 
     if (fetchError) {

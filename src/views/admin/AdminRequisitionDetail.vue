@@ -74,7 +74,7 @@
                   v-model.number="reqItem.approved_quantity"
                   min="0"
                   :aria-label="`จำนวนที่อนุมัติ ${reqItem.items_drugcupsabot.name}`"
-                  @focus="$event.target.select()"
+                  @focus="selectAll"
                 />
               </td>
               <td class="text-right">{{ formatCurrency(reqItem.price_at_request) }}</td>
@@ -145,6 +145,11 @@ const requisition = ref<RequisitionWithJoins | null>(null);
 const editableItems = ref<EditableItem[]>([]);
 const isUpdating = ref<boolean>(false);
 
+function selectAll(event: FocusEvent): void {
+  const target = event.target as HTMLInputElement | null;
+  target?.select();
+}
+
 async function fetchRequisition(): Promise<void> {
   try {
     loading.value = true;
@@ -163,7 +168,7 @@ async function fetchRequisition(): Promise<void> {
         )
       `,
       )
-      .eq('id', props.requisitionId)
+      .eq('id', Number(props.requisitionId))
       .single();
 
     if (fetchError) throw fetchError;
@@ -218,7 +223,7 @@ async function saveAndApprove(): Promise<void> {
     const { error: reqError } = await supabase
       .from('requisitions_drugcupsabot')
       .update({ status: 'approved' })
-      .eq('id', props.requisitionId);
+      .eq('id', Number(props.requisitionId));
     if (reqError) throw reqError;
 
     toast.success('บันทึกและอนุมัติใบเบิกเรียบร้อยแล้ว');
@@ -244,7 +249,7 @@ async function fulfillRequisition(): Promise<void> {
     const { error: reqError } = await supabase
       .from('requisitions_drugcupsabot')
       .update({ status: 'fulfilled' })
-      .eq('id', props.requisitionId);
+      .eq('id', Number(props.requisitionId));
     if (reqError) throw reqError;
 
     toast.success('ยืนยันการจ่ายเวชภัณฑ์เรียบร้อยแล้ว');

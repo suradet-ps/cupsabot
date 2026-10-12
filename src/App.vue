@@ -11,7 +11,7 @@
   <ConfirmDialog />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
@@ -35,6 +35,7 @@ const isPublicPage = computed(() => {
     'AccountingReportPrint',
     'ApprovalMemoPrint',
   ];
-  return publicPages.includes(route.name);
+  const name = route.name;
+  return typeof name === 'string' && publicPages.includes(name);
 });
 </script>

@@ -113,12 +113,12 @@ onMounted(async () => {
     const { data: periodData } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', periodId)
+      .eq('id', Number(periodId))
       .single();
     periodInfo.value = periodData;
 
     const { data, error: fetchError } = await supabase.rpc('get_accounting_summary_by_period', {
-      period_id_param: periodId,
+      period_id_param: Number(periodId),
     });
     if (fetchError) throw fetchError;
     reportData.value = (data ?? []) as unknown as AccountingSummaryRow[];

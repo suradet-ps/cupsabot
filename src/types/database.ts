@@ -2,7 +2,7 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export type ProfileRole = 'admin' | 'pcu';
 export type ProfileStatus = 'pending' | 'approved' | 'rejected';
-export type RequisitionStatus = 'draft' | 'submitted' | 'approved' | 'fulfilled';
+export type RequisitionStatus = 'draft' | 'submitted' | 'approved' | 'fulfilled' | 'rejected';
 export type RequisitionPeriodStatus = 'open' | 'closed';
 
 export type Database = {

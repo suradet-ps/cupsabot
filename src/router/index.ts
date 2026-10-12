@@ -163,18 +163,6 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, requiresAdmin: true },
   },
 
-  // Temporary UI preview routes (development only)
-  {
-    path: '/__preview/admin',
-    component: AdminLayout,
-    children: [{ path: '', component: PreviewAdmin }],
-  },
-  {
-    path: '/__preview/pcu',
-    component: PcuLayout,
-    children: [{ path: '', component: PreviewPcu }],
-  },
-
   // Fallback Route
   {
     path: '/:pathMatch(.*)*',

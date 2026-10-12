@@ -76,7 +76,7 @@
                   class="quantity-input"
                   v-model.number="requisitionData[item.id].onHand"
                   :aria-label="`จำนวนคงเหลือ ${item.name}`"
-                  @focus="$event.target.select()"
+                  @focus="selectAll"
                   :disabled="!item.is_available"
                 />
               </td>
@@ -88,7 +88,7 @@
                   v-model.number="requisitionData[item.id].quantity"
                   :aria-label="`จำนวนเบิก ${item.name}`"
                   @input="updateTotal"
-                  @focus="$event.target.select()"
+                  @focus="selectAll"
                   :disabled="!item.is_available"
                 />
               </td>
@@ -166,12 +166,17 @@ const isEditing = computed<boolean>(
   () => props.requisitionId !== undefined && props.requisitionId !== 'new',
 );
 
+function selectAll(event: FocusEvent): void {
+  const target = event.target as HTMLInputElement | null;
+  target?.select();
+}
+
 onMounted(async () => {
   try {
     const { data: periodData, error: periodError } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', props.periodId)
+      .eq('id', Number(props.periodId))
       .single();
     if (periodError) throw periodError;
     periodInfo.value = periodData;
@@ -193,7 +198,7 @@ onMounted(async () => {
       const { data: existingData, error: draftError } = await supabase
         .from('requisition_items_drugcupsabot')
         .select('item_id, quantity, on_hand_quantity')
-        .eq('requisition_id', props.requisitionId);
+        .eq('requisition_id', Number(props.requisitionId));
 
       if (draftError) throw draftError;
 
@@ -262,7 +267,7 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
         .from('requisitions_drugcupsabot')
         .insert({
           pcu_id: auth.userPcuId,
-          period_id: props.periodId,
+          period_id: Number(props.periodId),
           requester_id: auth.userProfile.id,
           status: 'draft',
         })
@@ -271,6 +276,10 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
 
       if (headerError) throw headerError;
       currentRequisitionId = newHeader.id;
+    }
+
+    if (currentRequisitionId === null) {
+      throw new Error('ไม่พบรหัสใบเบิก');
     }
 
     const { error: deleteError } = await supabase
@@ -282,7 +291,7 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
     const itemsToInsert = Object.entries(requisitionData.value)
       .filter(([itemId, entry]) => {
         const itemDetails = items.value.find((i) => i.id === Number(itemId));
-        return entry.quantity > 0 && entry.quantity !== null && itemDetails?.is_available;
+        return entry.quantity !== null && entry.quantity > 0 && itemDetails?.is_available;
       })
       .map(([itemId, entry]) => {
         const itemDetails = items.value.find((i) => i.id === Number(itemId));
@@ -292,7 +301,7 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
         return {
           requisition_id: currentRequisitionId,
           item_id: Number(itemId),
-          quantity: entry.quantity,
+          quantity: entry.quantity ?? 0,
           on_hand_quantity: entry.onHand,
           price_at_request: itemDetails.price_per_unit,
         };

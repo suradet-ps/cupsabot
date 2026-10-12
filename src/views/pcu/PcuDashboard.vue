@@ -159,7 +159,7 @@ const existingRequisitions = ref<ExistingRequisition[]>([]);
 const historyRequisitions = computed<ExistingRequisition[]>(() => {
   return existingRequisitions.value
     .filter((req) => req.status !== 'draft')
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 
 onMounted(async () => {

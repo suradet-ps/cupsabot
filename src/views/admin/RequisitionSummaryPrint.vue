@@ -92,7 +92,7 @@ onMounted(async () => {
     const { data: periodData } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', periodId)
+      .eq('id', Number(periodId))
       .single();
     periodInfo.value = periodData;
 
@@ -117,7 +117,7 @@ onMounted(async () => {
       `,
       )
       .in('status', ['approved', 'fulfilled'])
-      .eq('period_id', periodId);
+      .eq('period_id', Number(periodId));
 
     if (error) throw error;
 

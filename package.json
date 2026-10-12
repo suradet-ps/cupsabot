@@ -6,9 +6,9 @@
   "packageManager": "bun@1.4.2",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit -p tsconfig.app.json && vite build",
     "preview": "vite preview",
-    "typecheck": "vue-tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.app.json",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",

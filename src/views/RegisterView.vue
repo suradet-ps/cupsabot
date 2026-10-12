@@ -173,7 +173,7 @@ async function handleRegister(): Promise<void> {
   errorMessage.value = '';
 
   try {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: form.value.email,
       password: form.value.password,
       options: {

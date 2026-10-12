@@ -1,5 +1,12 @@
 import type { Database } from './database';
 
+export type {
+  ProfileRole,
+  ProfileStatus,
+  RequisitionPeriodStatus,
+  RequisitionStatus,
+} from './database';
+
 export type Profile = Database['public']['Tables']['profiles_drugcupsabot']['Row'];
 export type Pcu = Database['public']['Tables']['pcus_drugcupsabot']['Row'];
 export type Item = Database['public']['Tables']['items_drugcupsabot']['Row'];
