@@ -1,5 +1,9 @@
 <template>
-  <aside class="sidebar no-print" :class="{ 'is-open': isOpen }" aria-label="แถบนำทางผู้ดูแลระบบ">
+  <aside
+    class="sidebar no-print"
+    :class="{ 'is-open': isOpen, 'is-collapsed': collapsed }"
+    aria-label="แถบนำทางผู้ดูแลระบบ"
+  >
     <div class="brand">
       <span class="brand-mark" aria-hidden="true"><i class="fas fa-pills"></i></span>
       <span class="brand-text">
@@ -11,7 +15,12 @@
     <nav class="nav" aria-label="เมนูหลัก">
       <div v-for="group in navGroups" :key="group.label" class="nav-group">
         <p class="nav-label">{{ group.label }}</p>
-        <router-link v-for="item in group.items" :key="item.to" :to="item.to">
+        <router-link
+          v-for="item in group.items"
+          :key="item.to"
+          :to="item.to"
+          :title="collapsed ? item.label : undefined"
+        >
           <span class="nav-icon" aria-hidden="true"><i :class="item.icon"></i></span>
           <span class="nav-text">{{ item.label }}</span>
         </router-link>
@@ -19,7 +28,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <div class="support-card">
+      <div class="support-card" :title="collapsed ? 'ระบบเบิกยาออนไลน์' : undefined">
         <i class="fas fa-circle-info" aria-hidden="true"></i>
         <div>
           <strong>ระบบเบิกยาออนไลน์</strong>
@@ -31,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ isOpen: boolean }>();
+defineProps<{ isOpen: boolean; collapsed: boolean }>();
 
 interface NavItem {
   to: string;
@@ -69,51 +78,34 @@ const navGroups: { label: string; items: NavItem[] }[] = [
 <style scoped>
 .sidebar {
   position: fixed;
-  top: var(--space-4);
-  left: var(--space-4);
-  bottom: var(--space-4);
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: 264px;
   display: flex;
   flex-direction: column;
-  border-radius: 22px;
-  overflow: hidden;
-  background: var(--gradient-sidebar);
-  box-shadow: var(--shadow-overlay);
-  transition: transform var(--duration-slow) var(--easing-standard);
+  background-color: var(--color-surface-soft);
+  border-right: 1px solid var(--color-hairline);
+  transition: width var(--duration-slow) var(--easing-standard);
   z-index: 1100;
 }
 
-/* Decorative glow blooms inside the sidebar */
-.sidebar::before {
-  content: "";
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(229, 138, 166, 0.5), transparent 70%);
-  pointer-events: none;
-}
-
 .brand {
-  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-5) var(--space-5) var(--space-4);
+  padding: var(--space-5) var(--space-4);
 }
 
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background: var(--gradient-brand);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-brand-pink);
   color: #ffffff;
-  font-size: 1.15rem;
-  box-shadow: 0 8px 20px rgba(138, 90, 52, 0.45);
+  font-size: 1.05rem;
   flex-shrink: 0;
 }
 
@@ -125,20 +117,19 @@ const navGroups: { label: string; items: NavItem[] }[] = [
 }
 
 .brand-text strong {
-  color: #ffffff;
-  font-size: var(--text-caption);
+  color: var(--color-ink);
+  font-size: var(--text-body-sm);
   font-weight: var(--weight-semibold);
   white-space: nowrap;
 }
 
 .brand-text small {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-muted-slate);
   font-size: var(--text-micro);
   white-space: nowrap;
 }
 
 .nav {
-  position: relative;
   flex-grow: 1;
   overflow-y: auto;
   padding: var(--space-2) var(--space-3) var(--space-4);
@@ -150,22 +141,22 @@ const navGroups: { label: string; items: NavItem[] }[] = [
 
 .nav-label {
   margin: 0 0 var(--space-2);
-  padding: 0 var(--space-2);
-  font-size: 10px;
+  padding: 0 var(--space-3);
+  font-size: 11px;
   font-weight: var(--weight-semibold);
-  letter-spacing: 0.08em;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--color-slate);
 }
 
 .nav a {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-1-5) var(--space-2);
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: var(--text-caption);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  font-size: var(--text-body-sm);
   font-weight: var(--weight-medium);
   text-decoration: none;
   transition:
@@ -180,39 +171,32 @@ const navGroups: { label: string; items: NavItem[] }[] = [
 .nav-icon {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
+  width: 22px;
   font-size: 0.9rem;
+  color: var(--color-muted-slate);
   flex-shrink: 0;
-  transition:
-    background-color var(--duration-base) var(--easing-standard),
-    box-shadow var(--duration-base) var(--easing-standard);
 }
 
 .nav a:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
   text-decoration: none;
 }
 
 .nav a.router-link-exact-active,
 .nav a.router-link-active {
-  background-color: rgba(255, 255, 255, 0.14);
+  background-color: var(--color-ink);
   color: #ffffff;
 }
 
 .nav a.router-link-exact-active .nav-icon,
 .nav a.router-link-active .nav-icon {
-  background: var(--gradient-brand);
   color: #ffffff;
-  box-shadow: 0 6px 16px rgba(138, 90, 52, 0.45);
 }
 
 .sidebar-footer {
-  position: relative;
   padding: var(--space-3);
+  border-top: 1px solid var(--color-hairline);
 }
 
 .support-card {
@@ -220,33 +204,100 @@ const navGroups: { label: string; items: NavItem[] }[] = [
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.72);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-card);
+  color: var(--color-muted-slate);
 }
 
 .support-card i {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-brand-pink);
+  flex-shrink: 0;
 }
 
 .support-card strong {
   display: block;
   font-size: var(--text-micro);
   font-weight: var(--weight-semibold);
-  color: #ffffff;
+  color: var(--color-ink);
 }
 
 .support-card span {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-muted-slate);
+}
+
+/* Collapsed (icon-only) state */
+.sidebar.is-collapsed {
+  width: 76px;
+}
+
+.sidebar.is-collapsed .brand {
+  justify-content: center;
+  padding-inline: var(--space-2);
+}
+
+.sidebar.is-collapsed .brand-text,
+.sidebar.is-collapsed .nav-text,
+.sidebar.is-collapsed .support-card > div {
+  display: none;
+}
+
+.sidebar.is-collapsed .nav-label {
+  text-align: center;
+  padding: 0;
+  font-size: 0;
+  height: 1px;
+  margin: var(--space-3) var(--space-2) var(--space-1-5);
+  background-color: var(--color-hairline);
+}
+
+.sidebar.is-collapsed .nav {
+  padding-inline: var(--space-2);
+}
+
+.sidebar.is-collapsed .nav a {
+  justify-content: center;
+  padding-inline: var(--space-2);
+}
+
+.sidebar.is-collapsed .support-card {
+  justify-content: center;
 }
 
 @media (max-width: 992px) {
-  .sidebar {
-    transform: translateX(calc(-100% - var(--space-4)));
+  .sidebar,
+  .sidebar.is-collapsed {
+    width: 264px;
+    transform: translateX(-100%);
   }
   .sidebar.is-open {
     transform: translateX(0);
+  }
+  /* Never collapse on mobile */
+  .sidebar.is-collapsed .brand-text {
+    display: flex;
+  }
+  .sidebar.is-collapsed .nav-text {
+    display: inline;
+  }
+  .sidebar.is-collapsed .support-card > div {
+    display: block;
+  }
+  .sidebar.is-collapsed .nav-label {
+    font-size: 11px;
+    height: auto;
+    margin: 0 0 var(--space-2);
+    padding: 0 var(--space-3);
+    background-color: transparent;
+    text-align: left;
+  }
+  .sidebar.is-collapsed .nav {
+    padding-inline: var(--space-3);
+  }
+  .sidebar.is-collapsed .brand,
+  .sidebar.is-collapsed .nav a,
+  .sidebar.is-collapsed .support-card {
+    justify-content: flex-start;
   }
 }
 </style>

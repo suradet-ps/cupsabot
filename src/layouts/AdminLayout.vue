@@ -1,6 +1,6 @@
 <template>
   <div class="admin-shell">
-    <AppSidebar :isOpen="isSidebarOpen" />
+    <AppSidebar :isOpen="isSidebarOpen" :collapsed="isCollapsed" />
 
     <div
       v-if="isSidebarOpen"
@@ -9,7 +9,7 @@
       aria-hidden="true"
     ></div>
 
-    <div class="main-content">
+    <div class="main-content" :class="{ 'is-collapsed': isCollapsed }">
       <header class="topbar no-print">
         <div class="topbar-left">
           <button
@@ -19,6 +19,19 @@
             :aria-expanded="isSidebarOpen"
           >
             <i class="fas fa-bars" aria-hidden="true"></i>
+          </button>
+
+          <button
+            class="icon-button collapse-button"
+            @click="toggleCollapse"
+            :aria-label="isCollapsed ? 'ขยายเมนู' : 'ย่อเมนู'"
+            :aria-pressed="isCollapsed"
+            :title="isCollapsed ? 'ขยายเมนู' : 'ย่อเมนู'"
+          >
+            <i
+              :class="isCollapsed ? 'fas fa-angles-right' : 'fas fa-angles-left'"
+              aria-hidden="true"
+            ></i>
           </button>
 
           <div class="breadcrumb">
@@ -57,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AppSidebar from '@/components/AppSidebar.vue';
 import { useAuthStore } from '@/store/auth';
@@ -71,6 +84,15 @@ function toggleSidebar(): void {
   isSidebarOpen.value = !isSidebarOpen.value;
 }
 
+const COLLAPSE_KEY = 'cupsabot:sidebar-collapsed';
+const isCollapsed = ref<boolean>(localStorage.getItem(COLLAPSE_KEY) === '1');
+function toggleCollapse(): void {
+  isCollapsed.value = !isCollapsed.value;
+}
+watch(isCollapsed, (value) => {
+  localStorage.setItem(COLLAPSE_KEY, value ? '1' : '0');
+});
+
 const pageTitle = computed(() => (route.meta.title as string | undefined) ?? 'แดชบอร์ด');
 
 async function handleLogout(): Promise<void> {
@@ -82,44 +104,43 @@ async function handleLogout(): Promise<void> {
 <style scoped>
 .admin-shell {
   min-height: 100vh;
-  background:
-    radial-gradient(1000px 620px at 100% -10%, rgba(138, 90, 52, 0.12), transparent 60%),
-    radial-gradient(820px 560px at -12% 112%, rgba(229, 138, 166, 0.1), transparent 60%),
-    var(--color-canvas);
+  background-color: var(--color-canvas);
 }
 
 .main-content {
-  margin-left: 296px;
+  margin-left: 264px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: var(--space-4) var(--space-6) var(--space-12);
+  padding: 0 var(--space-8) var(--space-16);
   transition: margin-left var(--duration-slow) var(--easing-standard);
 }
 
-/* Floating translucent top bar */
+.main-content.is-collapsed {
+  margin-left: 76px;
+}
+
+/* Flat cream top bar — Clay top-nav */
 .topbar {
   position: sticky;
-  top: var(--space-4);
+  top: 0;
   z-index: 900;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-2-5) var(--space-4);
-  margin-bottom: var(--space-6);
-  background-color: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--color-card-border);
-  border-radius: 16px;
-  box-shadow: var(--shadow-card);
+  height: 64px;
+  margin: 0 calc(-1 * var(--space-8)) var(--space-8);
+  padding: 0 var(--space-8);
+  background-color: var(--color-canvas);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .topbar-left,
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .breadcrumb {
@@ -127,6 +148,7 @@ async function handleLogout(): Promise<void> {
   align-items: center;
   gap: var(--space-2);
   font-size: var(--text-caption);
+  padding-left: var(--space-2);
 }
 
 .crumb-root {
@@ -134,8 +156,8 @@ async function handleLogout(): Promise<void> {
 }
 
 .breadcrumb i {
-  font-size: 0.6rem;
-  color: var(--color-hairline);
+  font-size: 0.55rem;
+  color: var(--color-slate);
 }
 
 .crumb-current {
@@ -155,26 +177,27 @@ main:focus {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-1-5) var(--space-3);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
   border-radius: var(--radius-pill);
-  background-color: var(--color-soft-stone);
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-surface-soft);
 }
 
 .user-avatar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: var(--gradient-brand);
+  background-color: var(--color-brand-pink);
   color: #ffffff;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .user-details {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .user-details .username {
@@ -184,7 +207,7 @@ main:focus {
 }
 
 .user-details .role {
-  font-size: var(--text-micro);
+  font-size: 11px;
   color: var(--color-muted-slate);
 }
 
@@ -195,11 +218,11 @@ main:focus {
   width: 38px;
   height: 38px;
   padding: 0;
-  font-size: 0.95rem;
-  border: 1px solid var(--color-hairline);
-  border-radius: 12px;
-  background-color: var(--color-surface);
-  color: var(--color-muted-slate);
+  font-size: 0.85rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-ink);
   cursor: pointer;
   transition:
     color var(--duration-base) var(--easing-standard),
@@ -208,14 +231,13 @@ main:focus {
 }
 
 .icon-button:hover {
-  background-color: var(--color-soft-stone);
+  background-color: var(--color-surface-card);
   color: var(--color-ink);
 }
 
 .logout-button:hover {
   color: var(--color-status-rejected);
   background-color: var(--color-status-rejected-bg);
-  border-color: rgba(201, 42, 42, 0.25);
 }
 
 .menu-button {
@@ -225,18 +247,26 @@ main:focus {
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(27, 35, 48, 0.45);
+  background-color: rgba(26, 18, 11, 0.4);
   z-index: 1050;
   display: none;
 }
 
 @media (max-width: 992px) {
-  .main-content {
+  .main-content,
+  .main-content.is-collapsed {
     margin-left: 0;
-    padding: var(--space-3) var(--space-4) var(--space-10);
+    padding: 0 var(--space-5) var(--space-12);
+  }
+  .topbar {
+    margin: 0 calc(-1 * var(--space-5)) var(--space-6);
+    padding: 0 var(--space-5);
   }
   .menu-button {
     display: inline-flex;
+  }
+  .collapse-button {
+    display: none;
   }
   .sidebar-overlay {
     display: block;

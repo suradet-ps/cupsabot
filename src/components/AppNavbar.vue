@@ -73,25 +73,20 @@ async function handleLogout(): Promise<void> {
 <style scoped>
 .navbar-wrap {
   position: sticky;
-  top: var(--space-4);
+  top: 0;
   z-index: 1000;
-  padding: 0 var(--space-6);
-  margin-bottom: var(--space-2);
+  background-color: var(--color-canvas);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .navbar {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 var(--space-4);
-  background-color: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--color-card-border);
-  border-radius: 16px;
-  box-shadow: var(--shadow-card);
+  padding: 0 var(--space-6);
   position: relative;
 }
 
@@ -113,10 +108,9 @@ async function handleLogout(): Promise<void> {
   place-items: center;
   width: 40px;
   height: 40px;
-  border-radius: 13px;
-  background: var(--gradient-brand);
+  border-radius: var(--radius-md);
+  background-color: var(--color-brand-pink);
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(138, 90, 52, 0.4);
 }
 
 .brand-text {
@@ -126,7 +120,7 @@ async function handleLogout(): Promise<void> {
 }
 
 .brand-text strong {
-  font-size: var(--text-caption);
+  font-size: var(--text-body-sm);
   font-weight: var(--weight-semibold);
   color: var(--color-ink);
 }
@@ -149,7 +143,7 @@ async function handleLogout(): Promise<void> {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--color-muted-slate);
+  color: var(--color-ink);
   text-decoration: none;
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-pill);
@@ -162,8 +156,8 @@ async function handleLogout(): Promise<void> {
 
 .nav-item:hover,
 .nav-item.router-link-exact-active {
-  background-color: var(--color-pale-blue);
-  color: var(--color-primary);
+  background-color: var(--color-ink);
+  color: #ffffff;
   text-decoration: none;
 }
 
@@ -171,26 +165,28 @@ async function handleLogout(): Promise<void> {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding-left: var(--space-4);
-  border-left: 1px solid var(--color-hairline);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-soft);
   color: var(--color-ink);
 }
 
 .user-avatar {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: var(--gradient-brand);
+  background-color: var(--color-brand-pink);
   color: #ffffff;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .user-details {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .user-details .username {
@@ -200,7 +196,7 @@ async function handleLogout(): Promise<void> {
 }
 
 .user-details .role {
-  font-size: var(--text-micro);
+  font-size: 11px;
   color: var(--color-muted-slate);
 }
 
@@ -211,23 +207,22 @@ async function handleLogout(): Promise<void> {
   width: 38px;
   height: 38px;
   padding: 0;
-  font-size: 0.95rem;
-  border: 1px solid var(--color-hairline);
-  border-radius: 12px;
-  background-color: var(--color-surface);
-  color: var(--color-muted-slate);
+  font-size: 0.85rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-ink);
   cursor: pointer;
 }
 
 .icon-button:hover {
-  background-color: var(--color-soft-stone);
+  background-color: var(--color-surface-card);
   color: var(--color-ink);
 }
 
 .logout-button:hover {
   color: var(--color-status-rejected);
   background-color: var(--color-status-rejected-bg);
-  border-color: rgba(201, 42, 42, 0.25);
 }
 
 .hamburger-menu {
@@ -236,8 +231,8 @@ async function handleLogout(): Promise<void> {
 }
 
 @media (max-width: 820px) {
-  .navbar-wrap {
-    padding: 0 var(--space-4);
+  .navbar {
+    padding: 0 var(--space-5);
   }
 
   .hamburger-menu {
@@ -247,11 +242,11 @@ async function handleLogout(): Promise<void> {
   .nav-links {
     position: absolute;
     top: calc(100% + var(--space-2));
-    left: 0;
-    right: 0;
+    left: var(--space-4);
+    right: var(--space-4);
     background-color: var(--color-surface);
     border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     padding: var(--space-3);
     flex-direction: column;
     align-items: stretch;
@@ -274,18 +269,9 @@ async function handleLogout(): Promise<void> {
   }
 
   .user-info {
-    flex-direction: column;
-    border-left: none;
-    padding-left: 0;
-    padding-top: var(--space-4);
-    margin-top: var(--space-2);
-    border-top: 1px solid var(--color-hairline);
+    flex-direction: row;
+    justify-content: center;
     width: 100%;
-    gap: var(--space-3);
-  }
-
-  .user-details {
-    text-align: center;
   }
 }
 </style>

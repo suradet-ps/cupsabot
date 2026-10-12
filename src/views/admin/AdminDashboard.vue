@@ -13,25 +13,21 @@
     </p>
 
     <template v-if="!loading && !error">
-      <div class="stat-grid">
-        <div class="stat-card">
-          <span class="stat-icon stat-icon--amber" aria-hidden="true">
-            <i class="fas fa-hourglass-half"></i>
-          </span>
-          <div class="stat-body">
-            <p class="stat-label">รอการอนุมัติ</p>
-            <p class="stat-value">{{ submittedRequisitions.length }}</p>
-          </div>
+      <div class="feature-grid">
+        <div class="feature-card feature-card--pink">
+          <span class="feature-label">รอการอนุมัติ</span>
+          <p class="feature-value">{{ submittedRequisitions.length }}</p>
+          <span class="feature-caption">ใบเบิกที่ยังไม่ได้รับการตรวจสอบ</span>
         </div>
-
-        <div class="stat-card">
-          <span class="stat-icon stat-icon--blue" aria-hidden="true">
-            <i class="fas fa-clipboard-check"></i>
-          </span>
-          <div class="stat-body">
-            <p class="stat-label">อนุมัติแล้ว · รอจ่ายยา</p>
-            <p class="stat-value">{{ approvedRequisitions.length }}</p>
-          </div>
+        <div class="feature-card feature-card--teal">
+          <span class="feature-label">อนุมัติแล้ว · รอจ่ายยา</span>
+          <p class="feature-value">{{ approvedRequisitions.length }}</p>
+          <span class="feature-caption">รอคลังยาเบิกจ่ายเวชภัณฑ์</span>
+        </div>
+        <div class="feature-card feature-card--lavender">
+          <span class="feature-label">ภาพรวมวันนี้</span>
+          <p class="feature-value">{{ requisitions.length }}</p>
+          <span class="feature-caption">รายการที่อยู่ในคิวทั้งหมด</span>
         </div>
       </div>
 
@@ -52,16 +48,16 @@
                 <th>รอบเบิก</th>
                 <th>วันที่ส่ง</th>
                 <th>สถานะ</th>
-                <th class="text-center">จัดการ</th>
+                <th class="text-right">จัดการ</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="req in submittedRequisitions" :key="req.id">
                 <td class="bold">{{ req.pcus_drugcupsabot.name }}</td>
                 <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
-                <td>{{ formatDate(req.submitted_at) }}</td>
+                <td class="mono-label">{{ formatDate(req.submitted_at) }}</td>
                 <td><StatusBadge :status="req.status" /></td>
-                <td class="text-center">
+                <td class="text-right">
                   <router-link
                     :to="{
                       name: 'AdminRequisitionDetail',
@@ -102,16 +98,16 @@
                 <th>รอบเบิก</th>
                 <th>วันที่ส่ง</th>
                 <th>สถานะ</th>
-                <th class="text-center">จัดการ</th>
+                <th class="text-right">จัดการ</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="req in approvedRequisitions" :key="req.id">
                 <td class="bold">{{ req.pcus_drugcupsabot.name }}</td>
                 <td>{{ req.requisition_periods_drugcupsabot.name }}</td>
-                <td>{{ formatDate(req.submitted_at) }}</td>
+                <td class="mono-label">{{ formatDate(req.submitted_at) }}</td>
                 <td><StatusBadge :status="req.status" /></td>
-                <td class="text-center">
+                <td class="text-right">
                   <router-link
                     :to="{
                       name: 'AdminRequisitionDetail',

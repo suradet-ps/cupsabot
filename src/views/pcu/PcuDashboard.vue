@@ -94,21 +94,21 @@
                 <th>รอบเบิก</th>
                 <th>วันที่ส่ง</th>
                 <th>สถานะ</th>
-                <th class="text-center">จัดการ</th>
+                <th class="text-right">จัดการ</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="req in historyRequisitions" :key="req.id">
                 <td class="bold">{{ req.requisition_periods_drugcupsabot.name }}</td>
-                <td>{{ formatSubmitDate(req.submitted_at) }}</td>
+                <td class="mono-label">{{ formatSubmitDate(req.submitted_at) }}</td>
                 <td><StatusBadge :status="req.status" /></td>
-                <td class="text-center">
+                <td class="text-right">
                   <router-link
                     :to="{
                       name: 'RequisitionDetail',
                       params: { requisitionId: req.id },
                     }"
-                    class="btn btn-info btn-sm"
+                    class="btn btn-secondary btn-sm"
                   >
                     <i class="fas fa-magnifying-glass" aria-hidden="true"></i> ดูรายละเอียด
                   </router-link>

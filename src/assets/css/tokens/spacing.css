@@ -1,9 +1,11 @@
 /* Design Token: Spacing
-   Source of truth: DESIGN.md §Layout §Spacing System (8px base)
+   Source of truth: DESIGN.md §Layout §Spacing System
+   4px base unit; the 8px values below are the practical UI scale.
    ------------------------------------------------------------------ */
 :root {
   --space-px: 1px;
   --space-0-5: 2px;
+  --space-1: 4px;
   --space-1-5: 6px;
   --space-2: 8px;
   --space-2-5: 10px;
@@ -16,8 +18,10 @@
   --space-8: 32px;
   --space-9: 36px;
   --space-10: 40px;
+  --space-12: 48px;
   --space-14: 56px;
   --space-15: 60px;
   --space-16: 64px;
   --space-20: 80px;
+  --space-24: 96px;
 }
