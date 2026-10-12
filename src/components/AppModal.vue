@@ -107,6 +107,10 @@ watch(
 );
 
 onBeforeUnmount(() => {
+  if (props.open) {
+    previouslyFocused?.focus?.();
+    previouslyFocused = null;
+  }
   document.body.style.overflow = '';
 });
 </script>
