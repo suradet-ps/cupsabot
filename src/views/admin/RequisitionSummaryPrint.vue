@@ -1,5 +1,5 @@
 <template>
-    <div class="print-container" v-if="processedData.length > 0">
+    <div class="print-container" v-if="!loading && processedData.length > 0">
         <div class="page">
             <div class="header">
                 <h2 class="bold">ใบสรุปยอดรวมการเบิกเวชภัณฑ์</h2>
@@ -54,6 +54,10 @@
             </div>
         </div>
     </div>
+    <div v-else-if="!loading" class="print-empty">
+        <h2>ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้</h2>
+        <p>กรุณาตรวจสอบรอบเบิกอีกครั้ง หรือกลับไปสร้างใบเบิกก่อนพิมพ์</p>
+    </div>
     <div v-else class="loading">กำลังเตรียมข้อมูลสำหรับพิมพ์...</div>
 </template>
 
@@ -69,7 +73,7 @@ type ProcessedItem = {
   item_name: string;
   unit_pack: string;
   total_quantity: number;
-  pcu_breakdown: Record<number, number>;
+  pcu_breakdown: Record<string, number>;
   category_order: number | null;
   item_order: number | null;
 };
@@ -92,7 +96,7 @@ onMounted(async () => {
     const { data: periodData } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', periodId)
+      .eq('id', String(periodId))
       .single();
     periodInfo.value = periodData;
 
@@ -117,13 +121,13 @@ onMounted(async () => {
       `,
       )
       .in('status', ['approved', 'fulfilled'])
-      .eq('period_id', periodId);
+      .eq('period_id', String(periodId));
 
     if (error) throw error;
 
     type PrintRequisition = {
-      id: number;
-      pcu_id: number;
+      id: string;
+      pcu_id: string;
       requisition_items_drugcupsabot: Array<{
         id: number;
         approved_quantity: number | null;
@@ -244,6 +248,20 @@ body {
     font-size: 14px;
     line-height: 1.5;
     color: #000;
+}
+.print-empty {
+    max-width: 560px;
+    margin: 15vh auto 0;
+    padding: 0 24px;
+    text-align: center;
+    color: #000;
+}
+.print-empty h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+.print-empty p {
+    color: #555;
 }
 .page {
     background: white;

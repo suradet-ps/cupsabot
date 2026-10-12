@@ -1,203 +1,171 @@
 <template>
-    <div class="container">
-        <h2><i class="fas fa-dolly-flatbed"></i> จัดการรายการยาและเวชภัณฑ์</h2>
+  <div class="container">
+    <PageHeader
+      title="จัดการรายการยาและเวชภัณฑ์"
+      subtitle="แก้ไขชื่อ ราคา หน่วยนับ และสถานะการเบิกได้"
+      icon="fas fa-pills"
+    >
+      <template #actions>
+        <button @click="openAddItemModal" class="btn btn-primary">
+          <i class="fas fa-plus" aria-hidden="true"></i> เพิ่มรายการใหม่
+        </button>
+      </template>
+    </PageHeader>
 
-        <div v-if="loading" class="loading">กำลังโหลดข้อมูล...</div>
-        <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="loading" class="loading">กำลังโหลดข้อมูล...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
 
-        <div v-if="!loading" class="card">
-            <div class="toolbar">
+    <template v-if="!loading">
+      <div class="search-box">
+        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+        <input
+          type="search"
+          v-model="searchTerm"
+          placeholder="ค้นหารายการ..."
+          aria-label="ค้นหารายการยาและเวชภัณฑ์"
+        />
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-name">ชื่อรายการ</th>
+              <th class="col-price text-right">ราคา</th>
+              <th class="col-unit">หน่วยนับ</th>
+              <th class="col-notes">หมายเหตุ</th>
+              <th class="col-status text-center">เบิกได้</th>
+              <th class="col-actions text-center">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in filteredItems" :key="item.id">
+              <td>
                 <input
-                    type="text"
-                    v-model="searchTerm"
-                    placeholder="ค้นหารายการ..."
-                    class="search-input"
+                  type="text"
+                  v-model="item.name"
+                  class="form-control-table"
+                  :aria-label="`ชื่อรายการ ${item.name}`"
                 />
-                <button @click="openAddItemModal" class="btn btn-success">
-                    <i class="fas fa-plus"></i>
-                    <span>เพิ่มรายการใหม่</span>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  step="0.01"
+                  v-model.number="item.price_per_unit"
+                  class="form-control-table text-right"
+                  :aria-label="`ราคาต่อหน่วย ${item.name}`"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="item.unit_pack"
+                  class="form-control-table"
+                  :aria-label="`หน่วยนับ ${item.name}`"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="item.notes"
+                  class="form-control-table"
+                  :aria-label="`หมายเหตุ ${item.name}`"
+                />
+              </td>
+              <td class="text-center">
+                <label class="switch">
+                  <input
+                    type="checkbox"
+                    v-model="item.is_available"
+                    :aria-label="`สถานะการเบิกได้ของ ${item.name}`"
+                  />
+                  <span class="slider" aria-hidden="true"></span>
+                </label>
+              </td>
+              <td class="text-center">
+                <button @click="updateItem(item)" class="btn btn-primary btn-sm">
+                  <i class="fas fa-floppy-disk" aria-hidden="true"></i> บันทึก
                 </button>
-            </div>
+              </td>
+            </tr>
+            <tr v-if="filteredItems.length === 0">
+              <td colspan="6" class="text-center text-muted table-empty">
+                ไม่พบรายการที่ตรงกับ "{{ searchTerm }}"
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
 
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="col-name">ชื่อรายการ</th>
-                            <th class="col-price text-right">ราคา</th>
-                            <th class="col-unit">หน่วยนับ</th>
-                            <th class="col-notes">หมายเหตุ</th>
-                            <th class="col-status text-center">สถานะเบิกได้</th>
-                            <th class="col-actions text-center">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in filteredItems" :key="item.id">
-                            <td>
-                                <input
-                                    type="text"
-                                    v-model="item.name"
-                                    class="form-control-table"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    v-model.number="item.price_per_unit"
-                                    class="form-control-table text-right"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="text"
-                                    v-model="item.unit_pack"
-                                    class="form-control-table"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="text"
-                                    v-model="item.notes"
-                                    class="form-control-table"
-                                />
-                            </td>
-                            <td class="text-center">
-                                <label class="switch">
-                                    <input
-                                        type="checkbox"
-                                        v-model="item.is_available"
-                                    />
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td class="text-center">
-                                <button
-                                    @click="updateItem(item)"
-                                    class="btn btn-primary btn-sm"
-                                >
-                                    <i class="fas fa-save"></i>
-                                    <span>บันทึก</span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <AppModal
+      :open="showAddItemModal"
+      title="เพิ่มรายการยาและเวชภัณฑ์ใหม่"
+      @update:open="showAddItemModal = $event"
+    >
+      <form id="add-item-form" @submit.prevent="handleAddItem">
+        <div class="form-group">
+          <label for="name">ชื่อรายการ <span class="required">*</span></label>
+          <input type="text" id="name" v-model="newItem.name" required data-autofocus />
         </div>
 
-        <div
-            v-if="showAddItemModal"
-            class="modal-overlay"
-            @click.self="showAddItemModal = false"
-        >
-            <div class="modal-content card">
-                <h3>
-                    <i class="fas fa-plus-circle"></i>
-                    เพิ่มรายการยา/เวชภัณฑ์ใหม่
-                </h3>
-                <form @submit.prevent="handleAddItem">
-                    <div class="form-group">
-                        <label for="name"
-                            >ชื่อรายการ <span class="required">*</span></label
-                        >
-                        <input
-                            type="text"
-                            id="name"
-                            v-model="newItem.name"
-                            required
-                        />
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="price"
-                                >ราคาต่อหน่วย
-                                <span class="required">*</span></label
-                            >
-                            <input
-                                type="number"
-                                id="price"
-                                step="0.01"
-                                min="0"
-                                v-model.number="newItem.price_per_unit"
-                                required
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="unit_pack">หน่วยนับ</label>
-                            <input
-                                type="text"
-                                id="unit_pack"
-                                v-model="newItem.unit_pack"
-                            />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="category"
-                            >หมวดหมู่ <span class="required">*</span></label
-                        >
-                        <select
-                            id="category"
-                            v-model="newItem.category"
-                            required
-                        >
-                            <option disabled value="">
-                                -- เลือกหมวดหมู่ --
-                            </option>
-                            <option
-                                v-for="cat in uniqueCategories"
-                                :key="cat"
-                                :value="cat"
-                            >
-                                {{ cat }}
-                            </option>
-                            <option value="--new--">
-                                -- เพิ่มหมวดหมู่ใหม่ --
-                            </option>
-                        </select>
-                    </div>
-                    <div
-                        v-if="newItem.category === '--new--'"
-                        class="form-group"
-                    >
-                        <label for="new_category_name"
-                            >ชื่อหมวดหมู่ใหม่
-                            <span class="required">*</span></label
-                        >
-                        <input
-                            type="text"
-                            id="new_category_name"
-                            v-model="newCategoryName"
-                            required
-                        />
-                    </div>
-                    <div class="modal-actions">
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            @click="showAddItemModal = false"
-                        >
-                            ยกเลิก
-                        </button>
-                        <button
-                            type="submit"
-                            class="btn btn-success"
-                            :disabled="isSubmitting"
-                        >
-                            <i class="fas fa-plus"></i>
-                            <span>{{
-                                isSubmitting ? "กำลังเพิ่ม..." : "เพิ่มรายการ"
-                            }}</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="price">ราคาต่อหน่วย <span class="required">*</span></label>
+            <input
+              type="number"
+              id="price"
+              step="0.01"
+              min="0"
+              v-model.number="newItem.price_per_unit"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="unit_pack">หน่วยนับ</label>
+            <input type="text" id="unit_pack" v-model="newItem.unit_pack" />
+          </div>
         </div>
-    </div>
+
+        <div class="form-group">
+          <label for="category">หมวดหมู่ <span class="required">*</span></label>
+          <select id="category" v-model="newItem.category" required>
+            <option disabled value="">-- เลือกหมวดหมู่ --</option>
+            <option v-for="cat in uniqueCategories" :key="cat" :value="cat">
+              {{ cat }}
+            </option>
+            <option value="--new--">-- เพิ่มหมวดหมู่ใหม่ --</option>
+          </select>
+        </div>
+
+        <div v-if="newItem.category === '--new--'" class="form-group">
+          <label for="new_category_name">ชื่อหมวดหมู่ใหม่ <span class="required">*</span></label>
+          <input type="text" id="new_category_name" v-model="newCategoryName" required />
+        </div>
+      </form>
+
+      <template #footer>
+        <button type="button" class="btn btn-secondary" @click="showAddItemModal = false">
+          ยกเลิก
+        </button>
+        <button type="submit" form="add-item-form" class="btn btn-success" :disabled="isSubmitting">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+          {{ isSubmitting ? 'กำลังเพิ่ม...' : 'เพิ่มรายการ' }}
+        </button>
+      </template>
+    </AppModal>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import AppModal from '@/components/AppModal.vue';
+import PageHeader from '@/components/PageHeader.vue';
+import { useToast } from '@/composables/useToast';
 import { supabase } from '@/supabaseClient';
 import type { Item } from '@/types/models';
 
@@ -216,6 +184,7 @@ type NewItemWithOrders = NewItem & {
   item_order: number;
 };
 
+const toast = useToast();
 const loading = ref<boolean>(true);
 const isSubmitting = ref<boolean>(false);
 const error = ref<string | null>(null);
@@ -257,7 +226,6 @@ async function fetchItems(): Promise<void> {
     if (fetchError) throw fetchError;
     items.value = (data ?? []) as unknown as Item[];
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
     error.value = `ไม่สามารถโหลดข้อมูลรายการยาได้: ${err instanceof Error ? err.message : String(err)}`;
     console.error(err);
   } finally {
@@ -282,10 +250,9 @@ async function updateItem(item: Item): Promise<void> {
       .eq('id', id);
 
     if (updateError) throw updateError;
-    alert(`อัปเดตรายการ "${item.name}" เรียบร้อยแล้ว`);
+    toast.success(`อัปเดตรายการ "${item.name}" เรียบร้อยแล้ว`);
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
-    alert(`เกิดข้อผิดพลาดในการอัปเดต: ${err instanceof Error ? err.message : String(err)}`);
+    toast.error(`เกิดข้อผิดพลาดในการอัปเดต: ${err instanceof Error ? err.message : String(err)}`);
     console.error(err);
   }
 }
@@ -310,7 +277,7 @@ async function handleAddItem(): Promise<void> {
     let finalCategory = newItem.value.category;
     if (finalCategory === '--new--') {
       if (!newCategoryName.value.trim()) {
-        alert('กรุณากรอกชื่อหมวดหมู่ใหม่');
+        toast.error('กรุณากรอกชื่อหมวดหมู่ใหม่');
         return;
       }
       finalCategory = newCategoryName.value.trim();
@@ -349,12 +316,11 @@ async function handleAddItem(): Promise<void> {
     if (insertError) throw insertError;
 
     const inserted = (data ?? []) as unknown as Item[];
-    alert(`เพิ่มรายการ "${inserted[0]?.name}" สำเร็จ`);
+    toast.success(`เพิ่มรายการ "${inserted[0]?.name}" สำเร็จ`);
     showAddItemModal.value = false;
     await fetchItems();
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
-    alert(`เกิดข้อผิดพลาดในการเพิ่มรายการ: ${err instanceof Error ? err.message : String(err)}`);
+    toast.error(`เกิดข้อผิดพลาดในการเพิ่มรายการ: ${err instanceof Error ? err.message : String(err)}`);
     console.error(err);
   } finally {
     isSubmitting.value = false;
@@ -363,185 +329,110 @@ async function handleAddItem(): Promise<void> {
 </script>
 
 <style scoped>
-table {
-    table-layout: fixed;
-    width: 100%;
+.search-box {
+  position: relative;
+  max-width: 420px;
+  margin-bottom: var(--space-5);
 }
 
-.col-name {
-    width: auto;
+.search-box > i {
+  position: absolute;
+  top: 50%;
+  left: var(--space-3);
+  transform: translateY(-50%);
+  color: var(--color-muted-slate);
+  pointer-events: none;
 }
-.col-price {
-    width: 120px;
+
+.search-box input {
+  padding-left: calc(var(--space-3) * 2 + 0.75rem);
 }
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 760px;
+}
+
+.col-price,
 .col-unit {
-    width: 120px;
+  width: 130px;
 }
 .col-notes {
-    width: 25%;
+  width: 24%;
 }
 .col-status {
-    width: 130px;
+  width: 110px;
 }
 .col-actions {
-    width: 120px;
+  width: 120px;
 }
 
-.toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-6);
-    gap: var(--space-4);
-}
-.search-input {
-    max-width: 400px;
-}
 .form-control-table {
-    width: 100%;
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-xs);
-    background-color: transparent;
-}
-.form-control-table:focus {
-    outline: 1px solid var(--color-form-focus);
-    background-color: white;
-}
-.btn-sm {
-    padding: var(--space-1-5) var(--space-4);
-    font-size: var(--text-micro);
+  width: 100%;
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
 }
 
-/* Toggle Switch Styles */
+.table-empty {
+  padding: var(--space-8);
+}
+
+/* Toggle switch */
 .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
 }
 .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--color-hairline);
-    transition: 0.4s;
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background-color: var(--color-hairline);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--duration-base) var(--easing-standard);
 }
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.4s;
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  top: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--duration-base) var(--easing-standard);
 }
-input:checked + .slider {
-    background: var(--gradient-primary);
+.switch input:checked + .slider {
+  background-color: var(--color-success);
 }
-input:checked + .slider:before {
-    transform: translateX(26px);
+.switch input:focus-visible + .slider {
+  box-shadow: var(--shadow-focus);
 }
-.slider.round {
-    border-radius: 34px;
-}
-.slider.round:before {
-    border-radius: 50%;
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
 }
 
-/* Modal Styles */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-}
-.modal-content {
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: var(--space-8);
-}
-.modal-content h3 {
-    margin-top: 0;
-    text-align: center;
-}
-.modal-content h3 i {
-    color: var(--success-color);
-}
-.modal-actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
 .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
 }
+
 .required {
-    color: var(--danger-color);
-}
-
-@media (max-width: 992px) {
-    table {
-        table-layout: auto;
-        min-width: 800px;
-    }
-
-    th,
-    td {
-        white-space: nowrap;
-    }
-
-    th.col-name,
-    td:first-child,
-    th.col-notes,
-    td:nth-child(4) {
-        white-space: normal;
-    }
+  color: var(--color-status-rejected);
 }
 
 @media (max-width: 768px) {
-    .toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .search-input {
-        max-width: 100%;
-    }
-    .toolbar .btn {
-        justify-content: center;
-    }
-
-    .toolbar .btn span,
-    .btn-sm span,
-    .modal-actions .btn span {
-        display: inline;
-    }
-
-    .modal-content {
-        padding: 1.5rem 1rem;
-    }
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

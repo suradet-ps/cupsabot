@@ -1,272 +1,209 @@
+# Design System
+
+> Single source of truth for the cupsabot UI. Tokens live in
+> `src/assets/css/tokens/*`, the global component layer lives in
+> `src/assets/main.css`.
+
 ## Overview
 
-The system uses a soft, approachable pastel palette centred on blue and pink accents over a warm cream canvas. The design feels calm, modern, and healthcare-appropriate โ€” clean enough for administrative workflows but warm enough to feel human. Gradients blend blue and pink throughout primary actions, sidebars, and decorative surfaces, while the cream base keeps the interface bright and readable.
+The system follows **Clay's** design structure — a warm cream canvas, warm ink,
+big rounded display type, and **saturated single-color feature cards** as the
+primary visual element — rendered in the **Monchhichi** palette: the official
+logo red, brown and beige fur, rosy cheeks, gingham pastel blue, and the
+`Monchhichi COLORS` pastel range.
 
-What makes the system distinctive is the gradient-driven UI: buttons use blue-to-pink diagonal gradients with dark text for strong contrast, the admin sidebar uses a deep navy-to-plum vertical gradient, and section surfaces alternate between pale-blue and pale-pink washes. Cards are rounded but not cute. Type is large, tight, and measured, creating a professional cadence across administrative and clinical surfaces.
+Depth is flat. There are no heavy shadows: structure comes from 1px hairlines and
+the contrast between the cream canvas and bright feature cards. Color is used
+deliberately — the saturated cards carry the brand voltage, while the working UI
+stays quiet and high-contrast.
 
-**Key Characteristics:**
-- Pastel blue-pink gradient primary actions with dark text for excellent contrast.
-- Warm cream canvas as the default surface; pale blue and pale pink washes for section variety.
-- Rounded media cards and product cards, usually 8px to 22px.
-- Pill CTAs using gradients instead of flat fills, with most secondary actions rendered as underlined text links.
-- Dark gradient sidebar for admin navigation with subtle blue and pink undertones.
-- Blue and pink status badges with soft matching backgrounds.
-- Clean rule-separated tables with pale-blue hover states.
+**Key characteristics**
+
+- Cream-tinted canvas (`#fffaf0`) everywhere, including the sidebar and footer.
+- Warm chocolate ink (`#2a1a10`) for CTAs and headings, rounded 12px.
+- Official Monchhichi red (`#e60c18`) for brand marks and the hero art.
+- Saturated feature-card palette (red, brown, berry, cheek pink, beige, blue,
+  mint, ochre, lavender) for KPIs and highlights.
+- Rounded display type at weight 500 with negative letter-spacing.
+- Generous radii: 12px buttons/inputs, 16px cards, 24px feature cards.
+- Flat surfaces: 1px hairlines, no card shadows.
+- 44px control targets (WCAG), visible focus, `prefers-reduced-motion` support.
 
 ## Colors
 
-**Theme: ฟ้า-ชมพู Pastel** — A soft, approachable pink-and-blue palette on a warm cream canvas. Gradients are used throughout the UI for primary actions, surfaces, and decorative accents. The palette emphasises blue (`#b0cfff`) and pink (`#ffb0d9`) as brand accents with a cream canvas (`#f9f8f2`).
+### Brand & accent
 
-### Brand & Accent
+- **Ink** (`#2a1a10`): primary CTAs, headings, body text — deep warm chocolate.
+- **Logo Red** (`#e60c18`): official Monchhichi red (the ribbon); brand marks,
+  hero art, active signals.
+- **Brown** (`#8a5a34`): fur brown accent, hover states.
+- **Pink** (`#f2a3b8`): rosy-cheek pink.
+- **Blue** (`#a9c7e8`): gingham pastel blue.
 
-- **Dark Ink** (`#1a1a2e`): Highest-contrast text, dark UI panels, and the global brand anchor.
-- **Blue** (`#b0cfff`): Primary action accent, button gradient start, link hover states.
-- **Blue Hover** (`#8ba8e6`): Darker blue for hover/interaction feedback.
-- **Light Blue** (`#c9dcf9`): Soft blue surface, gradient component, pale accent backgrounds.
-- **Pink** (`#ffb0d9`): Primary warm accent, button gradient end, decorative markers.
-- **Pink Hover** (`#e695b5`): Darker pink for hover/interaction feedback.
-- **Light Pink** (`#f9c9e2`): Soft pink surface, gradient component, pale accent backgrounds.
+### Saturated feature-card palette (Monchhichi)
 
-### Surface & Background
+| Token | Hex | Text on fill | Source |
+|---|---|---|---|
+| `brand-red` | `#e60c18` | white | official logo / ribbon |
+| `brand-brown` | `#7a4e2d` | white | standard fur |
+| `brand-berry` | `#d94f8a` | white | COLORS berry pink |
+| `brand-pink` | `#f2a3b8` | ink | rosy cheeks |
+| `brand-beige` | `#e8d3ae` | ink | beige fur variant |
+| `brand-blue` | `#a9c7e8` | ink | gingham / pastel blue |
+| `brand-mint` | `#a9d8c6` | ink | COLORS mint green |
+| `brand-ochre` | `#f0c24a` | ink | COLORS yellow |
+| `brand-lavender` | `#c9b8ef` | ink | COLORS purple |
+| `brand-peach` | `#ffd9b8` | ink | sweet sugar warmth |
 
-- **Canvas Cream** (`#f9f8f2`): Dominant page background and form/card surface.
-- **Soft Stone** (`#f0ede5`): Warm neutral surface blocks, disabled states.
-- **Pale Blue Wash** (`#eaf1fc`): Blue-tinted section backdrop, approved badge background.
-- **Pale Pink Wash** (`#fdeaf2`): Pink-tinted section backdrop, error badge background.
-- **Card Border** (`#e8e4db`): Softest card containment line, warm neutral edge.
+### Surface
 
-### Text & Rules
+- **Canvas** (`#fffaf0`): the default page floor.
+- **Surface Soft** (`#faf5e8`): sidebar, table headers, footer bands.
+- **Surface Card** (`#f5f0e0`): cream cards, hover fills.
+- **Surface Strong** (`#ebe6d6`): stronger cream.
+- **Hairline** (`#e8e2d2`): 1px borders on cards, inputs, and rules.
+- **White** (`#ffffff`): panels and tables that must read as content.
 
-- **Ink** (`#212121`): Default body text and most link text on light backgrounds.
-- **Muted Slate** (`#7a7a85`): Footer links, dates, metadata, and de-emphasized labels.
-- **Slate** (`#6b6b77`): Research separators and tertiary text.
-- **Hairline** (`#d5d0c7`): Standard list rules and section dividers.
-- **Border Light** (`#e0dbd2`): Secondary divider and utility rule.
+### Text
+
+- **Ink** (`#2a1a10`): headlines and primary text.
+- **Muted** (`#6a6558`): sub-headings, captions, metadata.
+- **Slate** (`#8a8578`): fine-print and tertiary labels.
 
 ### Semantic
 
-- **Focus Blue** (`#6b8fd1`): Keyboard focus and ring color.
-- **Form Focus Pink** (`#d487aa`): Focus border for text inputs.
-- **Error Red** (`#c23b3b`): Validation error states, danger actions.
+- **Focus** (`#2a1a10`): focus ring.
+- **Error** (`#b3261e`), **Warning** (`#b45309`), **Success** (`#1f8a4c`).
 
-### Gradient System
+### Status
 
-Gradients are a core part of the UI identity. They blend blue and pink across multiple contexts:
-
-- **Primary CTA Gradient** (`#b0cfff → #ffb0d9`): Blue-to-pink diagonal gradient for primary buttons, with dark text for strong contrast.
-- **Primary Hover Gradient** (`#8ba8e6 → #e695b5`): Darker blue-to-pink for hover states.
-- **Hero Gradient** (`#c9dcf9 → #f9c9e2 → #ffb0d9`): Three-stop gradient for hero sections and large media panels.
-- **Blue Gradient** (`#b0cfff → #c9dcf9`): Monochromatic blue gradient for info buttons and blue surfaces.
-- **Pink Gradient** (`#ffb0d9 → #f9c9e2`): Monochromatic pink gradient for warm accents.
-- **Sidebar Gradient** (`#c9dcf9 → #eaf1fc → #f9f8f2 → #fdeaf2 → #f9c9e2`): Soft pastel blue-to-pink vertical gradient for the admin sidebar, with dark text for readability.
-- **Surface Gradient** (`#f9f8f2 → #eaf1fc`): Subtle cream-to-pale-blue backdrop for elevated surfaces.
-
-### Status Colors
-
-- **Draft** (`#7a7a85`): Muted slate, neutral pending state.
-- **Submitted** (`#c9893b`): Warm amber, awaiting review.
-- **Approved** (`#5b7ec4`): Medium blue, confirmed/active state.
-- **Fulfilled** (`#4a8c5c`): Green, completed/satisfied state.
-- **Rejected** (`#c23b3b`): Error red, declined state.
+| Status | Foreground | Background | Thai label |
+|---|---|---:|---|
+| Draft | `#6a6558` | `#f0ead9` | ฉบับร่าง |
+| Submitted | `#b45309` | `#fdf0d9` | รออนุมัติ |
+| Approved | `#3f6fb0` | `#eaf2fb` | อนุมัติแล้ว |
+| Fulfilled | `#1f8a4c` | `#e8f4ec` | จ่ายยาแล้ว |
+| Rejected | `#b3261e` | `#fdeceb` | ถูกปฏิเสธ |
 
 ## Typography
 
-### Font Family
+- **Display / Body / UI**: `Inter`, falling back to `Noto Sans Thai`,
+  `ui-sans-serif`, `system-ui`. Inter at weight 500 with negative tracking is the
+  documented substitute for the licensed rounded display face.
+- **Numeric / labels**: system monospace is avoided; numbers use
+  `font-variant-numeric: tabular-nums`.
 
-- **Display**: `CohereText`, falling back to `Space Grotesk`, `Inter`, `ui-sans-serif`, and `system-ui`.
-- **Body/UI**: `Unica77 Cohere Web`, falling back to `Inter`, `Arial`, `ui-sans-serif`, and `system-ui`.
-- **Technical labels**: `CohereMono`, falling back to `Arial`, `ui-sans-serif`, and `system-ui`.
-- **Icons**: Cohere uses custom icon fonts and thin-line geometric illustrations.
+| Role | Size | Weight | Letter spacing |
+|---|---:|---:|---:|
+| Display XL | 72px | 500 | -2.5px |
+| Display LG | 56px | 500 | -2px |
+| Display MD | 40px | 500 | -1px |
+| Display SM | 32px | 500 | -0.5px |
+| Title LG | 24px | 600 | -0.3px |
+| Title MD | 18px | 600 | 0 |
+| Body LG | 16px | 400 | 0 |
+| Body | 15px | 400 | 0 |
+| Caption | 13px | 400 | 0 |
+| Micro / uppercase label | 12px | 600 | +1.5px |
+| Button | 14px | 600 | 0 |
 
-### Hierarchy
-
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|---|---|---:|---:|---:|---:|---|
-| Hero Display | CohereText | 96px | 400 | 1.00 | -1.92px | Home page declaration scale. |
-| Product Display | CohereText | 72px | 400 | 1.00 | -1.44px | Product and research hero headlines. |
-| Section Display | Unica77 | 60px | 400 | 1.00 | -1.2px | Large product-page headings. |
-| Section Heading | Unica77 | 48px | 400 | 1.20 | -0.48px | Split hero and CTA headings. |
-| Card Heading | Unica77 | 32px | 400 | 1.20 | -0.32px | Feature card and list section titles. |
-| Feature Heading | Unica77 | 24px | 400 | 1.30 | 0 | Cards, filters, and article titles. |
-| Body Large | Unica77 | 18px | 400 | 1.40 | 0 | Lead text and larger paragraphs. |
-| Body | Unica77 | 16px | 400 | 1.50 | 0 | Default copy and link text. |
-| Button | Unica77 | 14px | 500 | 1.71 | 0 | Compact CTA labels. |
-| Caption | Unica77 | 14px | 400 | 1.40 | 0 | Metadata and small explanatory text. |
-| Mono Label | CohereMono | 14px | 400 | 1.40 | 0.28px | Uppercase technical labels. |
-| Micro | Unica77 | 12px | 400 | 1.40 | 0 | Footer, nav microcopy, and small links. |
-
-### Principles
-
-- Use massive type sparingly; Cohere pages often have one oversized headline and then settle into restrained 16px-24px UI copy.
-- Keep display type tight. Hero copy should feel compact and carved, not airy.
-- Avoid heavy bold weights. Size, spacing, and surface contrast do most of the hierarchy work.
-- Use uppercase mono labels for category and system markers, especially on product and research pages.
-- Editorial pages can use coral chips and blue links, but the base typography remains black and measured.
+Inputs render at **16px** to prevent iOS Safari from zooming on focus.
 
 ## Layout
 
-### Spacing System
+### Spacing
 
-The system uses an 8px base with many one-off alignment values: `2px`, `6px`, `8px`, `10px`, `12px`, `16px`, `20px`, `22px`, `24px`, `28px`, `32px`, `36px`, `40px`, `56px`, `60px`, `64px`, and `80px`.
+4px base unit, exposed as `--space-*` (`4, 6, 8, 10, 12, 16, 20, 24, 32, 40,
+48, 56, 64, 80, 96`). Editorial bands use `--space-24` (96px).
 
-Large sections rely on dramatic vertical breathing room. The home page places a trust-logo strip far below the hero media. Product pages often hold dark panels inside fields of empty white space, then transition to dense forms or footers only near the end.
+### Container & grid
 
-### Grid & Container
+- `.container` is `max-width: 1280px`, centred, with responsive padding.
+- `.feature-grid` lays out saturated KPI cards (`auto-fit, minmax(220px, 1fr)`).
+- Data views use full-width tables inside `.panel` / `.table-wrapper`.
 
-- Global nav uses a three-zone layout: logo left, menu centered, sign-in/CTA right.
-- Home hero is centered text above a two-card media composition: a wide product mockup card beside a narrower photography card.
-- Feature sections commonly use 3-column cards on desktop.
-- Product pages alternate centered hero blocks, trust-logo strips, large single-feature bands, and 2- or 3-column card grids.
-- Research pages use full-width lists with date and chip columns instead of decorative cards.
-- Forms use two-column input rows inside a rounded white card on dark or stone section backgrounds.
+### Page structure
 
-### Whitespace Philosophy
+1. `.page-header` — one `h1`, optional subtitle/icon, and the primary action
+   (rendered via `<PageHeader>`).
+2. Optional filters/search in a `.card.toolbar`.
+3. Content in `.panel` blocks (header + body).
+4. Explicit loading, empty, error, and success states.
 
-Cohere uses whitespace as a trust signal. Large empty intervals separate the brand claim, customer proof, product proof, and CTA. Dense content appears only where it serves the information architecture: research paper rows, blog card grids, and contact form fields.
-
-## Elevation & Depth
-
-The system is mostly flat. Depth comes from surface alternation, gradient contrast, rounded corners, and thin borders rather than drop shadows.
+## Elevation
 
 | Level | Treatment | Use |
 |---|---|---|
-| Flat | No shadow, cream or pale-blue/pink wash field | Hero copy, research lists, editorial surfaces |
-| Bordered | 1px `#d5d0c7`, `#e0dbd2`, or dark translucent rules | Research rows, forms, pale cards, nav elements |
-| Gradient Lift | Blue-to-pink gradient over contrasting section color | Primary buttons, sidebar, hero sections |
-| Dark Gradient Field | Deep navy-to-plum full-width gradient band | Admin sidebar, dark feature sections |
+| Flat | No shadow, cream field | Page background, nav, hero |
+| Hairline | 1px `#e8e2d2` | Cards, panels, inputs, tables |
+| Saturated | Brand-color fill, no shadow | Feature / KPI cards |
+| Overlay | `--shadow-overlay` | Modals, dropdowns, toasts |
 
 ## Shapes
 
-### Radius Scale
-
-| Token | Value | Role |
+| Token | Value | Use |
 |---|---:|---|
-| `xs` | 4px | Small images, search fields, article thumbnails, utility elements |
-| `sm` | 8px | Blog chips, cards, small media, dialogs |
-| `md` | 16px | Medium product cards and grouped blocks |
-| `lg` | 22px | Signature media-card and soft placeholder radius |
-| `xl` | 30px | Research/topic filter pills |
-| `pill` | 32px | Primary CTA buttons |
-| `full` | 9999px | Round status elements and fully pill-shaped controls |
-
-### Image Treatment
-
-Images are not decorative backdrops for text except in CTA bands. Most imagery sits as rounded cards with visible corners: product videos, enterprise photography, article thumbnails, and abstract 3D renders. The dominant radii are 8px and 22px.
+| `xs` | 6px | Small badges, dropdown items |
+| `sm` | 8px | Small buttons, chips |
+| `md` | 12px | Buttons, inputs |
+| `lg` | 16px | Cards, panels, tables |
+| `xl` | 24px | Feature cards |
+| `pill` | 9999px | Status badges, category tabs |
 
 ## Components
 
-### **`button-primary`**
+Defined globally in `src/assets/main.css`; behavioral components are Vue SFCs in
+`src/components/`.
 
-Blue-to-pink gradient pill CTA with dark text. Uses 14px-15px Unica77, 12px 24px padding, and a 32px pill radius. This is the primary action style for "Submit", "Save", and hero CTAs. The gradient provides visual energy while dark text ensures strong contrast.
+- **Buttons** (`.btn`): near-black `btn-primary`, cream `btn-secondary`,
+  `btn-on-color` (white, for use over saturated cards), `btn-ghost`,
+  `btn-danger/warning/success/info`, `btn-pill-outline`, `btn-sm`. All 44px tall
+  (36px for `btn-sm`).
+- **Feature cards** (`.feature-card` + `--red|--brown|--berry|--pink|--beige|--blue|
+  --mint|--ochre|--lavender|--peach|--cream`): saturated KPI surfaces with
+  `feature-label`, `feature-value`, `feature-caption`.
+- **Panels** (`.panel`, `.panel-header`, `.panel-title`, `.panel-count`,
+  `.panel-body`): hairline-bordered content containers.
+- **Tables** (`.table-wrapper`): sticky header on Surface Soft, hairline row
+  dividers, right-aligned tabular numerals, `.table--compact` density option.
+- **Status badges**: pill with a leading dot; rendered through `<StatusBadge>`.
+- **Forms**: 44px controls, 12px radius, canvas fill, labelled fields with
+  `.form-hint` / `.form-error`.
+- **States**: `.loading`, `.alert--*`, `.empty-state`, `.skeleton`, toasts
+  (`<ToastHost>`), and a focus-trapped confirm dialog (`<ConfirmDialog>`).
 
-### **`button-secondary`**
+## Navigation
 
-Text-only action link, usually underlined or rule-aligned, with no filled background. Used for "Explore products", "Try the Playground", newsletter signup, and secondary hero actions.
+- **Admin**: flat cream sidebar (Surface Soft, hairline right border) with
+  grouped nav and a near-black active pill; collapsible to an icon-only rail
+  (persisted in `localStorage`). A flat 64px cream top bar carries the collapse
+  toggle, breadcrumb, and user chip.
+- **PCU**: flat cream top nav with brand, dashboard link, and user chip.
+- A `.skip-link` targets `#main-content` on every layout.
 
-### **`button-pill-outline`**
+## Accessibility
 
-Outlined pill control with transparent fill, 1px dark border, and 30px radius. Used for research filters, topic tags, and lightweight taxonomy controls.
-
-### **`announcement-bar`**
-
-Full-width black strip above the nav, 36px tall, centered microcopy with an underlined "Learn more" link and a close control at the far right.
-
-### **`hero-photo-card`**
-
-Rounded media card used in the home hero and solution pages. It combines photography or abstract imagery with an overlaid dark agent-console module. Radius is usually 22px on large cards and 8px on smaller thumbnails.
-
-### **`agent-console-card`**
-
-Dark product mockup panel showing agent names, status chips, integration badges, prompt fields, and generated response cards. Background is near-black, text is white or muted, and small accent chips use product colors.
-
-### **`trust-logo-strip`**
-
-Centered copy above a row of monochrome customer logos. It is intentionally quiet: no cards, no borders, just large horizontal spacing and black or white logos depending on the background.
-
-### **`capability-card`**
-
-Content block with thin-line geometric illustration, 24px heading, body copy, and a text link. On light backgrounds, cards often have only a top rule or a subtle image/card relationship rather than full boxing.
-
-### **`dark-feature-band`**
-
-Dark navy-to-plum gradient full-width section used for the admin sidebar and dark feature bands. Text turns white; nav items use translucent white overlays with blue and pink undertones.
-
-### **`product-card`**
-
-Warm stone card used for product/model summaries. Typically 3-column on desktop, with 8px radius, generous padding, a small pill button, a divider line, and checkmark bullet rows.
-
-### **`blog-filter-chip`**
-
-Large coral taxonomy chip used on the blog index. Active chips invert to coral fill with dark text; inactive chips use coral outline and pale fill. Typography is oversized relative to typical filters, making the taxonomy a hero-level control.
-
-### **`research-table`**
-
-Rule-separated publication list with title left, topic pills centered, and date right. Rows are tall, white, and border-driven; filters above use many compact outlined pills.
-
-### **`contact-form-card`**
-
-Rounded white form panel set against dark green or warm stone sections. Inputs are rectangular with thin gray borders, 12px-16px padding, and compact labels/placeholders. Submit uses the same near-black pill style as primary CTAs.
-
-### **`footer-newsletter`**
-
-Dark footer subscription block with coral "AI moves fast" label, white headline, muted legal microcopy, a single-line email field, and arrow submit marker. Footer columns use white section labels and muted links.
+- Target WCAG 2.2 AA. Interactive targets are ≥ 44px.
+- Every control is keyboard-operable with a visible focus indicator.
+- Form controls have associated labels; icon-only buttons have `aria-label`.
+- Modals use `role="dialog"`, focus trapping, Esc, and focus restore.
+- Status is never conveyed by colour alone (label + dot + tint).
+- `prefers-reduced-motion` disables animation and smooth scrolling.
 
 ## Do's and Don'ts
 
 ### Do
 
-- Use cream canvas as the default surface; introduce pale-blue or pale-pink washes as section backgrounds.
-- Keep primary CTAs using the blue-to-pink gradient with dark text for strong contrast.
-- Use 22px radius on major media cards and placeholders.
-- Use pink for editorial taxonomy and small warm accents.
-- Use the dark gradient sidebar for admin navigation.
-- Let gradient buttons and status badges carry color, while the UI shell stays restrained.
+- Anchor every page on the cream canvas; never a cool gray.
+- Cycle the saturated feature-card colors; don't repeat one twice in a row.
+- Keep display type at weight 500 with negative tracking.
+- Use the design tokens for every color, space, radius, and shadow.
+- Provide loading, empty, error, and success states for async work.
 
 ### Don't
 
-- Do not use the gradient on non-interactive text or body copy.
-- Do not add heavy drop shadows to cards.
-- Do not make every section card-based; use unframed rows, rules, and open space between sections.
-- Do not use rounded cards below 8px for major media.
-- Do not replace the display/body type split with one generic sans-serif voice.
-- Do not render undocumented interaction variants in documentation or previews.
-- Do not use saturated solid fills as normal UI backgrounds; keep gradients as the primary visual treatment.
-
-## Responsive Behavior
-
-### Breakpoints
-
-| Name | Width | Key Changes |
-|---|---:|---|
-| Small Mobile | <425px | Single-column cards, compact nav, reduced hero headline scale |
-| Mobile | 425-640px | Hero media stacks, card grids become one column, form rows stack |
-| Large Mobile | 640-768px | Wider one-column layouts with larger media cards |
-| Tablet | 768-1024px | Two-column cards begin, nav spacing tightens |
-| Desktop | 1024-1440px | Full nav, 3-column card grids, split hero compositions |
-| Large Desktop | 1440-2560px | Wide containers and large empty vertical intervals |
-
-### Touch Targets
-
-Primary CTAs and pills meet comfortable touch sizing through 12px-24px padding and pill radii. Research filter chips and blog category chips are larger than standard tags, making dense taxonomy surfaces usable on touch devices.
-
-### Collapsing Strategy
-
-- Nav collapses from full horizontal links to a compact mobile menu.
-- Hero media moves from split cards to stacked cards.
-- Product and capability grids collapse from 3 columns to 2 and then 1.
-- Form fields collapse from paired rows to a single column.
-- Research rows preserve their rule-separated structure but stack metadata below titles on smaller widths.
-
-## Iteration Guide
-
-1. Start from a cream canvas or a pale-blue/pale-pink wash; avoid mid-tone page backgrounds unless the design calls for a specific CTA/form section.
-2. Use `button-primary` (gradient) for the single highest-priority action and `button-secondary` for the companion action.
-3. Use the dark gradient sidebar for admin navigation panels.
-4. For tabular data, use rule-separated rows with pale-blue hover states.
-5. Keep component examples structurally honest: placeholder product frames are better than invented product content.
-
-## Known Gaps
-
-- Exact proprietary font files are not bundled; use the documented fallbacks when implementing externally.
-- Mobile screenshots were not regenerated in this public update, so mobile behavior is documented from the desktop system and existing responsive patterns.
-- Some live pages lazy-load content blocks late; blank testimonial placeholders are documented as placeholder skeleton surfaces rather than filled testimonial cards.
+- Don't add card shadows — use hairlines and saturated fills for depth.
+- Don't bold display type beyond 500.
+- Don't use a dark sidebar or footer; keep the palette warm-throughout.
+- Don't hardcode colors or spacing; use tokens.
+- Don't rely on colour alone to signal state.

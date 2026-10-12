@@ -1,96 +1,78 @@
-<!-- src/views/admin/AccountingReport.vue -->
 <template>
-    <div class="container">
-        <h2><i class="fas fa-file-invoice-dollar"></i> รายงานมูลค่าทางบัญชี</h2>
-        <p class="text-muted">
-            สรุปมูลค่าการเบิกจ่ายของแต่ละ รพ.สต.
-            ตามรอบเบิกเพื่อส่งมอบให้ฝ่ายบัญชี
-        </p>
-
-        <div class="card report-options no-print">
-            <div class="form-group">
-                <label for="report-period">1. เลือกรอบเบิกเพื่อดูรายงาน</label>
-                <select
-                    id="report-period"
-                    v-model="selectedPeriod"
-                    @change="generateReport"
-                >
-                    <option :value="null" disabled>
-                        -- กรุณาเลือกรอบเบิก --
-                    </option>
-                    <option
-                        v-for="period in periods"
-                        :key="period.id"
-                        :value="period.id"
-                    >
-                        {{ period.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="form-group action-buttons-group">
-                <label>&nbsp;</label>
-                <button
-                    @click="printReport"
-                    :disabled="!selectedPeriod || reportData.length === 0"
-                    class="btn btn-primary"
-                >
-                    <i class="fas fa-print"></i> พิมพ์รายงาน
-                </button>
-            </div>
-        </div>
-
-        <div v-if="loading" class="loading">กำลังประมวลผลข้อมูล...</div>
-        <div v-if="error" class="error">{{ error }}</div>
-
-        <div v-if="reportData.length > 0" class="card">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="text-center">ลำดับ</th>
-                            <th>หน่วยบริการ (รพ.สต.)</th>
-                            <th class="text-right">มูลค่ารวม (บาท)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(pcu, index) in reportData"
-                            :key="pcu.pcu_id"
-                        >
-                            <td class="text-center">{{ index + 1 }}</td>
-                            <td>{{ pcu.pcu_name }}</td>
-                            <td class="text-right bold">
-                                {{ formatCurrency(pcu.total_value) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2" class="text-right bold">
-                                มูลค่ารวมทั้งสิ้น
-                            </td>
-                            <td class="text-right bold">
-                                {{ formatCurrency(grandTotal) }}
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-
-        <div
-            v-else-if="!loading && selectedPeriod"
-            class="card no-data-message text-center"
+  <div class="container">
+    <PageHeader
+      title="รายงานมูลค่าทางบัญชี"
+      subtitle="สรุปมูลค่าการเบิกจ่ายของแต่ละ รพ.สต. เพื่อส่งมอบให้ฝ่ายบัญชี"
+      icon="fas fa-file-invoice-dollar"
+    >
+      <template #actions>
+        <button
+          v-if="reportData.length > 0"
+          @click="printReport"
+          class="btn btn-primary no-print"
         >
-            <i class="fas fa-info-circle"></i>
-            <p>ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้</p>
-        </div>
+          <i class="fas fa-print" aria-hidden="true"></i> พิมพ์รายงาน
+        </button>
+      </template>
+    </PageHeader>
+
+    <div class="card report-options no-print">
+      <div class="form-group">
+        <label for="report-period">เลือกรอบเบิกเพื่อดูรายงาน</label>
+        <select id="report-period" v-model="selectedPeriod" @change="generateReport">
+          <option :value="null" disabled>-- กรุณาเลือกรอบเบิก --</option>
+          <option v-for="period in periods" :key="period.id" :value="period.id">
+            {{ period.name }}
+          </option>
+        </select>
+      </div>
     </div>
+
+    <div v-if="loading" class="loading">กำลังประมวลผลข้อมูล...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
+
+    <div v-if="reportData.length > 0" class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center">ลำดับ</th>
+            <th>หน่วยบริการ (รพ.สต.)</th>
+            <th class="text-right">มูลค่ารวม (บาท)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(pcu, index) in reportData" :key="pcu.pcu_id">
+            <td class="text-center">{{ index + 1 }}</td>
+            <td>{{ pcu.pcu_name }}</td>
+            <td class="text-right bold">{{ formatCurrency(pcu.total_value) }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" class="text-right">มูลค่ารวมทั้งสิ้น</td>
+            <td class="text-right total-value">{{ formatCurrency(grandTotal) }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <EmptyState
+      v-else-if="!loading && selectedPeriod"
+      icon="fas fa-circle-info"
+      title="ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้"
+      text="เลือกรอบเบิกอื่นเพื่อดูรายงาน"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import EmptyState from '@/components/EmptyState.vue';
+import PageHeader from '@/components/PageHeader.vue';
 import { supabase } from '@/supabaseClient';
 import type { AccountingSummaryRow, RequisitionPeriod } from '@/types/models';
 
@@ -98,7 +80,7 @@ const router = useRouter();
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 const periods = ref<RequisitionPeriod[]>([]);
-const selectedPeriod = ref<number | null>(null);
+const selectedPeriod = ref<string | null>(null);
 const reportData = ref<AccountingSummaryRow[]>([]);
 
 const grandTotal = computed<number>(() => {
@@ -113,6 +95,7 @@ onMounted(async () => {
       .order('start_date', { ascending: false });
     periods.value = (data ?? []) as unknown as RequisitionPeriod[];
   } catch (err) {
+    error.value = 'ไม่สามารถโหลดรอบเบิกได้';
     console.error('Error fetching periods:', err);
   }
 });
@@ -132,7 +115,6 @@ async function generateReport(): Promise<void> {
 
     reportData.value = (data ?? []) as unknown as AccountingSummaryRow[];
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
     error.value = `เกิดข้อผิดพลาดในการประมวลผล: ${err instanceof Error ? err.message : String(err)}`;
     console.error(err);
   } finally {
@@ -159,30 +141,20 @@ function formatCurrency(value: number | null): string {
 </script>
 
 <style scoped>
-h2 i {
-    margin-right: 0.75rem;
-    color: var(--color-near-black);
-}
 .report-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+  display: flex;
+  gap: var(--space-5);
+  align-items: flex-end;
+  margin-bottom: var(--space-6);
 }
-.form-group {
-    flex-grow: 1;
+
+.report-options .form-group {
+  flex: 1 1 280px;
+  margin-bottom: 0;
 }
-.action-buttons-group {
-    flex-grow: 0;
-}
-.no-data-message i {
-    font-size: 2.5rem;
-    color: var(--info-color);
-    margin-bottom: 1rem;
-}
-.no-data-message p {
-    font-size: 1.1rem;
-    font-weight: 500;
+
+.total-value {
+  font-size: var(--text-body-lg);
+  color: var(--color-primary);
 }
 </style>

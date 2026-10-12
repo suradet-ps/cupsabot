@@ -60,7 +60,7 @@
                             v-for="(
                                 item, index
                             ) in requisition.requisition_items_drugcupsabot"
-                            :key="item.id"
+                            :key="index"
                         >
                             <td class="center">{{ index + 1 }}</td>
                             <td>{{ item.items_drugcupsabot.name }}</td>
@@ -163,7 +163,7 @@ type PrintRequisition = {
   id: number;
   status: string;
   submitted_at: string | null;
-  pcus_drugcupsabot: { id: number; name: string };
+  pcus_drugcupsabot: { id: string; name: string };
   requisition_periods_drugcupsabot: { name: string };
   requisition_items_drugcupsabot: PrintRequisitionItem[];
 };
@@ -201,15 +201,15 @@ onMounted(async () => {
         )
       `,
       )
-      .eq('id', requisitionId)
+      .eq('id', String(requisitionId))
       .single();
 
     if (requisitionError) throw requisitionError;
     // FIX: Supabase types FK joins as arrays even for many-to-one
     requisition.value = requisitionData as unknown as PrintRequisition;
 
-    if (requisitionData?.pcus_drugcupsabot?.id) {
-      const pcuId = requisitionData.pcus_drugcupsabot.id;
+    if (requisition.value?.pcus_drugcupsabot?.id) {
+      const pcuId = requisition.value.pcus_drugcupsabot.id;
       const { data: personnelData, error: personnelError } = await supabase
         .from('pcu_personnel_drugcupsabot')
         .select('*')
@@ -444,3 +444,4 @@ td.center {
     }
 }
 </style>
+

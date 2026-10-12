@@ -45,7 +45,7 @@
 
                 <div class="pcu-list">
                     <p v-for="(pcu, index) in reportData" :key="pcu.pcu_id">
-                        {{ index + 1 }}. รพ.สต. {{ pcu.pcu_name }}เป็นเงิน
+                        {{ index + 1 }}. รพ.สต. {{ pcu.pcu_name }} เป็นเงิน
                         {{ formatCurrency(pcu.total_value) }} บาท
                     </p>
                     <p>
@@ -75,6 +75,10 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div v-else-if="!loading" class="print-empty">
+        <h2>ไม่พบข้อมูลสำหรับสร้างบันทึกข้อความ</h2>
+        <p>กรุณาตรวจสอบรอบเบิกอีกครั้งก่อนพิมพ์เอกสาร</p>
     </div>
     <div v-else class="loading">กำลังเตรียมเอกสาร...</div>
 </template>
@@ -107,13 +111,13 @@ onMounted(async () => {
     const { data: periodData } = await supabase
       .from('requisition_periods_drugcupsabot')
       .select('name')
-      .eq('id', periodId)
+      .eq('id', String(periodId))
       .single();
 
     periodInfo.value = periodData;
 
     const { data, error } = await supabase.rpc('get_accounting_summary_by_period', {
-      period_id_param: periodId,
+      period_id_param: String(periodId),
     });
     if (error) throw error;
 
@@ -190,6 +194,20 @@ body {
     color: #000;
     line-height: 1.6;
     font-size: 14pt;
+}
+.print-empty {
+    max-width: 560px;
+    margin: 15vh auto 0;
+    padding: 0 24px;
+    text-align: center;
+    color: #000;
+}
+.print-empty h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+.print-empty p {
+    color: #555;
 }
 
 .page {

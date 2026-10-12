@@ -1,146 +1,128 @@
 <template>
-    <div class="container">
-        <div class="header-actions no-print">
-            <router-link to="/admin/dashboard" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> กลับไปหน้า Dashboard
-            </router-link>
+  <div class="container">
+    <PageHeader
+      title="รายละเอียดใบเบิก"
+      :subtitle="
+        requisition
+          ? `${requisition.pcus_drugcupsabot.name} · ${requisition.requisition_periods_drugcupsabot.name}`
+          : undefined
+      "
+      icon="fas fa-file-invoice"
+    >
+      <template #actions>
+        <router-link to="/admin/dashboard" class="btn btn-secondary no-print">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> กลับแดชบอร์ด
+        </router-link>
+      </template>
+    </PageHeader>
+
+    <div v-if="loading" class="loading">กำลังโหลดข้อมูลใบเบิก...</div>
+    <p v-if="error" class="alert alert--error" role="alert">
+      <i class="fas fa-circle-exclamation alert-icon" aria-hidden="true"></i>
+      <span>{{ error }}</span>
+    </p>
+
+    <template v-if="!loading && requisition">
+      <div class="card summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">รพ.สต.</span>
+          <span class="summary-value">{{ requisition.pcus_drugcupsabot.name }}</span>
         </div>
-
-        <div v-if="loading" class="loading">กำลังโหลดข้อมูลใบเบิก...</div>
-        <div v-if="error" class="error">{{ error }}</div>
-
-        <div v-if="!loading && requisition">
-            <div class="card requisition-summary">
-                <div class="summary-header">
-                    <h2>
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        รายละเอียดใบเบิก
-                    </h2>
-                    <span :class="['status-badge', requisition.status]">{{
-                        requisition.status
-                    }}</span>
-                </div>
-                <div class="summary-grid">
-                    <div>
-                        <strong>รพ.สต.:</strong>
-                        <p>{{ requisition.pcus_drugcupsabot.name }}</p>
-                    </div>
-                    <div>
-                        <strong>รอบเบิก:</strong>
-                        <p>
-                            {{
-                                requisition.requisition_periods_drugcupsabot
-                                    .name
-                            }}
-                        </p>
-                    </div>
-                    <div>
-                        <strong>วันที่ส่ง:</strong>
-                        <p>{{ formatDate(requisition.submitted_at) }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <h3><i class="fas fa-list-ol"></i> รายการที่เบิก</h3>
-            <div class="table-wrapper card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="text-center">ลำดับ</th>
-                            <th>รายการเวชภัณฑ์</th>
-                            <th class="text-center">ยอดคงเหลือ (ที่แจ้ง)</th>
-                            <th class="text-center">จำนวนขอเบิก</th>
-                            <th class="text-center">จำนวนอนุมัติ</th>
-                            <th class="text-right">ราคา/หน่วย</th>
-                            <th class="text-right">มูลค่าที่อนุมัติ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(reqItem, index) in editableItems"
-                            :key="reqItem.id"
-                        >
-                            <td class="text-center">{{ index + 1 }}</td>
-                            <td>{{ reqItem.items_drugcupsabot.name }}</td>
-                            <td class="text-center">
-                                {{ reqItem.on_hand_quantity ?? "-" }}
-                            </td>
-                            <td class="text-center">{{ reqItem.quantity }}</td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="quantity-input"
-                                    v-model.number="reqItem.approved_quantity"
-                                    min="0"
-                                    @focus="$event.target.select()"
-                                />
-                            </td>
-                            <td class="text-right">
-                                {{ formatCurrency(reqItem.price_at_request) }}
-                            </td>
-                            <td class="text-right bold">
-                                {{
-                                    formatCurrency(
-                                        (reqItem.approved_quantity || 0) *
-                                            reqItem.price_at_request,
-                                    )
-                                }}
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="6" class="text-right bold">
-                                มูลค่ารวมที่อนุมัติ
-                            </td>
-                            <td class="text-right bold">
-                                {{ formatCurrency(grandTotalApproved) }}
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-            <div class="card admin-actions no-print">
-                <h3><i class="fas fa-cogs"></i> จัดการใบเบิก</h3>
-                <div class="action-buttons">
-                    <button
-                        @click="saveAndApprove"
-                        :disabled="isUpdating"
-                        class="btn btn-primary"
-                    >
-                        <i class="fas fa-check-double"></i>
-                        {{
-                            isUpdating
-                                ? "กำลังบันทึก..."
-                                : "บันทึกและอนุมัติ (Approve)"
-                        }}
-                    </button>
-                    <button
-                        @click="fulfillRequisition"
-                        :disabled="
-                            isUpdating || requisition.status !== 'approved'
-                        "
-                        class="btn btn-success"
-                    >
-                        <i class="fas fa-dolly"></i>
-                        {{
-                            isUpdating
-                                ? "กำลังบันทึก..."
-                                : "ยืนยันการจ่าย (Fulfilled)"
-                        }}
-                    </button>
-                </div>
-                <p v-if="requisition.status !== 'approved'" class="hint">
-                    * ต้องอนุมัติใบเบิกก่อนจึงจะยืนยันการจ่ายได้
-                </p>
-            </div>
+        <div class="summary-item">
+          <span class="summary-label">รอบเบิก</span>
+          <span class="summary-value">
+            {{ requisition.requisition_periods_drugcupsabot.name }}
+          </span>
         </div>
-    </div>
+        <div class="summary-item">
+          <span class="summary-label">วันที่ส่ง</span>
+          <span class="summary-value">{{ formatDate(requisition.submitted_at) }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">สถานะ</span>
+          <StatusBadge :status="requisition.status" />
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>รายการที่เบิก</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center">ลำดับ</th>
+              <th>รายการเวชภัณฑ์</th>
+              <th class="text-center">คงเหลือ (ที่แจ้ง)</th>
+              <th class="text-center">จำนวนขอเบิก</th>
+              <th class="text-center">จำนวนอนุมัติ</th>
+              <th class="text-right">ราคา/หน่วย</th>
+              <th class="text-right">มูลค่าที่อนุมัติ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(reqItem, index) in editableItems" :key="reqItem.id">
+              <td class="text-center">{{ index + 1 }}</td>
+              <td>{{ reqItem.items_drugcupsabot.name }}</td>
+              <td class="text-center">{{ reqItem.on_hand_quantity ?? '-' }}</td>
+              <td class="text-center">{{ reqItem.quantity }}</td>
+              <td class="text-center">
+                <input
+                  type="number"
+                  class="quantity-input"
+                  v-model.number="reqItem.approved_quantity"
+                  min="0"
+                  :aria-label="`จำนวนที่อนุมัติ ${reqItem.items_drugcupsabot.name}`"
+                  @focus="selectAll"
+                />
+              </td>
+              <td class="text-right">{{ formatCurrency(reqItem.price_at_request) }}</td>
+              <td class="text-right bold">
+                {{ formatCurrency((reqItem.approved_quantity || 0) * reqItem.price_at_request) }}
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6" class="text-right">มูลค่ารวมที่อนุมัติ</td>
+              <td class="text-right total-value">{{ formatCurrency(grandTotalApproved) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="card admin-actions no-print">
+        <h3>จัดการใบเบิก</h3>
+        <div class="action-buttons">
+          <button @click="saveAndApprove" :disabled="isUpdating" class="btn btn-primary">
+            <i class="fas fa-check-double" aria-hidden="true"></i>
+            {{ isUpdating ? 'กำลังบันทึก...' : 'บันทึกและอนุมัติ' }}
+          </button>
+          <button
+            @click="fulfillRequisition"
+            :disabled="isUpdating || requisition.status !== 'approved'"
+            class="btn btn-success"
+          >
+            <i class="fas fa-dolly" aria-hidden="true"></i>
+            {{ isUpdating ? 'กำลังบันทึก...' : 'ยืนยันการจ่ายยา' }}
+          </button>
+        </div>
+        <p v-if="requisition.status !== 'approved'" class="form-hint">
+          <i class="fas fa-circle-info" aria-hidden="true"></i>
+          ต้องบันทึกและอนุมัติใบเบิกก่อน จึงจะยืนยันการจ่ายยาได้
+        </p>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import PageHeader from '@/components/PageHeader.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
+import { useConfirm } from '@/composables/useConfirm';
+import { useToast } from '@/composables/useToast';
 import { supabase } from '@/supabaseClient';
 import type { RequisitionWithJoins } from '@/types/models';
 
@@ -155,11 +137,18 @@ type EditableItem = {
 
 const props = defineProps<{ requisitionId: string }>();
 
+const toast = useToast();
+const { confirm } = useConfirm();
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const requisition = ref<RequisitionWithJoins | null>(null);
 const editableItems = ref<EditableItem[]>([]);
 const isUpdating = ref<boolean>(false);
+
+function selectAll(event: FocusEvent): void {
+  const target = event.target as HTMLInputElement | null;
+  target?.select();
+}
 
 async function fetchRequisition(): Promise<void> {
   try {
@@ -184,7 +173,6 @@ async function fetchRequisition(): Promise<void> {
 
     if (fetchError) throw fetchError;
 
-    // FIX: Supabase types FK joins as arrays even for many-to-one
     requisition.value = data as unknown as RequisitionWithJoins;
 
     editableItems.value = (data.requisition_items_drugcupsabot as unknown as EditableItem[]).map(
@@ -194,7 +182,6 @@ async function fetchRequisition(): Promise<void> {
       }),
     );
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
     error.value = `ไม่สามารถโหลดข้อมูลได้: ${err instanceof Error ? err.message : String(err)}`;
     console.error(err);
   } finally {
@@ -214,7 +201,12 @@ const grandTotalApproved = computed<number>(() => {
 });
 
 async function saveAndApprove(): Promise<void> {
-  if (!confirm('ยืนยันการบันทึกและอนุมัติใบเบิกนี้? การกระทำนี้จะอัปเดตจำนวนที่อนุมัติทั้งหมด')) return;
+  const confirmed = await confirm({
+    title: 'ยืนยันการบันทึกและอนุมัติ',
+    message: 'การกระทำนี้จะอัปเดตจำนวนที่อนุมัติทั้งหมด และเปลี่ยนสถานะเป็นอนุมัติแล้ว',
+    confirmLabel: 'บันทึกและอนุมัติ',
+  });
+  if (!confirmed) return;
 
   isUpdating.value = true;
   try {
@@ -234,11 +226,10 @@ async function saveAndApprove(): Promise<void> {
       .eq('id', props.requisitionId);
     if (reqError) throw reqError;
 
-    alert('บันทึกและอนุมัติใบเบิกเรียบร้อย');
+    toast.success('บันทึกและอนุมัติใบเบิกเรียบร้อยแล้ว');
     await fetchRequisition();
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
-    alert(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : String(err)}`);
+    toast.error(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : String(err)}`);
     console.error(err);
   } finally {
     isUpdating.value = false;
@@ -246,7 +237,12 @@ async function saveAndApprove(): Promise<void> {
 }
 
 async function fulfillRequisition(): Promise<void> {
-  if (!confirm('ยืนยันการจ่ายเวชภัณฑ์ตามจำนวนที่อนุมัติแล้วใช่หรือไม่?')) return;
+  const confirmed = await confirm({
+    title: 'ยืนยันการจ่ายยา',
+    message: 'ยืนยันการจ่ายเวชภัณฑ์ตามจำนวนที่อนุมัติแล้วใช่หรือไม่?',
+    confirmLabel: 'ยืนยันการจ่าย',
+  });
+  if (!confirmed) return;
 
   isUpdating.value = true;
   try {
@@ -256,11 +252,10 @@ async function fulfillRequisition(): Promise<void> {
       .eq('id', props.requisitionId);
     if (reqError) throw reqError;
 
-    alert('ยืนยันการจ่ายเวชภัณฑ์เรียบร้อย');
+    toast.success('ยืนยันการจ่ายเวชภัณฑ์เรียบร้อยแล้ว');
     await fetchRequisition();
   } catch (err) {
-    // FIX: error is unknown in strict TS, narrow to Error before reading .message
-    alert(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : String(err)}`);
+    toast.error(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : String(err)}`);
     console.error(err);
   } finally {
     isUpdating.value = false;
@@ -287,66 +282,59 @@ function formatCurrency(value: number | null): string {
 </script>
 
 <style scoped>
-.header-actions {
-    margin-bottom: var(--space-6);
-}
-.requisition-summary {
-    margin-bottom: var(--space-8);
-}
-.summary-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--space-4);
-}
-.summary-header h2 {
-    margin-bottom: 0;
-    border-bottom: none;
-    padding-bottom: 0;
-}
 .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: var(--space-6);
-    border-top: 1px solid var(--color-hairline);
-    padding-top: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
 }
-.summary-grid p {
-    margin: 0;
-    font-weight: 600;
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
 }
-.summary-grid strong {
-    font-weight: 500;
-    color: var(--text-muted);
+
+.summary-label {
+  font-size: var(--text-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--color-muted-slate);
+  font-weight: var(--weight-semibold);
 }
-h2 i,
-h3 i {
-    margin-right: 0.75rem;
-    color: var(--color-near-black);
+
+.summary-value {
+  font-size: var(--text-body-lg);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink);
 }
-.table-wrapper {
-    padding: 0;
-    border: none;
-}
+
 .quantity-input {
-    width: 90px;
-    text-align: center;
-    border-radius: var(--radius-xs);
-    border: 1px solid var(--color-hairline);
+  width: 92px;
+  text-align: center;
 }
+
+.total-value {
+  font-size: var(--text-body-lg);
+  color: var(--color-primary);
+}
+
 .admin-actions {
-    margin-top: var(--space-8);
+  margin-top: var(--space-8);
 }
+
+.admin-actions h3 {
+  margin-top: 0;
+}
+
 .action-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
 }
-.hint {
-    font-size: var(--text-caption);
-    color: var(--text-muted);
-    margin-top: var(--space-4);
-    margin-bottom: 0;
+
+.action-buttons .btn {
+  flex: 1 1 220px;
 }
 </style>

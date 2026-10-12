@@ -1,29 +1,28 @@
 <template>
-    <div class="home-wrapper">
-        <div class="card home-card">
-            <h2>ยินดีต้อนรับสู่<br />ระบบเบิกยาออนไลน์</h2>
-            <p class="welcome-text">คุณ {{ auth.profile?.username }}</p>
+  <div class="home-wrapper">
+    <div class="home-card">
+      <span class="brand-mark" aria-hidden="true"><i class="fas fa-pills"></i></span>
+      <p class="eyebrow">ระบบเบิกยาออนไลน์ · โรงพยาบาลสระโบสถ์</p>
+      <h1>ยินดีต้อนรับ</h1>
+      <p class="welcome-text">คุณ {{ auth.profile?.username }}</p>
 
-            <div v-if="!auth.isAdmin" class="action-box">
-                <p>คุณเข้าสู่ระบบในฐานะผู้ใช้งาน รพ.สต.</p>
-                <button @click="goTo('/pcu/dashboard')" class="btn btn-primary">
-                    <i class="fas fa-clinic-medical"></i>
-                    ไปยังหน้าแดชบอร์ด รพ.สต.
-                </button>
-            </div>
+      <div v-if="!auth.isAdmin" class="action-box">
+        <p class="action-note">คุณเข้าสู่ระบบในฐานะผู้ใช้งาน รพ.สต.</p>
+        <button @click="goTo('/pcu/dashboard')" class="btn btn-primary">
+          <i class="fas fa-clinic-medical" aria-hidden="true"></i>
+          ไปยังหน้าหลัก รพ.สต.
+        </button>
+      </div>
 
-            <div v-if="auth.isAdmin" class="action-box">
-                <p>คุณเข้าสู่ระบบในฐานะผู้ดูแลระบบ (Admin)</p>
-                <button
-                    @click="goTo('/admin/dashboard')"
-                    class="btn btn-primary"
-                >
-                    <i class="fas fa-user-shield"></i>
-                    ไปยังหน้าแดชบอร์ดผู้ดูแลระบบ
-                </button>
-            </div>
-        </div>
+      <div v-if="auth.isAdmin" class="action-box">
+        <p class="action-note">คุณเข้าสู่ระบบในฐานะผู้ดูแลระบบ</p>
+        <button @click="goTo('/admin/dashboard')" class="btn btn-primary">
+          <i class="fas fa-user-shield" aria-hidden="true"></i>
+          ไปยังแดชบอร์ดผู้ดูแลระบบ
+        </button>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -39,69 +38,73 @@ function goTo(path: string): void {
 </script>
 
 <style scoped>
-/* White canvas home — DESIGN.md §whitespace philosophy, section-heading scale */
 .home-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 56px);
-    background-color: var(--color-canvas);
-    padding: var(--space-10) var(--space-4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-canvas);
+  padding: var(--space-8) var(--space-4);
 }
 
-/* Card with thin border — DESIGN.md §Bordered elevation */
 .home-card {
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-    padding: var(--space-10);
-    border: 1px solid var(--color-card-border);
-    border-radius: var(--radius-sm);
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  padding: var(--space-10);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
-/* Section heading scale — Unica77/Inter (body face) per DESIGN.md */
-.home-card h2 {
-    font-family: var(--font-body);
-    font-size: var(--text-section-heading);
-    font-weight: var(--weight-normal);
-    letter-spacing: var(--tracking-section-heading);
-    line-height: var(--leading-snug);
-    color: var(--color-ink);
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: var(--space-2);
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: #ffffff;
+  font-size: 1.25rem;
+  margin-bottom: var(--space-4);
 }
 
-/* Caption / muted welcome text */
+.eyebrow {
+  font-size: var(--text-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--color-muted-slate);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--space-2);
+}
+
+.home-card h1 {
+  font-size: var(--text-section-heading);
+  letter-spacing: var(--tracking-section-heading);
+  margin-bottom: var(--space-2);
+}
+
 .welcome-text {
-    font-size: var(--text-body-lg);
-    color: var(--color-muted-slate);
-    margin-bottom: var(--space-8);
+  font-size: var(--text-body-lg);
+  color: var(--color-muted-slate);
+  margin-bottom: var(--space-6);
 }
 
-/* Action area with thin top rule */
 .action-box {
-    border-top: 1px solid var(--color-hairline);
-    padding-top: var(--space-6);
-    margin-top: var(--space-6);
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--space-6);
+  margin-top: var(--space-6);
 }
 
-.action-box p {
-    font-size: var(--text-caption);
-    color: var(--color-muted-slate);
-    margin-bottom: var(--space-4);
+.action-note {
+  font-size: var(--text-caption);
+  color: var(--color-muted-slate);
+  margin-bottom: var(--space-4);
 }
 
-/* Pill button full-width */
-.action-box .btn,
-button {
-    width: 100%;
-    padding: var(--space-3) var(--space-6);
-    justify-content: center;
-    margin-top: 0;
-}
-
-button span {
-    display: inline;
+.action-box .btn {
+  width: 100%;
 }
 </style>
