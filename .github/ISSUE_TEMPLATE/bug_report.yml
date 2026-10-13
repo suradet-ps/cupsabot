@@ -1,0 +1,117 @@
+name: Bug report
+description: Something is not working as it should
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping make cupsabot better. Please fill in the fields below.
+
+        A requisition that stalls in the wrong status is a supply problem at the
+        other end - the PCU ordered, the warehouse never saw it, or the documents
+        print something the pharmacy did not sign. If that is what you hit, say so
+        up front.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: A short, clear description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Search ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the error message shown in the app, if any.
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Requisition status involved
+      description: If the bug involves a requisition, which status was it in?
+      options:
+        - Draft
+        - Submitted
+        - Approved
+        - Fulfilled
+        - Not applicable
+    validations:
+      required: false
+  - type: dropdown
+    id: role
+    attributes:
+      label: Role
+      description: Which role were you signed in as?
+      options:
+        - PCU staff
+        - Administrator
+        - Warehouse
+        - Not applicable
+    validations:
+      required: true
+  - type: input
+    id: pcu
+    attributes:
+      label: PCU / site
+      description: Which primary care unit or site is affected? If multiple, list them.
+      placeholder: "e.g. PCU Ban Na"
+    validations:
+      required: false
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Edge
+        - Firefox
+        - Safari
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - iOS
+        - Android
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / deployment
+      description: The commit, Vercel deployment, or approximate date you were using.
+      placeholder: "e.g. 99e3d54 or 2026-10-12"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots, console output, or extra context
+      description: Paste relevant screenshots or browser console output. Never paste Supabase keys (anon or service-role), database credentials, or real personnel details - redact names and signatures before pasting.
+      render: text
+    validations:
+      required: false

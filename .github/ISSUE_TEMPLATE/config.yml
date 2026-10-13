@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Development guide
+    url: https://github.com/suradet-ps/cupsabot/blob/main/README.md
+    about: Setup (bun install / bun run dev), Supabase configuration, and the quality bar
+  - name: Design system
+    url: https://github.com/suradet-ps/cupsabot/blob/main/DESIGN.md
+    about: Single source of truth for the cupsabot UI - tokens, components, and accessibility rules
