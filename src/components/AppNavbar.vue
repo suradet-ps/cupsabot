@@ -2,7 +2,7 @@
   <nav class="navbar-wrap no-print" aria-label="แถบนำทางหลัก">
     <div class="navbar">
       <router-link to="/" class="navbar-brand">
-        <span class="brand-mark" aria-hidden="true"><i class="fas fa-pills"></i></span>
+        <span class="brand-mark" aria-hidden="true"><img src="/logo.svg" alt="" /></span>
         <span class="brand-text">
           <strong>ระบบเบิกยาออนไลน์</strong>
           <small>โรงพยาบาลสระโบสถ์</small>
@@ -106,11 +106,15 @@ async function handleLogout(): Promise<void> {
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  background-color: var(--color-brand-red);
-  color: #ffffff;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .brand-text {

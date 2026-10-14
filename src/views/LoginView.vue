@@ -26,7 +26,7 @@
           <span class="art-ring"></span>
         </div>
         <div class="art-card art-card--red">
-          <i class="fas fa-pills"></i>
+          <img src="/logo.svg" alt="" class="art-logo" />
         </div>
       </div>
     </section>
@@ -217,9 +217,13 @@ async function handleLogin(): Promise<void> {
 }
 .art-card--red {
   background-color: var(--color-brand-red);
-  color: #ffffff;
-  font-size: 2rem;
   aspect-ratio: 1;
+}
+
+.art-logo {
+  display: block;
+  width: 78%;
+  height: 78%;
 }
 
 .art-card--brown {

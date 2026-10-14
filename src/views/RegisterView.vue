@@ -6,7 +6,7 @@
       </router-link>
 
       <header class="register-header">
-        <span class="brand-mark" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
+        <span class="brand-mark" aria-hidden="true"><img src="/logo.svg" alt="" /></span>
         <h1>สร้างบัญชีใหม่</h1>
         <p>สำหรับบุคลากร รพ.สต. ในเครือข่ายโรงพยาบาลสระโบสถ์</p>
       </header>
@@ -259,13 +259,15 @@ async function handleRegister(): Promise<void> {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  background: var(--gradient-primary);
-  color: #ffffff;
-  font-size: 1.25rem;
+  width: 56px;
+  height: 56px;
   margin-bottom: var(--space-4);
+}
+
+.brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .register-header h1 {
