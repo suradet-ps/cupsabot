@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 
@@ -106,6 +106,17 @@ const loading = ref<boolean>(false);
 const errorMessage = ref<string>('');
 const authStore = useAuthStore();
 const router = useRouter();
+
+onMounted(() => {
+  const reason = authStore.consumeSessionDeniedReason();
+  if (reason === 'pending') {
+    errorMessage.value = 'บัญชีของคุณกำลังรอการอนุมัติจากผู้ดูแลระบบ';
+  } else if (reason === 'rejected') {
+    errorMessage.value = 'คำขอลงทะเบียนของคุณถูกปฏิเสธโดยผู้ดูแลระบบ';
+  } else if (reason === 'unavailable') {
+    errorMessage.value = 'ไม่สามารถตรวจสอบสถานะบัญชีได้ กรุณาเข้าสู่ระบบอีกครั้ง';
+  }
+});
 
 async function handleLogin(): Promise<void> {
   loading.value = true;

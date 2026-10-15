@@ -188,6 +188,14 @@ router.beforeEach(async (to, _from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
   if (requiresAuth && !authStore.isLoggedIn) {
+    if (authStore.sessionDeniedReason === 'pending') {
+      return next({ name: 'WaitingForApproval' });
+    }
+    return next({ name: 'Login', query: { redirect: to.fullPath } });
+  }
+
+  if (requiresAuth && authStore.userProfile?.status !== 'approved') {
+    await authStore.logout();
     return next({ name: 'Login', query: { redirect: to.fullPath } });
   }
 
