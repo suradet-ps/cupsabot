@@ -143,6 +143,13 @@ type RequisitionEntry = {
   onHand: number | null;
 };
 
+type RequisitionHeader = {
+  id: string;
+  status: RequisitionStatus;
+  pcu_id: string;
+  period_id: string;
+};
+
 const props = defineProps<{
   periodId: string;
   requisitionId?: string;
@@ -166,6 +173,36 @@ const isEditing = computed<boolean>(
   () => props.requisitionId !== undefined && props.requisitionId !== 'new',
 );
 
+async function verifyEditableRequisition(): Promise<string | null> {
+  if (!isEditing.value) return null;
+
+  const { data, error: headerError } = await supabase
+    .from('requisitions_drugcupsabot')
+    .select('id, status, pcu_id, period_id')
+    .eq('id', String(props.requisitionId))
+    .single();
+
+  if (headerError || !data) {
+    return 'ไม่พบใบเบิกที่ต้องการแก้ไข';
+  }
+
+  const header = data as unknown as RequisitionHeader;
+
+  if (header.status !== 'draft') {
+    return 'ใบเบิกนี้ถูกส่ง อนุมัติ หรือจ่ายไปแล้ว จึงไม่สามารถแก้ไขได้';
+  }
+
+  if (!auth.userPcuId || header.pcu_id !== auth.userPcuId) {
+    return 'คุณไม่มีสิทธิ์แก้ไขใบเบิกของ รพ.สต. อื่น';
+  }
+
+  if (header.period_id !== props.periodId) {
+    return 'ใบเบิกนี้ไม่ได้อยู่ในรอบเบิกที่ระบุ';
+  }
+
+  return null;
+}
+
 function selectAll(event: FocusEvent): void {
   const target = event.target as HTMLInputElement | null;
   target?.select();
@@ -180,6 +217,14 @@ onMounted(async () => {
       .single();
     if (periodError) throw periodError;
     periodInfo.value = periodData;
+
+    if (isEditing.value) {
+      const guardError = await verifyEditableRequisition();
+      if (guardError) {
+        error.value = guardError;
+        return;
+      }
+    }
 
     const { data: itemsData, error: itemsError } = await supabase
       .from('items_drugcupsabot')
@@ -260,6 +305,14 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
   isSubmitting.value = true;
 
   try {
+    if (isEditing.value) {
+      const guardError = await verifyEditableRequisition();
+      if (guardError) {
+        toast.error(guardError);
+        return;
+      }
+    }
+
     let currentRequisitionId: string | null = isEditing.value ? String(props.requisitionId) : null;
 
     if (!isEditing.value) {
@@ -314,14 +367,20 @@ async function saveRequisition(status: RequisitionStatus): Promise<void> {
       if (insertError) throw insertError;
     }
 
-    const { error: updateStatusError } = await supabase
+    const { data: updatedRows, error: updateStatusError } = await supabase
       .from('requisitions_drugcupsabot')
       .update({
         status: status,
         submitted_at: status === 'submitted' ? new Date().toISOString() : null,
       })
-      .eq('id', currentRequisitionId);
+      .eq('id', currentRequisitionId)
+      .eq('pcu_id', auth.userPcuId)
+      .eq('status', 'draft')
+      .select('id');
     if (updateStatusError) throw updateStatusError;
+    if (!updatedRows || updatedRows.length === 0) {
+      throw new Error('ใบเบิกนี้ไม่ได้อยู่ในสถานะฉบับร่างแล้ว กรุณาโหลดหน้าใหม่');
+    }
 
     toast.success(status === 'submitted' ? 'ส่งใบเบิกเรียบร้อยแล้ว' : 'บันทึกฉบับร่างเรียบร้อยแล้ว');
     router.push('/pcu/dashboard');
