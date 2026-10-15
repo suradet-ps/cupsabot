@@ -143,6 +143,11 @@
         </div>
     </div>
 
+    <div v-else-if="errorMessage" class="print-empty">
+        <h2>ไม่สามารถแสดงเอกสารสำหรับพิมพ์ได้</h2>
+        <p>{{ errorMessage }}</p>
+    </div>
+
     <div v-else class="loading">กำลังเตรียมข้อมูลสำหรับพิมพ์...</div>
 </template>
 
@@ -171,6 +176,7 @@ const route = useRoute();
 const requisition = ref<PrintRequisition | null>(null);
 const personnel = ref<PcuPersonnel | null>(null);
 const loading = ref<boolean>(true);
+const errorMessage = ref<string | null>(null);
 
 const rawRequisitionId = route.query.id;
 const requisitionId = parseId(rawRequisitionId);
@@ -183,7 +189,7 @@ const emptyRows = computed<number>(() => {
 
 onMounted(async () => {
   if (requisitionId === null) {
-    document.body.innerHTML = `ไม่พบ ID ของใบเบิกที่ถูกต้อง (ได้รับ: ${String(rawRequisitionId) || 'ว่าง'})`;
+    errorMessage.value = `ไม่พบ ID ของใบเบิกที่ถูกต้อง (ได้รับ: ${String(rawRequisitionId) || 'ว่าง'})`;
     return;
   }
 
@@ -232,7 +238,7 @@ onMounted(async () => {
     // instance) on network failures. `String(plainObject)` would yield
     // "[object Object]". Fall back to `err.message` for object-shaped errors
     // and JSON.stringify for anything else so the user sees the real reason.
-    document.body.innerHTML = `เกิดข้อผิดพลาด: ${formatUnknownError(err)}`;
+    errorMessage.value = `เกิดข้อผิดพลาด: ${formatUnknownError(err)}`;
   } finally {
     loading.value = false;
   }
@@ -275,6 +281,21 @@ body {
     font-size: 14.5px;
     line-height: 1.4;
     color: #000;
+}
+
+.print-empty {
+    max-width: 560px;
+    margin: 15vh auto 0;
+    padding: 0 24px;
+    text-align: center;
+    color: #000;
+}
+.print-empty h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+.print-empty p {
+    color: #555;
 }
 
 .page {
