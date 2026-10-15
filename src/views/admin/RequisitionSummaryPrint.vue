@@ -54,6 +54,10 @@
             </div>
         </div>
     </div>
+    <div v-else-if="!loading && errorMessage" class="print-empty">
+        <h2>ไม่สามารถแสดงเอกสารสำหรับพิมพ์ได้</h2>
+        <p>{{ errorMessage }}</p>
+    </div>
     <div v-else-if="!loading" class="print-empty">
         <h2>ไม่พบข้อมูลใบเบิกที่อนุมัติแล้วในรอบนี้</h2>
         <p>กรุณาตรวจสอบรอบเบิกอีกครั้ง หรือกลับไปสร้างใบเบิกก่อนพิมพ์</p>
@@ -82,13 +86,14 @@ const processedData = ref<ProcessedItem[]>([]);
 const periodInfo = ref<Pick<RequisitionPeriod, 'name'> | null>(null);
 const pcuList = ref<Pcu[]>([]);
 const loading = ref<boolean>(true);
+const errorMessage = ref<string | null>(null);
 
 const rawPeriodId = route.query.periodId;
 const periodId = parseId(rawPeriodId);
 
 onMounted(async () => {
   if (periodId === null) {
-    document.body.innerHTML = `ไม่พบ ID ของรอบเบิกที่ถูกต้อง (ได้รับ: ${String(rawPeriodId) || 'ว่าง'})`;
+    errorMessage.value = `ไม่พบ ID ของรอบเบิกที่ถูกต้อง (ได้รับ: ${String(rawPeriodId) || 'ว่าง'})`;
     return;
   }
 
@@ -207,7 +212,7 @@ onMounted(async () => {
     // instance) on network failures. `String(plainObject)` would yield
     // "[object Object]". Fall back to `err.message` for object-shaped errors
     // and JSON.stringify for anything else so the user sees the real reason.
-    document.body.innerHTML = `เกิดข้อผิดพลาด: ${formatUnknownError(err)}`;
+    errorMessage.value = `เกิดข้อผิดพลาด: ${formatUnknownError(err)}`;
   } finally {
     loading.value = false;
   }
