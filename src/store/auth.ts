@@ -2,7 +2,7 @@ import type { User } from '@supabase/supabase-js';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { supabase } from '@/supabaseClient';
-import type { ProfileWithPcu } from '@/types/models';
+import type { ProfileStatus, ProfileWithPcu } from '@/types/models';
 
 export type SessionDeniedReason = 'pending' | 'rejected' | 'unavailable';
 
@@ -22,9 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const status = profile.value?.status ?? null;
     if (status !== 'approved') {
-      sessionDeniedReason.value =
-        status === 'pending' || status === 'rejected' ? status : 'unavailable';
-      await logout();
+      await denySession(status);
     }
   }
 
@@ -37,6 +35,32 @@ export const useAuthStore = defineStore('auth', () => {
       .single();
     if (error) console.error('Error fetching profile:', error);
     else profile.value = data as unknown as ProfileWithPcu;
+  }
+
+  async function denySession(status: ProfileStatus | null): Promise<void> {
+    sessionDeniedReason.value =
+      status === 'pending' || status === 'rejected' ? status : 'unavailable';
+    await logout();
+  }
+
+  async function verifyApprovedSession(): Promise<boolean> {
+    const currentUser = user.value;
+    if (!currentUser) return false;
+
+    const { data, error } = await supabase
+      .from('profiles_drugcupsabot')
+      .select('status')
+      .eq('id', currentUser.id)
+      .single();
+
+    const status = error ? null : ((data as { status: ProfileStatus } | null)?.status ?? null);
+
+    if (status !== 'approved') {
+      await denySession(status);
+      return false;
+    }
+
+    return true;
   }
 
   async function login(email: string, password: string): Promise<void> {
@@ -99,6 +123,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     profile,
     fetchSession,
+    verifyApprovedSession,
     login,
     logout,
     sessionDeniedReason,
