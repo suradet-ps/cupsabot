@@ -110,6 +110,7 @@ const grandTotal = computed<number>(() =>
 onMounted(async () => {
   if (periodId === null) {
     errorMessage.value = `ไม่พบ ID ของรอบเบิกที่ถูกต้อง (ได้รับ: ${String(rawPeriodId) || 'ว่าง'})`;
+    loading.value = false;
     return;
   }
   try {
