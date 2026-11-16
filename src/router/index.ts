@@ -19,6 +19,7 @@ import Home from '@/views/HomeView.vue';
 import Login from '@/views/LoginView.vue';
 // PCU Views
 import PcuDashboard from '@/views/pcu/PcuDashboard.vue';
+import PcuDrugCatalog from '@/views/pcu/PcuDrugCatalog.vue';
 import PcuPrintableView from '@/views/pcu/PcuPrintableView.vue';
 import RequisitionDetail from '@/views/pcu/RequisitionDetail.vue';
 import RequisitionForm from '@/views/pcu/RequisitionForm.vue';
@@ -58,6 +59,12 @@ const routes: RouteRecordRaw[] = [
     name: 'PcuDashboard',
     component: PcuDashboard,
     meta: { requiresAuth: true, requiresPcu: true },
+  },
+  {
+    path: '/pcu/drugs',
+    name: 'PcuDrugCatalog',
+    component: PcuDrugCatalog,
+    meta: { requiresAuth: true, requiresPcu: true, title: 'บัญชียา' },
   },
   {
     path: '/pcu/requisition/:periodId/:requisitionId?',

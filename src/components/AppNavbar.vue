@@ -24,6 +24,11 @@
           หน้าหลัก
         </router-link>
 
+        <router-link to="/pcu/drugs" class="nav-item" @click="closeMenu">
+          <i class="fas fa-pills" aria-hidden="true"></i>
+          บัญชียา
+        </router-link>
+
         <div class="user-info">
           <span class="user-avatar" aria-hidden="true">
             <i class="fas fa-user"></i>
